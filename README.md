@@ -71,7 +71,7 @@ works.
 The project must:
 
 1. Pose a marketing or economics research question that cannot be answered with off-the-shelf structured data
-2. Describe the data, and state an **identification argument**, what variation identifies the estimand, and what would break it
+2. Describe the data, and state an **identification argument**: what variation identifies the estimand, and what would break it
 3. Use an LLM to construct at least one variable from unstructured data (text, images, audio, or documents)
 4. Include a **validation study** against human-labeled or otherwise verified gold-standard data, with the sampling scheme described explicitly
 5. Report downstream estimates using an appropriate **correction** for the generated regressor, compared against the naive plug-in estimates

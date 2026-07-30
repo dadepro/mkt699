@@ -352,13 +352,14 @@ Most of you should aim for the second outcome. Some of you will get there.
 Your project must:
 
 1. Pose a question that **cannot** be answered with off-the-shelf structured data
-2. Use an LLM to construct **at least one variable** from unstructured data
-3. Include a **validation study** against human-labeled data, with the sampling scheme
+2. Describe the data and state an **identification argument**: what variation identifies
+   the estimand, and what would break it
+3. Use an LLM to construct **at least one variable** from unstructured data
+4. Include a **validation study** against human-labeled data, with the sampling scheme
    stated explicitly
-4. Report downstream estimates with an appropriate **correction**, compared against the
+5. Report downstream estimates with an appropriate **correction**, compared against the
    naive plug-in estimates
-5. Be **fully reproducible** from your repository, with a documented AI-use log
-6. State an **identification argument**, and be honest about its limits
+6. Be **fully reproducible** from your repository, with a documented AI-use log
 
 ---
 

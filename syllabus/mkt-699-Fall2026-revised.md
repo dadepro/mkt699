@@ -158,7 +158,7 @@ Beginning in Week 1, each student develops an original empirical project that us
 **Requirements.** The project must:
 
 1. Pose a marketing or economics research question that cannot be answered with off-the-shelf structured data
-2. Describe the data and state an **identification argument**, what variation identifies the estimand, what must be true, and what would break it
+2. Describe the data and state an **identification argument**: what variation identifies the estimand, what must be true, and what would break it
 3. Use an LLM to construct at least one variable from unstructured data (text, images, audio, or documents)
 4. Include a **validation study** with human-labeled or otherwise verified gold-standard data, with the sampling scheme described explicitly
 5. Report downstream estimates using an appropriate correction for the generated regressor, and compare them to the naive plug-in estimates
