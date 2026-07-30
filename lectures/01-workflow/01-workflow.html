@@ -1452,13 +1452,23 @@ Creates `renv.lock` recording exact package versions. Commit it.
 
 # Python: `uv`
 
+`uv` installs Python itself and manages your project's packages. One tool in place of
+`pip`, `venv`, and `pyenv`.
+
+--
+
 ```bash
-uv init
-uv add anthropic pandas polars
-uv run python 03-measure.py
+uv init                                  # start a project
+uv add anthropic pandas polars           # add packages
+uv run python 03-measure.py              # run inside the project env
 ```
 
-Fast, and produces a lockfile. Commit `uv.lock`.
+--
+
+&lt;br&gt;
+
+It writes a **`uv.lock`** recording exact versions. Commit it. That file is what lets
+someone else, or you in two years, rebuild the same environment.
 
 ---
 
@@ -1688,7 +1698,7 @@ Find them.
 1. **Create your repository** on your own GitHub account, using the structure from
    today. Add `dadepro` as a collaborator and send me the URL.
 
-2. **Install** VS Code (with the extensions above), R, Python (via `uv`), git, and a
+2. **Install** VS Code (with the extensions above), R, Python (using `uv`), git, and a
    coding agent.
 
 3. **Log in to a server** (either one) and start a `tmux`

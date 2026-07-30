@@ -108,7 +108,7 @@ itself.
 
 - **VS Code**, https://code.visualstudio.com, the standard editor for this course. Install the R, Python, Remote-SSH, and Quarto extensions.
 - **R**, https://www.r-project.org/
-- **Python via `uv`**, https://docs.astral.sh/uv/
+- **Python**, installed and managed with [`uv`](https://docs.astral.sh/uv/), which fetches Python itself and pins exact package versions in a `uv.lock` file so the environment can be rebuilt. It replaces `pip`, `venv`, and `pyenv`.
 - **Git and GitHub**, https://git-scm.com/downloads · https://github.com/
 - **A SQL client**, for browsing the course database directly: [Sequel Ace](https://sequel-ace.com/) on macOS, [MySQL Workbench](https://www.mysql.com/products/workbench/) on Windows
 - **A coding agent**, Claude Code (https://claude.com/claude-code), Codex (https://platform.openai.com), or Cursor (https://cursor.com)

@@ -58,7 +58,7 @@ There is no set book for this section of the course. The lecture slides are deta
 - What changed: the collapsing cost of analysis and its consequences for research practice
 - Project organization, version control with Git and GitHub, and why reproducibility became *harder*, not easier, with AI assistance
 - The shell, remote computing, and USC/Marshall computing resources
-- Environment management and dependency pinning (`renv`, `uv`), containers in brief
+- Environment management and dependency pinning: `renv` for R, `uv` for Python, so an analysis still runs in two years. Containers in brief
 - Setting up an AI-assisted workflow: Claude Code, Codex, Cursor, and the API
 
 *In-class lab: initialize your project repository. Every subsequent deliverable lives in it.*
@@ -360,8 +360,8 @@ https://code.visualstudio.com, install the R, Python, Remote-SSH, and Quarto ext
 **R**
 https://www.r-project.org/
 
-**Python** (via `uv`)
-https://docs.astral.sh/uv/
+**Python**, installed and managed with `uv`
+https://docs.astral.sh/uv/ — `uv` installs Python for you and records the exact package versions your project used, so the environment can be rebuilt later. It replaces `pip`, `venv`, and `pyenv`.
 
 **Git and GitHub**
 https://git-scm.com/downloads · https://github.com/
