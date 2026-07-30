@@ -1435,15 +1435,71 @@ unlike a package, you cannot pin a model version forever.
 
 # R: `renv`
 
-```r
-renv::init()      # snapshot current state
-renv::snapshot()  # after adding packages
-renv::restore()   # on another machine, or in 2 years
-```
-
-Creates `renv.lock` recording exact package versions. Commit it.
+Three commands, and you will use them in this order.
 
 --
+
+```r
+renv::init()       # once, at the start of a project
+```
+
+Creates a project-local library and an `.Rprofile` so R uses it automatically. Packages
+you install now belong to *this project*, not your machine.
+
+--
+
+```r
+renv::snapshot()   # whenever you add or update a package
+```
+
+Writes `renv.lock`.
+
+---
+
+# What `renv.lock` looks like
+
+```json
+{
+  "R": { "Version": "4.6.0",
+         "Repositories": [ { "Name": "CRAN",
+           "URL": "https://cloud.r-project.org" } ] },
+  "Packages": {
+    "data.table": {
+      "Package": "data.table",
+      "Version": "1.18.4",
+      "Source": "Repository",
+      ...
+```
+
+--
+
+<br>
+
+R version, repository, and an exact version for every package. **Commit this file.**
+
+---
+
+# The payoff
+
+```r
+renv::restore()    # on a new machine, or in two years
+```
+
+--
+
+<br>
+
+Reads the lockfile and installs precisely those versions. Your coauthor runs one command
+and has your environment.
+
+--
+
+<br>
+
+.small90[`renv::status()` tells you when your library and lockfile have drifted apart,
+which happens the moment you install something and forget to snapshot.]
+
+---
 
 # Python: `uv`
 
@@ -1453,17 +1509,67 @@ Creates `renv.lock` recording exact package versions. Commit it.
 --
 
 ```bash
-uv init                                  # start a project
-uv add anthropic pandas polars           # add packages
-uv run python 03-measure.py              # run inside the project env
+uv init                          # once, at the start of a project
+```
+
+Creates `pyproject.toml` and pins a Python version in `.python-version`.
+
+--
+
+```bash
+uv add polars
+#  + polars==1.36.1
+#  + polars-runtime-32==1.36.1
+```
+
+Installs it, records it in `pyproject.toml`, and writes `uv.lock`.
+
+---
+
+# The two files `uv` gives you
+
+**`pyproject.toml`** is what you asked for:
+
+```toml
+[project]
+requires-python = ">=3.9"
+dependencies = [
+    "polars>=1.36.1",
+]
+```
+
+--
+
+**`uv.lock`** is what you got: every transitive dependency at an exact version, including
+the ones you never named. Commit both.
+
+---
+
+# Running things
+
+```bash
+uv run python 03-measure.py
+```
+
+`uv run` executes inside the project environment. No activating, no wondering which
+Python you are on.
+
+--
+
+<br>
+
+And the payoff, the same as `renv::restore()`:
+
+```bash
+uv sync            # rebuild the environment from uv.lock
 ```
 
 --
 
 <br>
 
-It writes a **`uv.lock`** recording exact versions. Commit it. That file is what lets
-someone else, or you in two years, rebuild the same environment.
+.small90[One asymmetry worth knowing: `uv` installs Python itself, so `uv sync` gets your
+coauthor the right interpreter too. `renv` does not install R.]
 
 ---
 
