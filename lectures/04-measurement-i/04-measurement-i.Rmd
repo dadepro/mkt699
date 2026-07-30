@@ -1,0 +1,2999 @@
+---
+title: "MKT699: Empirical Methods in Marketing"
+subtitle: "Lecture 4: LLMs as Measurement Instruments I — Promise and Validation"
+author: "Davide Proserpio"
+institute: "Marshall School of Business"
+date: "Fall 2026" #(updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      highlightSpans: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+
+---
+
+```{css, echo=FALSE}
+/* base sizing -- bumped up for classroom projection */
+.remark-slide-content {
+  font-size: 23px;
+  padding: 1em 3em 1.5em 3em;
+}
+.remark-slide-content h1 { font-size: 46px; }
+.remark-slide-content h2 { font-size: 38px; }
+.remark-slide-content h3 { font-size: 30px; }
+
+/* code -- wrap rather than overflow the slide */
+.remark-code, .remark-inline-code {
+  font-size: 20px;
+}
+.remark-slide-content pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.remark-code-line {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* tables */
+.remark-slide-content table {
+  font-size: 21px;
+}
+
+.codesm .remark-code, .codesm .remark-code-line { font-size: 16px; line-height: 1.25; }
+.large2 { font-size: 165% }
+.small90 { font-size: 92% }
+.small75 { font-size: 82% }
+```
+
+```{r setup, include=FALSE}
+library(fontawesome)
+library(xaringan)
+options(htmltools.dir.version = FALSE)
+library(knitr)
+opts_chunk$set(
+  python.reticulate=FALSE,
+  fig.align="center",
+  dpi=300,
+  cache=F
+  )
+```
+
+# Where we are
+
+Three weeks of infrastructure. Repositories, verification, data provenance.
+
+--
+
+<br>
+
+All of that was preparation.
+
+--
+
+<br>
+
+.large2[Today we start the methodological core of the course.]
+
+---
+
+# Table of contents
+
+1. [The measurement problem](#problem)
+
+2. [How we got here](#history)
+
+3. [The promise](#promise)
+
+4. [The annotation pipeline](#pipeline)
+
+5. [Designing a validation study](#validation)
+
+6. [Prompt sensitivity](#sensitivity)
+
+7. [Where this leaves you](#close)
+
+---
+class: inverse, center, middle
+name: problem
+
+# The measurement problem
+
+---
+
+# What marketing actually studies
+
+Make a list of the constructs central to our field.
+
+--
+
+- Brand positioning
+- Service quality
+- Consumer intent
+- Product similarity
+- Complaint type
+- Emotional tone
+- Visual style
+
+--
+
+<br>
+
+Now ask: which of these has a column in a dataset?
+
+---
+
+# None of them
+
+.large2[The constructs we care about live in **unstructured data**.]
+
+--
+
+<br>
+
+Text, images, audio, video. Reviews, descriptions, call transcripts, ad creative, listing
+photos.
+
+--
+
+<br>
+
+And for most of the history of the field, we could not measure them at scale.
+
+---
+
+# A phrase I will use all day
+
+.large2[**Coding instructions.**]
+
+--
+
+<br>
+
+The written instrument you hand a coder. It states the construct, what counts, what does
+not, how to resolve the hard cases, and the exact format for recording an answer.
+
+--
+
+<br>
+
+It is what makes two people reading the same document produce the same label. And it is
+the thing a reliability statistic is computed *against*.
+
+---
+
+# It is not new
+
+In the content-analysis literature this is called a **codebook**. Worth knowing, because
+that is the word you will see in the papers.
+
+--
+
+<br>
+
+The practice is old. Berelson wrote the book on it in **1952**.
+
+--
+
+.small90[Berelson, B. (1952). *Content Analysis in Communication Research*. Free Press.]
+
+--
+
+<br>
+
+Communication research, political science, and marketing have all used them for decades.
+There is a literature on how to write one and what makes one good.
+
+--
+
+<br>
+
+.large2[Nothing about this was invented for LLMs.]
+
+--
+
+That matters, because it means there is an existing standard to meet. And a referee who
+knows it.
+
+---
+
+# Not to be confused with
+
+A **data dictionary**: the file describing your dataset's variables, units, and quirks.
+That is the thing you hand a coauthor, or an agent, so it stops guessing what `hhi_2`
+means.
+
+--
+
+<br>
+
+Both are documentation. They are different documents:
+
+.small90[
+| | describes | audience |
+|:--|:--|:--|
+| **Coding instructions** | how to *assign* a value | whoever labels |
+| **Data dictionary** | what a value *means* | whoever analyzes |
+]
+
+--
+
+Today is about the first one.
+
+---
+
+# Vocabulary for today
+
+Four words I will use constantly. Say so if I use one I have not defined.
+
+--
+
+.small90[
+| term | what it means |
+|:--|:--|
+| **corpus** | the body of documents you are measuring. Your 200k reviews. |
+| **annotation** | assigning a label to a document. Coding, by another name. |
+| **gold standard** | the labels you trust, normally human, always small. |
+| **zero-shot** | asking a model to do a task with no worked examples. |
+| **downstream** | whatever you do with the variable afterwards, the regression. |
+]
+
+--
+
+<br>
+
+Nothing here is deep. But if you have not seen them, the papers are unreadable.
+
+---
+
+# One warning about a word
+
+I will call your prompt-plus-model a **measurement instrument**. That is the
+psychometrics sense: the procedure that produces a measurement, like a survey
+questionnaire or a scale.
+
+--
+
+<br>
+
+.large2[It is **not** an instrumental variable.]
+
+--
+
+<br>
+
+In Week 6 "instrument" will mean something entirely different, a variable that shifts
+your treatment but not your outcome. Same word, unrelated idea.
+
+--
+
+When I mean the column of numbers your prompt produced, I will say **generated
+variable**.
+
+---
+
+# What we did instead
+
+**(a) Hand-code a small sample.**
+
+Hire two RAs. Write coding instructions. Have them label 800 documents. Check that they agree
+with each other. Six weeks and $4,000 later you have 800 observations.
+
+--
+
+**(b) Use a crude proxy.**
+
+Star ratings for quality. Keyword counts for topic. A sentiment dictionary for tone. Word
+count for effort.
+
+--
+
+**(c) Don't study it.**
+
+The most common option, and the least visible one.
+
+---
+
+# Option (c) is the expensive one
+
+You do not see it in the literature, because papers that were never written do not appear
+in the literature.
+
+--
+
+<br>
+
+But it shaped the field. Entire classes of question were off the table, not because they
+were uninteresting, but because there was no instrument.
+
+--
+
+<br>
+
+.large2[The set of questions a field asks is determined by what it can measure.]
+
+---
+
+# What changed
+
+LLMs give you a fourth option: measure the construct directly, on the full corpus, at a
+cost that rounds to nothing relative to RAs.
+
+--
+
+<br>
+
+Gilardi et al. put the cost ratio at roughly **1/30** of crowd work. We'll get to that
+paper in a moment.
+
+--
+
+<br>
+
+Take that seriously for a second. A pipeline that used to cost $4,000 and six weeks now
+costs $130 and an afternoon. And runs on 200,000 documents instead of 800.
+
+---
+
+# Why this is a research opportunity
+
+.large2[Constructs that were previously unmeasurable at scale are now measurable at
+scale.]
+
+--
+
+<br>
+
+That is not a tooling improvement. That is an expansion of the set of **answerable
+questions**.
+
+--
+
+<br>
+
+And an expansion of the set of answerable questions is exactly where dissertation topics
+come from.
+
+---
+
+# How to think about this for your project
+
+The right question is not "what can I do with an LLM?"
+
+--
+
+<br>
+
+The right question is:
+
+--
+
+<br>
+
+.large2[What did I want to know, and stop wanting to know, because I could not measure
+it?]
+
+--
+
+<br>
+
+Go back to an idea you abandoned. Ask whether the measurement constraint that killed it
+still binds.
+
+---
+
+# A worked instance
+
+"Do firms that describe their products in more *aspirational* language charge higher
+prices?"
+
+--
+
+<br>
+
+In 2015: you need coding instructions, four RAs, and a year. Nobody does it.
+
+--
+
+In 2020: you build a dictionary of aspirational words. A referee correctly says your
+dictionary is arbitrary. You lose.
+
+--
+
+<br>
+
+In 2026: you write a prompt, run it on 300,000 product descriptions, and validate it.
+
+--
+
+<br>
+
+The paper is now feasible. Whether it is *credible* is the rest of this course.
+
+---
+
+# The catch, stated up front
+
+Everything I just said is true and also dangerous.
+
+--
+
+<br>
+
+A cheap instrument is still an instrument. It has error, that error has structure, and
+the structure matters.
+
+--
+
+<br>
+
+.large2[This lecture: how to build one and check it.]
+
+.large2[Next lecture: why checking it is not enough.]
+
+---
+class: inverse, center, middle
+name: history
+
+# How we got here
+
+---
+
+# Twenty years in five slides
+
+I am not going to teach you deep learning. You do not need it to do this well.
+
+--
+
+<br>
+
+You need enough of the history to know **which tool fits which task**, because using the
+expensive tool where a cheap one works is the most common mistake I see.
+
+--
+
+<br>
+
+.small90[Background reading, if you have no NLP foundation: Hartmann & Netzer (2023),
+"Natural Language Processing in Marketing," in *Artificial Intelligence in Marketing*
+(Review of Marketing Research, Vol. 20), Emerald.]
+
+---
+
+# Stage 1: bag of words
+
+Represent a document as counts of the words it contains. Order discarded.
+
+--
+
+<br>
+
+**Could do:** topic proportions, dictionary methods, simple classification with enough
+training data.
+
+--
+
+**Could not do:** anything requiring word order, negation, or context.
+
+--
+
+<br>
+
+"Not good" and "good" are nearly identical documents. That is the whole problem in one
+example.
+
+---
+
+# Stage 2: TF-IDF
+
+Down-weight words that appear everywhere, up-weight words distinctive to a document.
+
+--
+
+<br>
+
+Still bag of words. Still no order. But now "the" stops dominating your similarity
+measure.
+
+--
+
+<br>
+
+.small90[Cheap, interpretable, and still a reasonable baseline for document retrieval. Do
+not sneer at it.]
+
+---
+
+# Stage 3: word embeddings
+
+word2vec, GloVe. Represent each word as a list of numbers, a **vector**, learned from
+which words it tends to appear near.
+
+--
+
+<br>
+
+.small90[Concretely: "excellent" becomes something like `[0.21, -0.88, 0.04, ...]`, a few
+hundred numbers long. The numbers mean nothing individually. What matters is that two
+words used similarly end up with similar lists.]
+
+--
+
+<br>
+
+Words used in similar contexts get similar vectors. "Excellent" lands near "superb."
+
+--
+
+<br>
+
+**Could do:** semantic similarity, analogy, clustering, transfer across corpora.
+
+--
+
+**Could not do:** disambiguate. "Bank" gets one vector. River bank, savings bank, same
+vector.
+
+---
+
+# Stage 4: contextual embeddings
+
+BERT and relatives. The vector for a word depends on the sentence it appears in.
+
+--
+
+<br>
+
+"Bank" in *river bank* and "bank" in *bank account* now get different representations.
+
+--
+
+<br>
+
+**Could do:** the best classification available at the time, given labeled training
+data to **fine-tune** on (continue training the model on your own labeled examples so it
+specializes)
+on.
+
+--
+
+**Could not do:** work without that labeled training data. You still needed thousands of
+examples.
+
+---
+
+# Stage 5: generative LLMs
+
+The thing that changed is not accuracy. It is that **you no longer need training data**.
+
+--
+
+<br>
+
+You write the construct definition in English. The model applies it.
+
+--
+
+<br>
+
+.large2[The instrument is now a paragraph of prose instead of 5,000 labeled examples.]
+
+--
+
+<br>
+
+That is why this is a marketing-methods topic and not a computer-science topic. The
+barrier that fell was the *labeling* barrier.
+
+---
+
+# The practical point I want you to keep
+
+Embeddings did not go away. They are still the right tool for a large class of problems.
+
+--
+
+<br>
+
+**Use embeddings for:** similarity, nearest neighbors, clustering, deduplication,
+retrieval, "which of these 50,000 products are close substitutes."
+
+--
+
+**Use a generative LLM for:** applying a construct definition, extraction, classification
+against coding instructions, anything requiring judgment.
+
+---
+
+# Why this matters for your budget
+
+An embedding call is roughly two to three orders of magnitude cheaper than a generative
+call on the same document.
+
+--
+
+<br>
+
+If your task is "find similar product descriptions," and you loop 300,000 documents
+through a generative model asking it to rate similarity, you have spent a thousand
+dollars to do worse than a cosine similarity that costs eight.
+
+--
+
+<br>
+
+.large2[Don't use a generative LLM where an embedding would do.]
+
+---
+class: inverse, center, middle
+name: promise
+
+# The promise
+
+---
+
+# The paper that started it in social science
+
+Gilardi, Alizadeh & Kubli (2023), "ChatGPT Outperforms Crowd Workers for Text-Annotation
+Tasks," *PNAS* 120(30):e2305016120.
+
+--
+
+<br>
+
+$n$ = 6,183 tweets and news articles. Several annotation tasks: relevance, stance, topic,
+frame.
+
+--
+
+<br>
+
+Compared against trained human annotators as the gold standard, with crowd workers
+(MTurk) as the incumbent.
+
+---
+
+# The result
+
+**Zero-shot**, no examples, no fine-tuning, just a prompt.
+
+--
+
+<br>
+
+Accuracy exceeds crowd workers by roughly **25 percentage points** across tasks.
+
+--
+
+<br>
+
+Intercoder agreement is also higher than among crowd workers.
+
+--
+
+<br>
+
+At about **1/30** the cost.
+
+---
+
+# Why this landed so hard
+
+Crowd annotation was the standard scaling technology for text-based social science. It
+was how you got past 800 documents.
+
+--
+
+<br>
+
+This paper said: the standard technology is dominated, on both accuracy and cost, by a
+zero-shot API call.
+
+--
+
+<br>
+
+<br>
+
+.large2[The result is real. The generalization people drew from it is not.]
+
+---
+
+# The corrective
+
+Ziems, Held, Shaikh, Chen, Zhang & Yang (2024), "Can Large Language Models Transform
+Computational Social Science?" *Computational Linguistics* 50(1):237–291.
+
+--
+
+<br>
+
+13 models. 25 representative benchmark tasks. A systematic evaluation instead of a
+handful of tasks.
+
+--
+
+<br>
+
+This is the paper to read if you only read one from this section.
+
+---
+
+# What they find
+
+.large2[LLMs **fail** to beat fine-tuned models on classification.]
+
+--
+
+<br>
+
+.large2[LLMs **excel** at free-form generation, explanation, open coding, summarizing
+the reasoning behind a label.]
+
+--
+
+<br>
+
+Two findings, opposite directions, same paper.
+
+---
+
+# The teaching point
+
+"LLMs are good at annotation" is not a fact about LLMs.
+
+--
+
+<br>
+
+.large2[It is a claim about a **task**, and it is true for some tasks and false for
+others.]
+
+--
+
+<br>
+
+If you have 10,000 labeled examples and a well-defined classification target, fine-tuning
+a smaller model is very likely better and cheaper.
+
+--
+
+If you have zero labeled examples and a construct that requires judgment, the LLM is the
+only thing that works at all.
+
+---
+
+# Which case are you in?
+
+Most of you are in the second case. That is why you are here.
+
+--
+
+<br>
+
+But you should be able to say *why*, in one sentence, in your paper.
+
+--
+
+<br>
+
+"We use an LLM rather than a fine-tuned classifier because our construct has no existing
+labeled corpus and requires applying a definition rather than pattern-matching a fixed
+category."
+
+--
+
+<br>
+
+That sentence, or an honest version of it, belongs in your measurement section.
+
+---
+
+# The marketing paper
+
+Li, Castelo, Katona & Sarvary (2024), "Frontiers: Determining the Validity of Large
+Language Models for Automated Perceptual Analysis," *Marketing Science* 43(2):254–266.
+
+--
+
+<br>
+
+Perceptual maps, the classic marketing object. Brands positioned in attribute space,
+traditionally built from consumer surveys.
+
+--
+
+<br>
+
+Can an LLM produce the map instead?
+
+---
+
+# What they find
+
+Above **75% agreement** between human-generated and LLM-generated perceptual maps
+**for certain categories**.
+
+--
+
+<br>
+
+Read the qualifier. It is doing all the work.
+
+--
+
+<br>
+
+Performance depends on the category: how much the model has seen about it, how
+well-established the brands are, how conventional the attribute space is.
+
+---
+
+# Category-conditional validity
+
+.large2[The instrument is valid **for some categories and not others**, and you cannot
+tell which from the model's confidence.]
+
+--
+
+<br>
+
+This is the pattern you will see over and over.
+
+--
+
+<br>
+
+Not "the LLM works" or "the LLM doesn't work." Rather: it works on the part of the world
+it has seen a lot of, and degrades on the rest, silently, and with unchanged fluency.
+
+---
+
+# Assembling the three papers
+
+.small90[
+| Paper | Claim |
+|:--|:--|
+| Gilardi et al. (2023) | Beats crowd workers, 1/30 cost |
+| Ziems et al. (2024) | Loses to fine-tuned models on classification |
+| Li et al. (2024) | Valid for some categories, not others |
+]
+
+--
+
+<br>
+
+These are not contradictory. They are three coordinates on the same surface.
+
+--
+
+<br>
+
+.large2[Validity is task-conditional, domain-conditional, and it must be **measured in
+your setting**.]
+
+--
+
+Nobody else's validation transfers to your problem.
+
+---
+class: inverse, center, middle
+name: pipeline
+
+# The annotation pipeline
+
+---
+
+# What we're building
+
+You have $n$ documents. You want a variable.
+
+--
+
+<br>
+
+Five pieces:
+
+1. A prompt that encodes your construct
+2. A structured output format you can parse
+3. A calling strategy that controls cost
+4. Error handling for the calls that fail
+5. Storage that keeps everything
+
+--
+
+<br>
+
+None of this is intellectually deep. All of it will cost you a week if you get it wrong.
+
+---
+
+# Prompt design: the wrong mental model
+
+Most people write annotation prompts like they are chatting.
+
+--
+
+<br>
+
+> "Read this review and tell me if the customer is complaining about product quality."
+
+--
+
+<br>
+
+This will produce output. The output will be inconsistent, and you will not be able to
+say what the variable means.
+
+---
+
+# The right mental model
+
+.large2[Your prompt is a set of **coding instructions**, not a vibe.]
+
+--
+
+<br>
+
+Everything you would have to write for a human research assistant, you write for the model. Same content,
+same specificity.
+
+--
+
+<br>
+
+Everything from the coding instructions slide at the start applies here, unchanged. The coder is a
+model; the instructions are the same instructions.
+
+---
+
+# What coding instructions contain
+
+**1. The construct definition.** One or two sentences. Precise.
+
+--
+
+**2. Inclusion criteria.** What counts.
+
+--
+
+**3. Exclusion criteria.** What does not count, especially near-misses.
+
+--
+
+**4. Edge cases with resolutions.** The hard ones, decided in advance.
+
+--
+
+**5. A forced output format.** So there is exactly one way to answer.
+
+---
+
+# Edge cases are the whole game
+
+You will discover that your construct is ambiguous only by hitting the edges.
+
+--
+
+<br>
+
+For "complaint about product quality":
+
+- The product broke → yes
+- Shipping damaged the product → ?
+- The product is fine but not as described → ?
+- The customer complains about quality *and* about shipping → ?
+- The customer says the quality is fine but overpriced → ?
+
+--
+
+<br>
+
+Every one of those needs an answer in the prompt. If it is not in the prompt, the model
+picks, and it may not pick consistently.
+
+---
+
+# A prompt skeleton
+
+.codesm[
+```
+You are annotating customer reviews for a research study.
+
+CONSTRUCT: A review is coded 1 if it expresses dissatisfaction with the
+physical quality, durability, or functioning of the product itself.
+
+INCLUDE: defects, breakage, malfunction, materials wearing out, the
+product not working as designed.
+
+EXCLUDE: shipping damage, delivery delays, seller communication, price
+complaints, or dissatisfaction with the product's design or aesthetics
+when the product functions as intended.
+
+EDGE CASES:
+- Damage occurring in transit -> 0 (shipping, not product quality)
+- Product functions but is not as described -> 0
+- Both quality and non-quality complaints present -> 1
+- Quality praised but price criticized -> 0
+
+Return only JSON matching the schema. No other text.
+```
+]
+
+---
+
+# Structured outputs
+
+Free text is not a variable. You need something parseable, and you need it to be
+parseable **every time**.
+
+--
+
+<br>
+
+Modern APIs will enforce a JSON schema. Use it.
+
+--
+
+<br>
+
+Do not parse prose with regex. You will spend an evening on it, it will work on 99.4% of
+cases, and the 0.6% will be non-random.
+
+---
+
+# What to put in the schema
+
+```json
+{
+  "label": 0,
+  "confidence": "high",
+  "evidence_span": "the hinge snapped after two weeks",
+  "reasoning": "explicit report of physical failure of the product"
+}
+```
+
+--
+
+<br>
+
+You want more than the label:
+
+- **evidence span** so you can spot-check without rereading the document
+- **reasoning** because it is diagnostic when things go wrong
+- **confidence** because it is useful for stratifying your validation sample
+
+--
+
+<br>
+
+.small90[Careful: a self-reported confidence is not a calibrated probability. Treat it as
+a heuristic for sampling, not as a posterior.]
+
+---
+
+# An annotation call in R
+
+```{r eval=FALSE}
+library(httr2)
+library(jsonlite)
+
+schema <- list(
+  type = "object",
+  properties = list(
+    label         = list(type = "integer", enum = list(0L, 1L)),
+    confidence    = list(type = "string", enum = list("low","medium","high")),
+    evidence_span = list(type = "string"),
+    reasoning     = list(type = "string")
+  ),
+  required = list("label", "confidence", "evidence_span", "reasoning")
+)
+
+annotate <- function(text, prompt, model = "claude-sonnet-4-5-20250929") {
+  request("https://api.anthropic.com/v1/messages") |>
+    req_headers(`x-api-key` = Sys.getenv("ANTHROPIC_API_KEY"),
+                `anthropic-version` = "2023-06-01") |>
+    req_body_json(list(
+      model       = model,
+      max_tokens  = 500,
+      temperature = 0,
+      system      = prompt,
+      messages    = list(list(role = "user", content = text)),
+      tools       = list(list(name = "record", input_schema = schema)),
+      tool_choice = list(type = "tool", name = "record")
+    )) |>
+    req_perform() |>
+    resp_body_json()
+}
+```
+
+---
+
+# The same thing in Python
+
+```{r eval=FALSE, engine='python'}
+import os, json, anthropic
+
+client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+
+SCHEMA = {
+    "type": "object",
+    "properties": {
+        "label":         {"type": "integer", "enum": [0, 1]},
+        "confidence":    {"type": "string", "enum": ["low","medium","high"]},
+        "evidence_span": {"type": "string"},
+        "reasoning":     {"type": "string"},
+    },
+    "required": ["label","confidence","evidence_span","reasoning"],
+}
+
+def annotate(text, prompt, model="claude-sonnet-4-5-20250929"):
+    r = client.messages.create(
+        model=model,
+        max_tokens=500,
+        temperature=0,
+        system=prompt,
+        messages=[{"role": "user", "content": text}],
+        tools=[{"name": "record", "input_schema": SCHEMA}],
+        tool_choice={"type": "tool", "name": "record"},
+    )
+    return r   # return the FULL response object, not r.content[0].input["label"]
+```
+
+--
+
+.small90[Note the comment on the last line. We'll come back to it.]
+
+---
+
+# Temperature = 0
+
+Set it. Every time. For annotation there is no argument on the other side.
+
+--
+
+<br>
+
+Temperature controls how much randomness is injected into token selection. Above zero,
+the same document gets different labels on different calls.
+
+--
+
+<br>
+
+.large2[A measurement instrument that returns different values on repeat measurement of
+the same object is a broken instrument.]
+
+--
+
+<br>
+
+You would not accept a scale that reported a different weight each time you stepped on
+it.
+
+---
+
+# The honest caveat
+
+Temperature 0 gets you *near*-determinism, not determinism.
+
+--
+
+<br>
+
+Floating-point non-associativity, batching, and infrastructure changes on the provider's
+side mean identical calls can occasionally differ.
+
+--
+
+<br>
+
+<br>
+
+Which is one more reason to **save the raw outputs**. If your labels shift, you want to be
+able to prove whether it was you or them.
+
+---
+
+# Zero-shot, few-shot, fine-tuning
+
+**Zero-shot.** Definition only, no examples. Start here. It is the default and it is often
+enough.
+
+--
+
+**Few-shot.** Include 5–20 labeled examples in the prompt. Use when the construct is hard
+to define but easy to demonstrate, or when zero-shot output is inconsistent on edge cases.
+
+--
+
+**Fine-tuning.** Train on hundreds or thousands of labels. Use when you have that many
+labels already, the task is a stable classification, and you are running millions of
+documents.
+
+---
+
+# Choosing among them
+
+.small90[
+| | Labels needed | Cost per doc | When |
+|:--|:--|:--|:--|
+| Zero-shot | 0 | high | default; construct is definable |
+| Few-shot | 10–50 | high | edge cases need demonstrating |
+| Fine-tune | 1,000+ | low | huge corpus, stable target |
+]
+
+--
+
+<br>
+
+For a seven-week project: zero-shot, with few-shot as the fix if validation disappoints.
+
+--
+
+<br>
+
+.large2[Warning: your few-shot examples must not come from your validation sample.]
+
+--
+
+That is training on your test set. It is the oldest mistake in the book and you will be
+tempted.
+
+---
+
+# Cost control: batching
+
+Most providers offer a batch API: submit many requests, get results within 24 hours, pay
+roughly half.
+
+--
+
+<br>
+
+You are not running an interactive product. You are annotating a corpus overnight.
+
+--
+
+<br>
+
+.large2[If your job does not need to finish in the next hour, batch it.]
+
+---
+
+# Cost control: caching
+
+If your prompt is long (full instructions with edge cases run 1,500 tokens), you are paying
+for those tokens on every one of 200,000 calls.
+
+--
+
+<br>
+
+Prompt caching lets the provider reuse the fixed prefix. Large savings when the
+instruction block dwarfs the document.
+
+--
+
+<br>
+
+Structure your call so the **stable part comes first** and the document last. That is what
+makes caching possible.
+
+---
+
+# Rate limits
+
+You will hit them. Plan for it before you start, not at 2am.
+
+--
+
+<br>
+
+- Exponential backoff with jitter on 429s
+- A concurrency cap you set explicitly
+- Checkpoint after every batch, so a crash costs minutes and not hours
+- Idempotent writes keyed on document ID, so restarting does not duplicate
+
+--
+
+<br>
+
+.small90[Callback to Lecture 1: run this on one of our servers inside `tmux`. Your laptop will
+sleep.]
+
+---
+
+# Refusals and malformed output
+
+Some fraction of calls will come back wrong. Refusals, truncations, schema violations,
+timeouts.
+
+--
+
+<br>
+
+The lazy handling is `tryCatch` returning `NA` and moving on.
+
+--
+
+<br>
+
+.large2[Do not drop them silently.]
+
+--
+
+<br>
+
+Refusals are not random. A model that refuses to classify is telling you something about
+that document. It is likely sensitive, ambiguous, or unusual, and those are exactly the
+documents your estimate is sensitive to.
+
+---
+
+# The handling I want
+
+```{r eval=FALSE}
+result <- tryCatch(
+  annotate(doc$text, prompt),
+  error = function(e) list(status = "error", message = conditionMessage(e))
+)
+
+# write EVERY outcome to disk, keyed by doc id
+writeLines(toJSON(list(
+  doc_id     = doc$id,
+  model      = model_string,
+  prompt_sha = prompt_hash,
+  run_date   = Sys.time(),
+  raw        = result
+), auto_unbox = TRUE), con = out_con)
+```
+
+--
+
+<br>
+
+Then, separately, report:
+
+- how many calls failed
+- what fraction of documents ended with no label
+- whether failures are correlated with anything you care about
+
+--
+
+That last bullet goes in your paper.
+
+---
+
+# Store the raw output
+
+Callback to Lecture 1, and I am going to keep making it.
+
+--
+
+<br>
+
+Store the **full API response**. Not `label`. The whole object: reasoning, evidence span,
+confidence, model string, timestamp, token counts.
+
+--
+
+<br>
+
+Three reasons:
+
+--
+
+- You will want to recode the construct. Everyone does, usually in month four.
+- A referee will ask for a different threshold or a subgroup breakdown.
+- The model will be deprecated, and the raw outputs will be all that survives.
+
+--
+
+<br>
+
+.large2[Re-running 200k calls because you saved one integer is a self-inflicted wound.]
+
+---
+
+# The pipeline, assembled
+
+```
+prompts/
+  quality-complaint-v3.md        # versioned, committed
+code/
+  03-measure.R                   # reads prompt, writes raw JSONL
+  03b-parse.R                    # raw JSONL -> tidy labels
+data/
+  raw/llm/quality-v3-2026-03-14.jsonl   # never edited
+  clean/labels.parquet
+```
+
+--
+
+<br>
+
+Two scripts, not one. Calling the API and parsing its output are different jobs with
+different failure modes.
+
+--
+
+<br>
+
+If they are the same script, every parsing bug costs you another $400 of API calls.
+
+---
+class: inverse, center, middle
+name: validation
+
+# Designing a validation study
+
+### This is the core of the lecture
+
+---
+
+# This is not an AI thing
+
+Before the rules: validation is not something LLMs invented a need for.
+
+--
+
+<br>
+
+.large2[You owe a validation study for **any** variable that was measured rather than
+observed.]
+
+--
+
+<br>
+
+Survey instruments get validated. Scales get validated. Hand-coding gets an
+inter-coder reliability statistic and a reviewer who asks for it.
+
+--
+
+An LLM-coded variable is the same object. The norm already exists. It just has not
+been applied to this yet.
+
+---
+
+# The non-negotiable
+
+.large2[You must have human-labeled gold-standard data.]
+
+--
+
+<br>
+
+There is no version of this where you skip it.
+
+--
+
+<br>
+
+Next week you will see the arithmetic reason why: without it, none of the corrections
+apply, and your estimates are uninterpretable.
+
+--
+
+<br>
+
+Not "the model is obviously right." Not "I read fifty and they looked fine." Not "the
+Gilardi paper validated it."
+
+--
+
+<br>
+
+A designed, documented, human-labeled sample. Or you do not have a measurement, you have
+an assertion.
+
+---
+
+# Why "I read fifty and they looked fine" fails
+
+Three separate reasons, each sufficient.
+
+--
+
+**1. You read them non-randomly.** You scrolled. Scrolling is not sampling.
+
+--
+
+**2. You read them knowing the model's answer.** That is not an independent label, that
+is confirmation.
+
+--
+
+**3. Fifty is not enough to estimate anything.** If your construct is 10% prevalent, you
+saw five positives.
+
+---
+
+# Who labels
+
+**You.** Slow, expensive in your time, and you must do some of it anyway.
+
+--
+
+**RAs.** Cheap, trainable, need real written instructions and real supervision.
+
+--
+
+**Crowdworkers.** Fast and cheap at scale. Quality varies enormously and requires
+attention checks. Note the irony: the thing the LLM is beating.
+
+--
+
+**Domain experts.** Necessary when the construct requires expertise, clinical language,
+legal text, technical specifications. Expensive and slow.
+
+---
+
+# You should personally label some
+
+This is the part students skip.
+
+--
+
+<br>
+
+Label 100 documents yourself. By hand. Before you write the final prompt.
+
+--
+
+<br>
+
+.large2[It is how you find out your construct is ambiguous.]
+
+--
+
+<br>
+
+You will hit document 23 and realize you do not actually know whether it counts. That
+moment is worth more than any amount of prompt engineering, because it means your
+*definition* is broken and no prompt was going to fix it.
+
+---
+
+# Humans first
+
+Before you compare the model to humans, compare the humans to each other.
+
+--
+
+<br>
+
+Two coders, same documents, independently, blind to each other and to the model.
+
+--
+
+<br>
+
+.large2[If humans don't agree with each other, the construct is ill-defined and no LLM
+will save you.]
+
+---
+
+# Inter-rater reliability
+
+**Cohen's $\kappa$**, two raters, categorical labels.
+
+--
+
+Why not just report *percent agreement*? Because if 95% of documents are negative, two
+coders who both label everything negative agree 95% of the time and have measured
+nothing.
+
+--
+
+$\kappa$ subtracts off the agreement you would expect **by chance** given how often each
+coder says yes.
+
+--
+
+$\kappa = 0$ means "no better than guessing." $\kappa = 1$ is perfect.
+
+---
+
+# Computing it
+
+```r
+library(irr)
+
+val <- merge(gold, llm_out, by = "doc_id")
+stopifnot(nrow(val) == nrow(gold))    # the model labelled every gold doc
+
+kappa2(val[, c("human_label", "llm_label")])
+```
+
+--
+
+```
+ Cohen's Kappa for 2 Raters (Weights: unweighted)
+ Subjects = 150
+   Raters = 2
+    Kappa = 0.681
+```
+
+--
+
+<br>
+
+.small90[`DescTools::CohenKappa(table(val$human_label, val$llm_label), conf.level = 0.95)`
+gives you a confidence interval, which you should report.]
+
+---
+
+# What that example shows
+
+Accuracy on that same sample: **87%**.
+
+--
+
+$\kappa$: **0.68**.
+
+--
+
+<br>
+
+.large2[Same labels. The two numbers are not close, and $\kappa$ is the honest one.]
+
+--
+
+<br>
+
+The gap is chance agreement. The construct is present in a quarter of documents, so a
+lot of the 87% is two raters both saying "no" to easy negatives.
+
+---
+
+# Three ways to get this wrong
+
+**1. You never ran the model on the gold documents.** You annotated 5,000 for analysis
+and 150 by hand. But the 150 must go through the model too, same prompt, same version.
+
+--
+
+**2. The merge silently dropped rows.** Refusals and malformed output vanish, and you
+compute $\kappa$ on the easy subset. Assert the row count.
+
+--
+
+**3. The factor levels do not match.** `c("yes","no")` against `c(1,0)` gives you four
+categories and a meaningless number.
+
+---
+
+# The other one you will see
+
+**Krippendorff's $\alpha$**, same idea, more general: any number of raters, missing
+data, ordinal or interval scales.
+
+--
+
+<br>
+
+Use $\kappa$ for two coders and a binary label, which is your case. Use $\alpha$ if you
+have three coders, or an ordinal scale, or gaps in the coding.
+
+--
+
+<br>
+
+Rough conventions (and they are only conventions):
+
+.small90[
+| $\kappa$ | Reading |
+|:--|:--|
+| < 0.40 | your construct is not defined |
+| 0.40–0.60 | weak; revise the coding instructions |
+| 0.60–0.80 | acceptable for most published work |
+| > 0.80 | strong |
+]
+
+---
+
+# The ceiling argument
+
+Suppose your two human coders agree at $\kappa$ = 0.60.
+
+--
+
+<br>
+
+Now your LLM matches the gold standard at 0.60.
+
+--
+
+<br>
+
+.large2[The LLM is at ceiling. It is doing as well as a human does.]
+
+--
+
+<br>
+
+Reporting "our LLM only achieves 0.60" without the human-human benchmark makes your
+instrument look bad when it is at the limit of the construct.
+
+--
+
+Reporting it *with* the benchmark is a much stronger paper.
+
+---
+
+# What low human agreement means
+
+It does not mean "get better RAs."
+
+--
+
+<br>
+
+It means one of:
+
+- Your construct definition is vague
+- Your construct is genuinely multidimensional and you are forcing it to one dimension
+- The documents do not contain enough information to determine the label
+
+--
+
+<br>
+
+.large2[All three are fixed upstream, in the definition, not downstream in the prompt.]
+
+--
+
+<br>
+
+This is why you iterate the coding instructions on human labels *before* you touch the model.
+
+---
+
+# How many to label
+
+The honest answer: it depends on what you plan to do downstream.
+
+--
+
+<br>
+
+And what you plan to do downstream is **next week's topic**.
+
+--
+
+<br>
+
+<br>
+
+I am going to give you working guidance now, and next week you will learn the actual
+argument behind the number.
+
+---
+
+# Working guidance
+
+.large2[Hundreds, not dozens.]
+
+--
+
+<br>
+
+- **300** is a floor for a single binary construct
+- **500–1,000** is where most credible applications sit
+- More if you need accuracy *within* subgroups
+- More if the positive class is rare
+
+--
+
+<br>
+
+The rare-class point is the one people miss.
+
+---
+
+# Scale with rarity
+
+Your construct occurs in 2% of documents.
+
+--
+
+<br>
+
+You draw a simple random sample of 500. You get **10 positives**.
+
+--
+
+<br>
+
+Your estimate of how many positives the model *catches* rests on 10 cases. Its standard
+error is enormous. You cannot
+distinguish recall of 0.5 from recall of 0.9.
+
+--
+
+<br>
+
+.large2[That is not a validation study. That is a rounding error with a table around it.]
+
+--
+
+<br>
+
+The fix is stratification, which brings us to the part that will actually bite you.
+
+---
+class: center, middle
+
+# .large2[How you sample is the decision that determines whether your project survives.]
+
+---
+
+# Everything else is recoverable
+
+Everything else in this lecture is recoverable. Bad prompt? Rewrite it. Wrong metric?
+Recompute it. Too few labels? Label more.
+
+--
+
+<br>
+
+.large2[Sample your validation set the wrong way and the project is not recoverable.]
+
+--
+
+<br>
+
+Not "harder." Not "weaker." Unrecoverable, in the specific sense that the statistical
+corrections you will need do not apply and cannot be made to apply after the fact.
+
+---
+
+# Notation, once
+
+Three symbols for the rest of the lecture:
+
+--
+
+.small90[
+| | |
+|:--|:--|
+| $n$ | the size of your **corpus**, every document you will analyze |
+| $m$ | the size of your **gold-standard sample**: the ones you label by hand |
+| $\pi_i$ | the probability that document $i$ ended up in that sample |
+]
+
+--
+
+<br>
+
+$m$ is always much smaller than $n$. That is the whole point: 500 hand labels standing
+in for 200,000 documents.
+
+---
+
+# The requirement
+
+For every document $i$ in your corpus, there is a probability $\pi_i$ that it entered your
+validation sample.
+
+--
+
+<br>
+
+.large2[That probability must be **known** and **controlled by you**.]
+
+--
+
+<br>
+
+Known: you can write it down as a number.
+
+Controlled: it came from a design decision, not from what you happened to do.
+
+---
+
+# Sampling schemes that work
+
+**Simple random sample.** $\pi_i = m/n$ for everyone. Draw with a seed, save the indices.
+Always defensible.
+
+--
+
+**Stratified sample.** Partition the corpus into strata. Sample within each with known
+probability $\pi_s$.
+
+--
+
+<br>
+
+You are *allowed* to oversample. Oversample rare positives. Oversample the treated group.
+Oversample cases where the model reports low confidence.
+
+--
+
+<br>
+
+.large2[You just have to know the probabilities and record them.]
+
+--
+
+Nobody thinks survey weights are cheating.
+
+---
+
+# Sampling schemes that do not work
+
+- The first 500 rows of the file
+- The 500 you happened to read while exploring
+- The ones with the most interesting text
+- The ones where the model seemed uncertain (unless you recorded $\pi$)
+- The ones you labeled last June, before you thought about this
+- "I kept labeling until the accuracy number looked good"
+
+--
+
+<br>
+
+Every one of these produces a set of human labels. None of them produces a *sample*.
+
+---
+
+# Say this out loud
+
+.large2[Next week you will learn that every correction method depends on knowing
+$\pi_i$.]
+
+--
+
+<br>
+
+DSL, prediction-powered inference, the econometrics versions, all of them.
+
+--
+
+<br>
+
+They differ in their assumptions about the model, the outcome, and the estimator. They
+agree on exactly one thing: you must be able to state the probability with which each
+document entered your gold-standard sample.
+
+---
+
+# The failure I am trying to prevent
+
+March: you annotate 50,000 documents.
+
+April: you run the analysis.
+
+May: you present, and someone asks about measurement error.
+
+June: you hand-label 500 documents "to validate."
+
+--
+
+<br>
+
+.large2[Those 500 labels cannot fix your estimates.]
+
+--
+
+<br>
+
+They can produce an accuracy number. They cannot produce a correction, because you drew
+them in June, after seeing your results, with no recorded $\pi$.
+
+---
+
+# Which is why this is a Week 4 milestone
+
+Your validation sample must be **designed** now, before you run the model on the full
+corpus, before you see any downstream result.
+
+--
+
+<br>
+
+Same logic as a pre-analysis plan. Same logic as not picking your instrument after seeing
+the first stage.
+
+--
+
+<br>
+
+.large2[This is a **design** decision, not an **analysis** decision.]
+
+--
+
+<br>
+
+It is a Week 4 milestone precisely because there is no Week 6 version of it.
+
+---
+
+# Concretely, this week
+
+1. Decide $m$. Write the number down and justify it.
+
+--
+
+2. Decide the scheme. Simple random sample or stratified. If stratified, define the strata and the
+   within-stratum probabilities.
+
+--
+
+3. Draw the sample. **Save the seed. Save the indices. Commit both.**
+
+--
+
+4. Record $\pi_i$ as a column in your data.
+
+--
+
+5. Plan to label blind to model output.
+
+--
+
+6. Plan to run the LLM on the validation documents too, and keep those predictions.
+
+--
+
+<br>
+
+.small90[Step 6 gets skipped constantly. You need both the truth and the prediction on the
+same units.]
+
+---
+
+# Drawing it, in code
+
+```{r eval=FALSE}
+set.seed(20260314)          # commit this number
+
+# stratified: oversample the rare positive class as flagged by a cheap pre-screen
+corpus <- corpus |>
+  mutate(stratum = case_when(
+    prescreen_flag == 1 ~ "likely_positive",
+    TRUE                ~ "likely_negative"
+  ))
+
+# YOU choose these. Write them in the paper.
+target <- c(likely_positive = 300, likely_negative = 300)
+
+val <- corpus |>
+  group_by(stratum) |>
+  mutate(N_s = n(), pi = target[stratum] / N_s) |>   # known sampling probability
+  slice_sample(n = target[cur_group()$stratum]) |>
+  ungroup()
+
+write_parquet(val, "data/clean/validation-sample.parquet")   # includes pi
+```
+
+--
+
+<br>
+
+The `pi` column is the single most important column in your project. It is also the one
+that takes four lines of code to create.
+
+---
+
+# Metrics: accuracy is not enough
+
+You will be tempted to report one number. Do not.
+
+--
+
+<br>
+
+Accuracy = fraction of documents where the model and the gold standard agree.
+
+--
+
+<br>
+
+.large2[Accuracy alone is nearly useless under class imbalance.]
+
+---
+
+# The demonstration
+
+Your construct has 1% **prevalence**, that is, it is actually present in 1% of
+documents. 10,000 documents, 100 true positives.
+
+--
+
+<br>
+
+I write a classifier. Here it is:
+
+```{r eval=FALSE}
+predict_label <- function(text) 0
+```
+
+--
+
+<br>
+
+.large2[Accuracy: 99%.]
+
+--
+
+<br>
+
+It has never once identified the thing you are studying.
+
+---
+
+# Report the confusion matrix
+
+.small90[
+| | Gold = 1 | Gold = 0 |
+|:--|:--|:--|
+| **Model = 1** | TP | FP |
+| **Model = 0** | FN | TN |
+]
+
+--
+
+<br>
+
+TP = true positives, FP = false positives, FN = false negatives.
+
+--
+
+**Precision** = TP / (TP + FP). Of the documents you flagged, what share were right?
+*How often you are right when you say yes.*
+
+--
+
+**Recall** = TP / (TP + FN). Of the true positives, what share did you catch?
+*How much of the real thing you found.*
+
+**F1** = harmonic mean of the two. One number when you need one number. But report the
+confusion matrix anyway.
+
+--
+
+<br>
+
+.large2[Always report the 2×2. Always.]
+
+---
+
+# Why the 2×2 and not the summary
+
+Precision and recall summarize the matrix. The matrix contains information they discard.
+
+--
+
+<br>
+
+And next week you will find out that **false positives and false negatives affect your
+downstream coefficient differently**, asymmetrically, in ways that depend on your design.
+
+--
+
+<br>
+
+An F1 of 0.80 built from high precision and low recall implies a different bias than the
+same F1 built the other way around.
+
+--
+
+<br>
+
+<br>
+
+You cannot reconstruct the matrix from F1. Report the matrix.
+
+---
+
+# The precision-recall tradeoff is yours to set
+
+If your model outputs a probability or a confidence, you choose a threshold.
+
+--
+
+<br>
+
+That choice trades precision against recall. It is a substantive decision, not a technical
+one.
+
+--
+
+<br>
+
+- Screening for a rare event where you will hand-check the positives? Favor recall.
+- Constructing a treatment indicator where false positives contaminate the treated group?
+  Favor precision.
+
+--
+
+<br>
+
+.large2[Choose it before you see the downstream result, and say what you chose.]
+
+--
+
+We'll come back to *why* in twenty minutes.
+
+---
+
+# Validate on the population you will analyze
+
+Your corpus is 300,000 Amazon reviews, 2019–2025, across 40 categories.
+
+--
+
+<br>
+
+You validate on 500 reviews from 2019, electronics only, because that's the subset you had
+loaded.
+
+--
+
+<br>
+
+.large2[Your validation number describes an instrument you are not using.]
+
+---
+
+# Distribution shift voids everything
+
+The model's error rate is not a constant. It varies with:
+
+- product category
+- document length
+- time period (language drifts; so do products)
+- reviewer type
+- language and register
+
+--
+
+<br>
+
+If your validation sample differs from your analysis sample on any of these, your
+measured accuracy does not transfer.
+
+--
+
+<br>
+
+.large2[And it fails silently. The number still prints.]
+
+---
+
+# The practical rule
+
+.large2[Draw the validation sample from the **exact frame you will analyze**, at the
+**same time** you draw the analysis sample.]
+
+--
+
+<br>
+
+Same corpus. Same filters. Same date range. Same everything.
+
+--
+
+<br>
+
+If you later restrict your analysis sample, you must be able to restrict the validation
+sample the same way, which means keeping the identifiers.
+
+---
+
+# Report accuracy by subgroup
+
+One overall number hides everything that matters.
+
+--
+
+<br>
+
+Report the confusion matrix **within** the dimensions that structure your design:
+
+- by treatment status
+- by time period, if you have a before/after
+- by category, if you pool across categories
+- by any subgroup you will report a heterogeneous effect for
+
+--
+
+<br>
+
+.large2[If accuracy differs across your treatment groups, you have a problem, and it is
+the problem next week is about.]
+
+---
+
+# The validation study, summarized
+
+1. Design the sample **before** running the model on the corpus
+2. Known, recorded $\pi_i$ for every document
+3. Draw from the analysis frame, not a convenient subsample
+4. Humans first: two coders, $\kappa$ or $\alpha$, blind
+5. Hundreds of labels, stratified if the class is rare
+6. Run the LLM on the same units and keep both
+7. Confusion matrix, overall and by subgroup
+
+--
+
+<br>
+
+.large2[Seven items. About two hours of thinking. It is the difference between a
+publishable design and an unpublishable one.]
+
+---
+class: inverse, center, middle
+name: sensitivity
+
+# Prompt sensitivity
+
+---
+
+# A question
+
+You wrote a prompt. Accuracy against your gold standard: 0.71.
+
+--
+
+<br>
+
+You are disappointed. So you rewrite it. Now: 0.76.
+
+--
+
+<br>
+
+You add three few-shot examples. 0.79.
+
+--
+
+<br>
+
+You try a bigger model. 0.83.
+
+--
+
+<br>
+
+You stop, and report 0.83.
+
+---
+
+# What did you just do?
+
+--
+
+<br>
+
+.large2[You ran a specification search.]
+
+--
+
+<br>
+
+You tried variants of an analysis and kept the one with the most favorable number.
+
+--
+
+<br>
+
+That is the same activity you would be criticized for if the variants were regression
+specifications instead of prompts.
+
+---
+
+# The evidence
+
+Baumann, Röttger, Urman, Wendsjö, Plaza-del-Arco, Gruber & Hovy (2025), "Large Language
+Model Hacking: Quantifying the Hidden Risks of Using LLMs for Text Annotation,"
+arXiv:2509.08825.
+
+--
+
+<br>
+
+.large2[**Working paper.** Flagging that explicitly. It is not peer-reviewed and you
+should read it that way.]
+
+--
+
+<br>
+
+But the scale of the exercise is hard to dismiss.
+
+---
+
+# The design
+
+- 37 annotation tasks
+- drawn from 21 **published** studies
+- 18 models
+- 13 million labels generated
+- 2,361 hypotheses tested
+
+--
+
+<br>
+
+For each published finding, they re-run the annotation across models and prompt variants,
+then re-run the downstream test and ask whether the paper's **conclusion** holds.
+
+---
+
+# The result
+
+.large2[**≈31%** of hypotheses reach an incorrect conclusion with frontier models.]
+
+--
+
+<br>
+
+With smaller models: **≈50%**.
+
+--
+
+Driven purely by model and prompt choice, not by the data, and not by the hypothesis.
+
+--
+
+<br>
+
+Not error in the labels. Error in the *conclusions*: whether the published hypothesis is
+supported.
+
+--
+
+<br>
+
+Between a third and a half of the time, a defensible alternative prompt or model flips
+what the paper concluded.
+
+---
+
+# Sit with that number
+
+These are published studies. Peer-reviewed. Each with a measurement section that presumably
+reported an accuracy figure someone found acceptable.
+
+--
+
+<br>
+
+And roughly a third of them, using the best models available, have a conclusion that a
+reasonable alternative prompt would reverse.
+
+--
+
+<br>
+
+<br>
+
+.large2[Prompt choice is a researcher degree of freedom, and it is currently
+unreported.]
+
+---
+
+# The analogy, stated directly
+
+.small90[
+| Regression world | Prompt world |
+|:--|:--|
+| Try 20 specifications, report the best | Try 20 prompts, report the best |
+| Choose controls after seeing $p$ | Choose the prompt after seeing accuracy |
+| Choose the sample after seeing results | Choose the model after seeing results |
+| Specification curve | ...nothing, yet |
+]
+
+--
+
+<br>
+
+We spent twenty years building norms against the left column.
+
+--
+
+<br>
+
+.large2[The right column has no norms at all, and it is where measurement now happens.]
+
+---
+
+# The subtlety that makes it worse
+
+In the regression case, you are searching over specifications while looking at your
+*result*.
+
+--
+
+<br>
+
+In the prompt case, you are searching while looking at *accuracy*, which feels innocent.
+Improving accuracy is obviously good. Nobody would call it p-hacking.
+
+--
+
+<br>
+
+<br>
+
+.large2[But accuracy and your coefficient are not independent, and next week you will see
+exactly how they are linked.]
+
+--
+
+<br>
+
+Optimizing the first can move the second in a direction you did not choose and cannot see.
+
+---
+
+# Defense 1: fix the prompt first
+
+.large2[Finalize the prompt **before** you look at any downstream result.]
+
+--
+
+<br>
+
+Iterating the prompt against your *validation* labels is legitimate. That is instrument
+development, and it is what your gold standard is for.
+
+--
+
+<br>
+
+Iterating the prompt against your *regression coefficient* is not. That is specification
+search with extra steps.
+
+--
+
+<br>
+
+<br>
+
+The wall between those two activities has to be real, and it has to be in your timeline.
+
+---
+
+# Defense 2: pre-register the measurement
+
+If you pre-register anything, pre-register this.
+
+--
+
+<br>
+
+The prompt. The model string. The temperature. The output schema. The validation sampling
+scheme and $m$. The threshold.
+
+--
+
+<br>
+
+<br>
+
+.large2[The measurement instrument is the part of your design that is easiest to change
+undetectably after the fact.]
+
+--
+
+<br>
+
+Which makes it the part where pre-registration buys the most.
+
+---
+
+# Defense 3: the prompt curve
+
+Report robustness across prompts and models, the way you would report a specification
+curve.
+
+--
+
+<br>
+
+- 3–5 reasonable prompt variants
+- 2–3 models
+- Your main estimate under each
+
+--
+
+<br>
+
+.large2[If the finding survives, that is a strong paper. If it does not, you have learned
+something important and cheaply.]
+
+--
+
+<br>
+
+<br>
+
+.small90[Cheap, too, this is the one robustness check in your career that costs $40 and
+runs overnight.]
+
+---
+
+# What a prompt curve looks like
+
+```{r eval=FALSE}
+variants <- tibble::tribble(
+  ~prompt_file,                   ~model,
+  "prompts/quality-v1.md",        "claude-sonnet-4-5-20250929",
+  "prompts/quality-v2-terse.md",  "claude-sonnet-4-5-20250929",
+  "prompts/quality-v3-fewshot.md","claude-sonnet-4-5-20250929",
+  "prompts/quality-v1.md",        "claude-opus-4-8",
+  "prompts/quality-v1.md",        "gpt-4o-2024-11-20"
+)
+
+results <- variants |>
+  mutate(out = purrr::map2(prompt_file, model, run_full_pipeline)) |>
+  tidyr::unnest_wider(out)   # accuracy, kappa, beta_hat, se
+```
+
+--
+
+<br>
+
+Plot $\hat\beta$ across variants. Put it in the appendix.
+
+--
+
+<br>
+
+If the estimates cluster, say so in the main text. That is an argument for your paper, not
+a hoop.
+
+---
+
+# Defense 4: version-control the prompts
+
+Callback to Lecture 1. This is what the `prompts/` directory was for.
+
+--
+
+<br>
+
+```
+prompts/
+  quality-complaint-v1.md
+  quality-complaint-v2.md
+  quality-complaint-v3-FINAL.md    # the one used in the paper
+  README.md                        # what changed and why
+```
+
+--
+
+<br>
+
+Every variant, committed, with a commit message saying what changed.
+
+--
+
+<br>
+
+.large2[The git history is the record that you did not search. Or the record that you
+did.]
+
+---
+
+# Model drift
+
+Separate problem, same category.
+
+--
+
+<br>
+
+The same prompt, sent to the same model string, gives different results in six months.
+
+--
+
+<br>
+
+Providers update models behind stable aliases. They deprecate versions. Inference stacks
+change.
+
+--
+
+<br>
+
+.large2[You cannot `renv::snapshot()` a model.]
+
+---
+
+# What to record
+
+**Every time**, in your output file:
+
+- exact model string, including the date suffix
+- date and time of the call
+- temperature and all sampling parameters
+- SHA of the prompt file
+- the full raw response
+
+--
+
+<br>
+
+`claude-sonnet-4-5-20250929`, accessed 2026-03-14.
+
+Not "we used Claude."
+
+--
+
+<br>
+
+.small90[And note the training cutoff. There is a reason for that one, and it is a
+next-week reason.]
+
+---
+
+# Why this matters beyond bookkeeping
+
+Your paper will be under review for eighteen months.
+
+--
+
+<br>
+
+A referee will ask you to rerun something. The model you used will be gone.
+
+--
+
+<br>
+
+<br>
+
+.large2[If you kept the raw outputs and the validation sample, you can re-run with a new
+model and check whether the conclusions survive.]
+
+--
+
+<br>
+
+If you kept a column of zeros and ones, you cannot. You will re-annotate the corpus, get
+different numbers, and have no way to tell whether the difference is the model or you.
+
+---
+class: inverse, center, middle
+name: close
+
+# Where this leaves you
+
+---
+
+# What you can do now
+
+You can take a construct that has no column in any dataset and build a variable for it.
+
+--
+
+<br>
+
+You can write coding instructions, encode it as a prompt, enforce a schema, run it on a corpus, and
+control the cost.
+
+--
+
+<br>
+
+You can design a validation study, a real one, with a known sampling probability, human
+inter-rater reliability, and a confusion matrix.
+
+--
+
+<br>
+
+.large2[Three years ago that was a dissertation's worth of infrastructure. Now it is a
+week.]
+
+---
+
+# So let's say you did all of it
+
+You wrote a careful prompt. You hand-labeled 500 documents, drawn as a stratified sample
+with recorded $\pi_i$, before you ran anything on the full corpus.
+
+--
+
+<br>
+
+You checked inter-rater reliability with an RA: $\kappa$ = 0.81.
+
+--
+
+<br>
+
+Your classifier agrees with the gold standard **88%** of the time. Precision 0.86, recall
+0.90. You have the full confusion matrix, overall and by treatment group.
+
+--
+
+<br>
+
+You ran it on all 200,000 documents. You have your variable.
+
+---
+
+# You are pleased
+
+And you should be. That is a better validation study than most of what is currently in
+print.
+
+--
+
+<br>
+
+<br>
+
+You put the variable in a regression.
+
+--
+
+<br>
+
+$$y_i = \alpha + \beta \widehat{D}_i + X_i'\gamma + \varepsilon_i$$
+
+--
+
+.small90[
+$y_i$ your outcome &nbsp;·&nbsp; $\widehat{D}_i$ **the label the model gave you** &nbsp;·&nbsp;
+$X_i$ controls &nbsp;·&nbsp; $\beta$ the number you care about &nbsp;·&nbsp;
+$\alpha$ the intercept, not Krippendorff's
+]
+
+--
+
+The hat on $\widehat{D}$ is doing a lot of work. It says this is an **estimate**, not
+something you observed.
+
+--
+
+<br>
+
+You get a coefficient, a standard error, and a $t$-statistic of 7.8.
+
+---
+
+# Next week
+
+.large2[That regression is biased and its confidence intervals are invalid.]
+
+--
+
+<br>
+
+Not because you did the validation badly. You did it well.
+
+--
+
+<br>
+
+.large2[At 88%. At 93%. At any accuracy short of perfect.]
+
+--
+
+<br>
+
+<br>
+
+And the size of the problem is not 12%.
+
+---
+
+# I am not going to resolve that today
+
+You now know how to build an instrument and check it honestly.
+
+--
+
+<br>
+
+Next week is about what happens when you *use* it, why classification error here is not
+the measurement error your econometrics sequence taught you, why "my estimates are
+conservative" is a sentence you will not be allowed to write, and what to do instead.
+
+--
+
+<br>
+
+<br>
+
+.large2[It only works if you have done this week's design.]
+
+---
+
+# Week 4 milestone
+
+Due before next class:
+
+--
+
+**1. Measurement approach specified.** What construct, from what documents, why an LLM
+rather than a dictionary or a fine-tuned classifier.
+
+--
+
+**2. Prompt and model documented.** The prompt file committed to `prompts/`. The exact
+model string. Temperature. Output schema.
+
+--
+
+**3. Validation sample DESIGNED.** Not collected, designed.
+
+--
+
+<br>
+
+.small90[$m$, the sampling scheme, the strata if any, the probabilities $\pi_i$, who is
+labeling, and how you will keep them blind. One page. Committed.]
+
+---
+
+# Why "designed, not collected"
+
+Because I want to look at your sampling scheme **before** you spend two weeks labeling
+under a bad one.
+
+--
+
+<br>
+
+Fixing a sampling design on paper takes ten minutes.
+
+--
+
+<br>
+
+.large2[Fixing it after you have labeled 500 documents takes another 500 documents.]
+
+--
+
+<br>
+
+<br>
+
+Bring me the design. This is the cheapest office-hours visit you will ever make.
+
+---
+
+# Reading for next week
+
+**Egami, Hinck, Stewart & Wei (2023)**, "Using Imperfect Surrogates for Downstream
+Inference," *NeurIPS* 36.
+
+**Angelopoulos, Bates, Fannjiang, Jordan & Zrnic (2023)**, "Prediction-Powered Inference,"
+*Science* 382(6671):669–674.
+
+**Wang, Zhang & Zhang (2026)**, "Large Language Models for Market Research: A Data-Augmentation Approach," *Marketing
+Science* 45(4):728–751.
+
+--
+
+<br>
+
+Read the first one carefully. The other two for the framing.
+
+--
+
+<br>
+
+.small90[If you read only one section of Egami et al., read the one on the sampling design.
+It is today's lecture, from the other side.]
+
+---
+class: inverse, center, middle
+
+# Questions?
+
+### Bring your validation designs to office hours. Before you label anything.

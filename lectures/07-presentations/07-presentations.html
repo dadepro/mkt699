@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>MKT699: Empirical Methods in Marketing</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Davide Proserpio" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# MKT699: Empirical Methods in Marketing
+]
+.subtitle[
+## Presenting the Project — read this in Week 1
+]
+.author[
+### Davide Proserpio
+]
+.institute[
+### Marshall School of Business
+]
+.date[
+### Fall 2026
+]
+
+---
+
+
+&lt;style type="text/css"&gt;
+/* base sizing -- bumped up for classroom projection */
+.remark-slide-content {
+  font-size: 23px;
+  padding: 1em 3em 1.5em 3em;
+}
+.remark-slide-content h1 { font-size: 46px; }
+.remark-slide-content h2 { font-size: 38px; }
+.remark-slide-content h3 { font-size: 30px; }
+
+/* code -- wrap rather than overflow the slide */
+.remark-code, .remark-inline-code {
+  font-size: 20px;
+}
+.remark-slide-content pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.remark-code-line {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* tables */
+.remark-slide-content table {
+  font-size: 21px;
+}
+
+.large2 { font-size: 165% }
+.small90 { font-size: 92% }
+.small75 { font-size: 82% }
+&lt;/style&gt;
+
+
+
+# Read this in Week 1
+
+This is not a lecture. It is the specification for what you are building.
+
+--
+
+&lt;br&gt;
+
+In Week 7 you will present an original empirical project with a validated measurement
+instrument and a corrected estimate. Everything that presentation needs is listed here.
+
+--
+
+&lt;br&gt;
+
+.large2[A presentation you designed *for* is a different object from one you assembled the
+night before.]
+
+--
+
+&lt;br&gt;
+
+Read it now. Read it again around Week 5, when you have estimates and have to decide what
+to show.
+
+---
+
+# Table of contents
+
+1. [Format](#format)
+
+2. [What a good presentation does](#good)
+
+3. [The slides that must be there](#slides)
+
+4. [Presenting a null](#null)
+
+5. [Asking and receiving questions](#questions)
+
+6. [The written report](#report)
+
+7. [Where this goes next](#next)
+
+---
+class: inverse, center, middle
+name: format
+
+# Format
+
+---
+
+# The mechanics
+
+**20 minutes** presenting. **10 minutes** questions.
+
+--
+
+&lt;br&gt;
+
+I will cut you off at 20. Not to be unpleasant, because a conference discussant will,
+and a job talk chair will, and you should find out now what your talk looks like when it
+is over.
+
+--
+
+&lt;br&gt;
+
+Order is drawn **at random** at the start of class.
+
+--
+
+So do not plan to polish slides during someone else's talk. You may be first.
+
+---
+
+# Everyone attends the whole session
+
+Not the polite version of that sentence. The actual one.
+
+--
+
+&lt;br&gt;
+
+You are expected to **ask questions of your peers**. That is a graded component. It is
+most of what class participation means in Week 7.
+
+--
+
+&lt;br&gt;
+
+A room where only the instructor asks questions is a room where nobody learned to be a
+seminar participant.
+
+--
+
+&lt;br&gt;
+
+.large2[You will spend your career in rooms like this. Start being useful in them.]
+
+---
+class: inverse, center, middle
+name: good
+
+# What a good presentation does
+
+---
+
+# The arc
+
+**Motivate the question.** Why should anyone care. And why couldn't this be answered
+before?
+
+--
+
+**State the estimand plainly.** What number are you trying to learn?
+
+--
+
+**State the identifying assumption.** In words, on a slide.
+
+--
+
+**Show the measurement and its validation.** This is your instrument. Establish it.
+
+--
+
+**Show naive versus corrected.** Side by side.
+
+--
+
+**Be honest about limits.** What you cannot rule out, and what it would take.
+
+---
+
+# The second question is the hard one
+
+"Why couldn't this be answered before?"
+
+--
+
+&lt;br&gt;
+
+For most of your projects the answer is: *the variable did not exist*. Nobody could
+measure positioning language, or complaint type, or emotional escalation, at scale.
+
+--
+
+&lt;br&gt;
+
+That is a good answer. Say it out loud, early, in one sentence.
+
+--
+
+If your answer is instead "nobody happened to run this regression," you have a weaker
+paper and you should know that before a referee tells you.
+
+---
+
+# The constraint nobody respects
+
+Twenty minutes is **12 to 15 slides**.
+
+--
+
+&lt;br&gt;
+
+Not 30. Not 40 with "I'll go fast through these."
+
+--
+
+&lt;br&gt;
+
+You will go over. Everyone goes over. Plan for 15 minutes of material and you will land
+at 20.
+
+---
+
+# Do not show us your data cleaning
+
+.large2[Nobody has ever been convinced by a slide about a merge.]
+
+--
+
+&lt;br&gt;
+
+Your pipeline is in the repository. That is where it belongs and that is where it will be
+checked.
+
+--
+
+&lt;br&gt;
+
+One sentence on sample construction ("N listings, 2019–2024, after dropping X") and
+move on.
+
+--
+
+&lt;br&gt;
+
+The exception: if a cleaning decision **changes the estimate**, that is not cleaning.
+That is a result, and it goes in the robustness slide.
+
+---
+class: inverse, center, middle
+name: slides
+
+# The slides that must be there
+
+---
+
+# The checklist
+
+1. **The question**, in one sentence
+2. **The data**, and what is new about it
+3. **The identification argument**. And what would break it
+4. **The measurement approach**, prompt strategy and model
+5. **The validation**, confusion matrix, human–human IRR, sampling scheme
+6. **The naive estimate**
+7. **The corrected estimate**
+
+--
+
+&lt;br&gt;
+
+Eight slides. You have room for six or seven more. Spend them on motivation and on
+whatever is genuinely interesting about your setting.
+
+---
+
+# Slide 1: the question
+
+One sentence. On the slide. In words a marketing PhD student outside your area can parse.
+
+--
+
+&lt;br&gt;
+
+If you cannot write it in one sentence, you do not yet know what your paper is about, and
+the next nineteen minutes will show that.
+
+--
+
+&lt;br&gt;
+
+Then: the estimand. "We want to know how much `\(Y\)` changes when `\(X\)` changes, holding
+[what] fixed."
+
+---
+
+# Slide 3: measurement
+
+What you asked the model, and which model.
+
+--
+
+&lt;br&gt;
+
+- The construct, defined precisely enough that a human could label it
+- The prompt strategy, zero-shot, few-shot, structured output, chain of thought
+- The exact model string and date
+- Anything you tried that failed
+
+--
+
+&lt;br&gt;
+
+That last one buys you credibility and costs you nothing. Prompt sensitivity is a
+researcher degree of freedom. Showing that you looked at it is the difference between a
+measurement section and a claim.
+
+---
+
+# Slide 4: validation
+
+.large2[This is the slide that makes the project a project.]
+
+--
+
+&lt;br&gt;
+
+It needs:
+
+- **The sampling scheme.** How you drew the gold-standard sample, and with what
+  probabilities. Stratified? Random? You must have controlled it.
+- **The confusion matrix.** Not just accuracy. Where the errors are.
+- **Human–human IRR.** Your ceiling. An LLM cannot beat labels that humans disagree
+  about.
+
+--
+
+&lt;br&gt;
+
+If your model hits 0.87 and two trained humans agree at 0.82, say so. That is a good
+result and it reads as one.
+
+---
+
+# Slides 5 and 6: naive and corrected
+
+Side by side. Same table, two columns, or two panels of the same figure.
+
+--
+
+&lt;br&gt;
+
+The audience needs to see **what the correction did**:
+
+- Did the coefficient move? Which direction?
+- Did the standard error grow? By how much?
+- Did the conclusion change?
+
+--
+
+&lt;br&gt;
+
+If the correction barely moved anything, that is worth saying explicitly. It means your
+classification error is close to orthogonal to your covariates, which is a claim, not a
+default.
+
+---
+
+# The two fastest ways to lose points
+
+**Missing the validation slide.**
+
+--
+
+**Showing only the corrected estimate.**
+
+--
+
+&lt;br&gt;
+
+Both read the same way to me: you either did not do the work, or you did it and would
+rather I did not look.
+
+--
+
+&lt;br&gt;
+
+Neither of those is a good look, and both are avoidable in about forty minutes of slide
+work.
+
+---
+
+# Slide 8: what would break it
+
+This is not a limitations slide written to preempt criticism.
+
+--
+
+&lt;br&gt;
+
+It is the slide where you say: *here is the most damaging thing a referee could say, and
+here is where I currently stand on it.*
+
+--
+
+&lt;br&gt;
+
+Presenting your own strongest objection is the single most credible thing you can do in a
+seminar. It signals that you have thought harder about your design than the person asking.
+
+--
+
+&lt;br&gt;
+
+It also, usefully, takes the question away from them.
+
+---
+class: inverse, center, middle
+name: null
+
+# Presenting a null
+
+---
+
+# The callback
+
+.large2[A well-designed project that finds nothing gets a **higher grade** than a badly
+identified project that finds something.]
+
+--
+
+&lt;br&gt;
+
+This is the Week 1 promise, and it is the grading rule.
+
+--
+
+&lt;br&gt;
+
+Several of you are about to present a null. Present it as a result, not as an apology.
+
+---
+
+# How to present it
+
+**Show the confidence interval.** On the slide, in the text, out loud.
+
+--
+
+**Say which kind of zero it is.** Precise or imprecise. You know the difference now.
+
+--
+
+**Say what you can rule out.** "The interval excludes effects larger than 1.5%, an order
+of magnitude below what the literature reports."
+
+--
+
+**Say what you cannot.** "The design cannot distinguish a 5% effect from zero."
+
+---
+
+# What not to do
+
+Do not say "we find no significant effect" and advance the slide.
+
+--
+
+&lt;br&gt;
+
+Do not go hunting for the subsample where it works and present that as the headline. We
+covered specification search last week; the room will notice.
+
+--
+
+&lt;br&gt;
+
+Do not apologize for the result. The result is the result. Your job is to report it
+accurately and tell us what it rules out.
+
+--
+
+&lt;br&gt;
+
+.large2[An informative null is a contribution. A dressed-up null is a liability.]
+
+---
+class: inverse, center, middle
+name: questions
+
+# Asking and receiving questions
+
+---
+
+# Week 7 is rehearsal
+
+You will do this for the rest of your career: sit in a room, listen to an empirical talk,
+and say something useful in the ten minutes after.
+
+--
+
+&lt;br&gt;
+
+Most people are bad at it. It is a learnable skill and almost nobody teaches it
+explicitly.
+
+--
+
+&lt;br&gt;
+
+So: explicitly.
+
+---
+
+# The useful question
+
+The useful question is about **identification** or **measurement**.
+
+--
+
+&lt;br&gt;
+
+- "What is the identifying variation here?"
+- "What would have to be true for this to be causal?"
+- "How was the validation sample drawn?"
+- "Does the classifier fail differently on the treated units?"
+- "Is the null precise enough to rule out the effect in \[paper\]?"
+
+--
+
+&lt;br&gt;
+
+Every one of those can change what the author does next week.
+
+---
+
+# The less useful question
+
+"Have you tried adding a control for X?"
+
+--
+
+&lt;br&gt;
+
+Almost always: yes, or it does not matter, or adding it would make things worse because
+X is a bad control.
+
+--
+
+&lt;br&gt;
+
+More importantly, it is a question about a **specification**, not about a **design**. If
+the design is sound, the control is a footnote. If the design is not sound, no control
+fixes it.
+
+--
+
+&lt;br&gt;
+
+Ask about the design.
+
+---
+
+# Ask the four questions
+
+Same four from Week 1. They work on your classmates' projects exactly as well as they
+work on published papers.
+
+--
+
+1. What is the **estimand**?
+2. What is the **identifying assumption**?
+3. **What would break it?**
+4. Would this design work in **your** setting?
+
+--
+
+&lt;br&gt;
+
+Number four is not a courtesy. It is how you find your own next project.
+
+---
+
+# Receiving questions
+
+**Do not be defensive.** The instinct is to defend. Resist it. Nobody in this room is
+trying to sink your project.
+
+--
+
+**Concede what is right.** "That's a real problem and I don't have a good answer" is a
+complete, respectable sentence. It costs you nothing and buys you enormous credibility.
+
+--
+
+**Note what you'll check.** Write it down visibly. "I'll look at whether the error rate
+differs by treatment status" is better than an improvised answer.
+
+--
+
+**Do not answer a question you did not understand.** Ask them to restate it.
+
+---
+
+# The failure mode
+
+Someone asks a hard question. You do not have an answer. You produce four minutes of
+adjacent material at speed, hoping it lands.
+
+--
+
+&lt;br&gt;
+
+It never lands. Everyone in the room can tell.
+
+--
+
+&lt;br&gt;
+
+.large2[The person who says "I don't know" is more credible than the person who doesn't.]
+
+--
+
+&lt;br&gt;
+
+This is rehearsal for your job market. In three years the questions will be the same and
+the stakes will not be.
+
+---
+class: inverse, center, middle
+name: report
+
+# The written report
+
+---
+
+# Due one week after your presentation
+
+Short. **8–10 pages plus appendix.**
+
+--
+
+&lt;br&gt;
+
+Not a paper draft. Not a literature review. A precise account of what you did and what
+you found.
+
+--
+
+&lt;br&gt;
+
+If it is 25 pages, you have padded it, and I will read the padding as evidence that the
+core is thin.
+
+---
+
+# Structure
+
+1. **Question**. And why it could not be answered before
+2. **Data**, source, construction, sample
+3. **Measurement and validation**, prompt, model, sampling scheme, confusion matrix, IRR
+4. **Identification**: the assumption, in words, and the threats
+5. **Results**, naive and corrected, side by side
+6. **Limits**, what you cannot establish
+7. **Appendix: AI use**, prompts, model versions, dates accessed
+
+--
+
+&lt;br&gt;
+
+Sections 3 and 5 are the ones I will read most carefully.
+
+---
+
+# The AI-use appendix
+
+Exact prompts. Exact model strings. Dates accessed.
+
+--
+
+&lt;br&gt;
+
+Also: **what an AI tool got wrong that you caught.**
+
+--
+
+&lt;br&gt;
+
+I said in Week 1 that honest reporting of failure helps your grade. That was not a
+rhetorical device. Every one of you was led into an error by a model at some point in
+seven weeks. Write it down.
+
+--
+
+&lt;br&gt;
+
+The students who report nothing are not the ones who made no errors. They are the ones
+who did not notice.
+
+---
+
+# The repository requirement
+
+.large2[It must run from a **clean clone**.]
+
+--
+
+&lt;br&gt;
+
+Not "it runs on my laptop." Not "you need to change the paths."
+
+--
+
+```bash
+git clone &lt;your-repo&gt;
+cd &lt;your-repo&gt;
+# run the scripts in order
+```
+
+--
+
+&lt;br&gt;
+
+Test this yourself before you submit. Clone into a fresh directory and run it. You will
+find something broken. Everyone does.
+
+--
+
+&lt;br&gt;
+
+If it does not run from a clean clone, it does not run.
+
+---
+class: inverse, center, middle
+name: next
+
+# Where this goes next
+
+---
+
+# Some of these become dissertation chapters
+
+Not all of them. That was never the expectation for a seven-week project.
+
+--
+
+&lt;br&gt;
+
+The ones that do are, reliably, the ones where:
+
+- the **measurement validated cleanly**, and
+- the **identification is defensible** to someone who is not you
+
+--
+
+&lt;br&gt;
+
+Everything else is fixable. Those two are the load-bearing pieces, and you now know
+within a week whether you have them.
+
+---
+
+# If your project has both
+
+You have most of a paper. What is missing is scale, robustness, and a literature you
+have properly situated yourself in.
+
+--
+
+&lt;br&gt;
+
+That is six months of work, not seven weeks. But it is *known* work, not speculative
+work.
+
+--
+
+&lt;br&gt;
+
+.large2[Come talk to me.]
+
+I am happy to keep meeting with anyone who wants to push their project further, whether
+or not you take another class from me.
+
+---
+
+# If it doesn't
+
+You built a reproducible pipeline, ran a validation study, and learned that your
+measurement does not hold up or your design does not identify what you wanted.
+
+--
+
+&lt;br&gt;
+
+That is seven weeks well spent. You found out cheaply. The alternative is finding out in
+year four.
+
+--
+
+&lt;br&gt;
+
+The infrastructure transfers. The next project starts from a working repository and a
+researcher who knows what a validation study costs.
+
+---
+
+# Weeks 8–15
+
+Professor Chen takes over next week: structural estimation of choice models. Logit and
+probit, selection, unobserved heterogeneity, BLP, consumer search.
+
+--
+
+&lt;br&gt;
+
+Different tradition. Different set of assumptions doing the work.
+
+--
+
+&lt;br&gt;
+
+It will feel like a different course. It mostly is.
+
+---
+
+# But the connection is real
+
+Structural models are estimated on **variables**. Increasingly, some of those variables
+will be generated by a model.
+
+--
+
+&lt;br&gt;
+
+Product attributes extracted from descriptions. Consideration sets inferred from text.
+Positioning measured from copy. All of it entering a demand system as if it were
+observed.
+
+--
+
+&lt;br&gt;
+
+.large2[Everything you learned about generated variables applies there too.]
+
+--
+
+Measurement error in a structural parameter does not politely stay in one coefficient. It
+propagates through the whole estimated system, and into every counterfactual you run off
+it.
+
+---
+
+# So keep the habit
+
+Whatever produces a variable, an LLM, a classifier, an imputation, a first-stage
+estimate, ask the same three questions:
+
+--
+
+1. How accurate is it, and **against what**?
+2. Are the errors **correlated with what I care about**?
+3. What does it do to my **standard errors**?
+
+--
+
+&lt;br&gt;
+
+That is the whole first half of this course in three lines. It applies well beyond the
+setting where you learned it.
+
+---
+
+# Thank you
+
+You worked hard on these, and it shows.
+
+--
+
+&lt;br&gt;
+
+Report due one week after you present. Repository, clean clone, AI appendix.
+
+--
+
+&lt;br&gt;
+
+Office hours stay open past the end of my half. Use them.
+
+---
+class: inverse, center, middle
+
+# Let's draw the order.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "highlightSpans": true,
+  "countIncrementalSlides": false,
+  "ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

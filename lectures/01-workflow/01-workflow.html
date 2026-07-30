@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>MKT699: Empirical Methods in Marketing</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Davide Proserpio" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# MKT699: Empirical Methods in Marketing
+]
+.subtitle[
+## Lecture 1: Reproducible Research Infrastructure
+]
+.author[
+### Davide Proserpio
+]
+.institute[
+### Marshall School of Business
+]
+.date[
+### Fall 2026
+]
+
+---
+
+
+&lt;style type="text/css"&gt;
+/* base sizing -- bumped up for classroom projection */
+.remark-slide-content {
+  font-size: 23px;
+  padding: 1em 3em 1.5em 3em;
+}
+.remark-slide-content h1 { font-size: 46px; }
+.remark-slide-content h2 { font-size: 38px; }
+.remark-slide-content h3 { font-size: 30px; }
+
+/* code -- wrap rather than overflow the slide */
+.remark-code, .remark-inline-code {
+  font-size: 20px;
+}
+.remark-slide-content pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.remark-code-line {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* tables */
+.remark-slide-content table {
+  font-size: 21px;
+}
+
+.large2 { font-size: 165% }
+.small90 { font-size: 92% }
+.small75 { font-size: 82% }
+&lt;/style&gt;
+
+
+
+# Introduction
+
+### About me
+
+<svg aria-hidden="true" role="img" viewBox="0 0 640 512" style="height:1em;width:1.25em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M320 32c-8.1 0-16.1 1.4-23.7 4.1L15.8 137.4C6.3 140.9 0 149.9 0 160s6.3 19.1 15.8 22.6l57.9 20.9C57.3 229.3 48 259.8 48 291.9v28.1c0 28.4-10.8 57.7-22.3 80.8c-6.5 13-13.9 25.8-22.5 37.6C0 442.7-.9 448.3 .9 453.4s6 8.9 11.2 10.2l64 16c4.2 1.1 8.7 .3 12.4-2s6.3-6.1 7.1-10.4c8.6-42.8 4.3-81.2-2.1-108.7C90.3 344.3 86 329.8 80 316.5V291.9c0-30.2 10.2-58.7 27.9-81.5c12.9-15.5 29.6-28 49.2-35.7l157-61.7c8.2-3.2 17.5 .8 20.7 9s-.8 17.5-9 20.7l-157 61.7c-12.4 4.9-23.3 12.4-32.2 21.6l159.6 57.6c7.6 2.7 15.6 4.1 23.7 4.1s16.1-1.4 23.7-4.1L624.2 182.6c9.5-3.4 15.8-12.5 15.8-22.6s-6.3-19.1-15.8-22.6L343.7 36.1C336.1 33.4 328.1 32 320 32zM128 408c0 35.3 86 72 192 72s192-36.7 192-72L496.7 262.6 354.5 314c-11.1 4-22.8 6-34.5 6s-23.5-2-34.5-6L143.3 262.6 128 408z"/></svg> Associate Professor of Marketing
+
+<svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M384 48c8.8 0 16 7.2 16 16V448c0 8.8-7.2 16-16 16H96c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16H384zM96 0C60.7 0 32 28.7 32 64V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H96zM240 256a64 64 0 1 0 0-128 64 64 0 1 0 0 128zm-32 32c-44.2 0-80 35.8-80 80c0 8.8 7.2 16 16 16H336c8.8 0 16-7.2 16-16c0-44.2-35.8-80-80-80H208zM512 80c0-8.8-7.2-16-16-16s-16 7.2-16 16v64c0 8.8 7.2 16 16 16s16-7.2 16-16V80zM496 192c-8.8 0-16 7.2-16 16v64c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm16 144c0-8.8-7.2-16-16-16s-16 7.2-16 16v64c0 8.8 7.2 16 16 16s16-7.2 16-16V336z"/></svg> [Davide Proserpio](https://dadepro.github.io/)
+
+<svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z"/></svg> [proserpi@marshall.usc.edu](mailto:proserpi@marshall.usc.edu)
+
+I do empirical work on digital platforms, algorithmic decision-making, and their market
+consequences. Airbnb, online reviews, housing, algorithmic pricing.
+
+### About you
+
+Names, field, what you want to work on, and what you are already using AI for.
+
+---
+
+# Table of contents
+
+1. [What changed](#changed)
+
+2. [Course overview](#overview)
+
+3. [The project](#project)
+
+4. [Project organization](#organization)
+
+5. [Version control](#git)
+
+6. [The shell and remote computing](#shell)
+
+7. [Environments and dependencies](#env)
+
+8. [Setting up your AI workflow](#ai)
+
+---
+class: inverse, center, middle
+name: changed
+
+# What changed
+
+---
+
+# I last taught this class in 2021
+
+The syllabus was a tooling course.
+
+Git. Shell. R. `data.table`. `ggplot2`. MySQL. Scraping.
+
+--
+
+The premise was that these tools were **hard to learn**, that nobody would teach you,
+and that you would waste years of your PhD rediscovering them badly.
+
+--
+
+&lt;br&gt;
+
+That premise was correct in 2021.
+
+--
+
+It is mostly wrong now.
+
+---
+
+# The cost of producing analysis has collapsed
+
+You can now get a working merge, a panel construction, a fixed-effects regression,
+and a publication-quality figure in about ninety seconds.
+
+--
+
+Not *good* versions of those things, necessarily. But running versions.
+
+--
+
+&lt;br&gt;
+
+If I spend three hours teaching you `dplyr` verbs, I am teaching you something you can
+get from a model in nine seconds.
+
+--
+
+That is no longer where your time is best spent.
+
+---
+
+# But something else did not get cheaper
+
+.large2[Knowing whether the analysis is **right**.]
+
+--
+
+&lt;br&gt;
+
+Producing a regression table is now nearly free.
+
+Knowing whether that table means what you think it means is exactly as hard as it was
+in 2021.
+
+--
+
+&lt;br&gt;
+
+The ratio between those two costs has moved by orders of magnitude. That is the single
+most important fact about doing empirical research right now.
+
+---
+
+# The uncomfortable version
+
+An LLM will write you code that:
+
+- runs without error
+- produces sensible-looking output
+- silently drops 40% of your sample in a join
+- and gives you a coefficient you will put in a paper
+
+--
+
+&lt;br&gt;
+
+It will not tell you it did this. It does not know it did this.
+
+--
+
+&lt;br&gt;
+
+.large2[**You are the only error-detection mechanism in the pipeline.**]
+
+---
+
+# So this course changed
+
+The old constraint was **execution**: can you write the code at all?
+
+The new constraint is **judgment**: should this code have been written, and is its
+output correct?
+
+--
+
+&lt;br&gt;
+
+Everything in the first seven weeks follows from that.
+
+We still cover git, the shell, SQL, and data manipulation. But as *infrastructure for
+catching errors*, not as syntax instruction. You will pick up syntax from the models.
+
+---
+
+# There is also genuinely new material
+
+LLMs are not only tools for doing research. They are now **research instruments**.
+
+--
+
+People use them to:
+
+- measure constructs from text, images, and audio at scale
+- simulate survey respondents
+- classify, annotate, and extract at a cost that makes new questions feasible
+
+--
+
+&lt;br&gt;
+
+Each of these introduces statistical problems that **do not appear anywhere in your
+econometrics sequence**.
+
+Weeks 4 and 5 are about those problems. That is the methodological core of my half.
+
+---
+class: inverse, center, middle
+name: overview
+
+# Course overview
+
+### (All this is in the [syllabus](https://github.com/dadepro/mkt699))
+
+---
+
+# Structure
+
+I teach the **first seven weeks**. Professor Chen teaches weeks 8–15 on structural
+estimation of choice models.
+
+Each half is graded separately by the respective instructor. Your final grade is the
+average.
+
+--
+
+&lt;br&gt;
+
+We use Git and GitHub for everything: course material, assignments, your project.
+
+Material lives at https://github.com/dadepro/mkt699
+
+---
+
+# The seven weeks
+
+| Week | Topic |
+|:--|:--|
+| 1 | Reproducible research infrastructure |
+| 2 | AI-assisted analysis and the verification problem |
+| 3 | Data acquisition, storage, and provenance |
+| 4 | LLMs as measurement instruments I: validation |
+| 5 | LLMs as measurement instruments II: inference |
+| 6 | Credibility: design, specification search, experiments |
+| 7 | Project presentations |
+
+---
+
+# Grading (first half)
+
+| | % |
+|:--|--:|
+| Semester project, presentation and report | 45% |
+| Project milestones | 15% |
+| 2 programming assignments | 20% |
+| Paper presentation | 10% |
+| Class participation | 10% |
+
+--
+
+&lt;br&gt;
+
+Note the weighting. **The project is the course.** The assignments exist to make sure
+you can do the project.
+
+---
+
+# How to read for this class
+
+You will read up to four papers a week. You cannot read them the way you read for a
+first-year theory class.
+
+--
+
+For each paper, you should be able to answer:
+
+1. What is the **estimand**? What number are they trying to learn?
+2. What is the **identifying assumption**? What has to be true?
+3. **What would break it?** What is the most damaging thing a referee could say?
+4. Would this design work in *your* setting?
+
+--
+
+&lt;br&gt;
+
+If you can answer these four, you have read the paper. If you can only summarize what
+they did, you have not.
+
+---
+class: inverse, center, middle
+name: project
+
+# The project
+
+---
+
+# The semester project
+
+Starting today, you develop an original empirical project that uses an LLM as a
+**measurement instrument**. You present it in Week 7.
+
+--
+
+&lt;br&gt;
+
+It is deliberately scoped to be:
+
+- small enough to finish in seven weeks
+- large enough to become a dissertation chapter if it works
+
+--
+
+&lt;br&gt;
+
+Most of you should aim for the second outcome. Some of you will get there.
+
+---
+
+# Requirements
+
+Your project must:
+
+1. Pose a question that **cannot** be answered with off-the-shelf structured data
+2. Use an LLM to construct **at least one variable** from unstructured data
+3. Include a **validation study** against human-labeled data, with the sampling scheme
+   stated explicitly
+4. Report downstream estimates with an appropriate **correction**, compared against the
+   naive plug-in estimates
+5. Be **fully reproducible** from your repository, with a documented AI-use log
+6. State an **identification argument**, and be honest about its limits
+
+---
+
+# What that looks like
+
+Use an LLM to measure something previously unmeasurable at scale, then use it to answer a
+substantive marketing question.
+
+--
+
+&lt;br&gt;
+
+*Examples: positioning language in product descriptions; the emotional content of service
+interactions; visual attributes of listings; complaint taxonomies in reviews.*
+
+--
+
+&lt;br&gt;
+
+The constraint is deliberate. A measurement project forces you through validation and
+correction, which is what this half of the course is for.
+
+---
+
+# Milestones
+
+.small90[
+| Week | Date | Milestone |
+|:--|:--|:--|
+| 1 | Aug 26 | Repository initialized |
+| 2 | Sep 2 | One-paragraph question, data source identified |
+| 3 | Sep 9 | Data acquired, pipeline reproducible, identification drafted |
+| 4 | Sep 16 | Measurement approach specified; validation designed |
+| 5 | Sep 23 | Validation complete; naive estimates |
+| 6 | Sep 30 | Corrected estimates; identification revised; robustness |
+| 7 | Oct 7 | 20-minute presentation + short written report |
+]
+
+--
+
+These are graded. They exist so that you cannot do this project in the last week
+because a project done in the last week will not have a validation study, and a project
+without a validation study is not a project.
+
+---
+
+# On null results
+
+.large2[A well-designed project that finds nothing will get a **higher grade** than a
+badly identified project that finds something.]
+
+--
+
+&lt;br&gt;
+
+That is the grading rule, not a sentiment.
+
+You are going to spend a career deciding whether to believe your own results. Start now.
+
+---
+class: inverse, center, middle
+name: organization
+
+# Project organization
+
+---
+
+# Why this matters more now, not less
+
+The standard argument for reproducibility: other people should be able to check your
+work, and *you* will need to rerun this in two years when a referee asks.
+
+--
+
+&lt;br&gt;
+
+Both still true. But there is a new argument.
+
+--
+
+&lt;br&gt;
+
+.large2[When a model writes your code, a reproducible pipeline is your **only**
+mechanism for catching what it did wrong.]
+
+---
+
+# The new failure mode
+
+You ask a model to "clean the data and run the regression."
+
+It does. You get a number. The number is plausible. You move on.
+
+--
+
+&lt;br&gt;
+
+Three weeks later you ask it to "add controls for market size."
+
+It rewrites the cleaning step. Your sample changes. Your original number is no longer
+reproducible, and **you do not notice**, because you never had a fixed pipeline in the
+first place.
+
+--
+
+&lt;br&gt;
+
+This is not hypothetical. This is the single most common way I see people get burned.
+
+---
+
+# Structure your project like this
+
+```
+my-project/
+├── README.md
+├── data/
+│   ├── raw/          # never edited, never overwritten
+│   └── clean/        # generated, disposable
+├── code/
+│   ├── 01-collect.R
+│   ├── 02-clean.R
+│   ├── 03-measure.R  # the LLM step
+│   ├── 04-validate.R
+│   └── 05-analysis.R
+├── output/
+│   ├── figures/
+│   └── tables/
+├── prompts/          # NEW: your measurement instruments
+└── ai-log.md         # NEW: what you asked, what it did
+```
+
+---
+
+# Two rules that will save you
+
+**1. `data/raw/` is read-only.**
+
+Never edit a raw file. Never overwrite one. Every transformation is a script that reads
+from `raw/` and writes to `clean/`.
+
+If you break this, you have lost the ability to reproduce anything.
+
+--
+
+**2. Everything in `clean/` and `output/` is disposable.**
+
+You should be able to delete both directories entirely and rebuild them by running your
+scripts in order.
+
+If you cannot, you have a manual step you have forgotten about. And that step is where
+your bug is.
+
+---
+
+# The two new directories
+
+`prompts/` and `ai-log.md` are not in the standard reproducibility templates. They are
+here because of what changed.
+
+--
+
+&lt;br&gt;
+
+**`prompts/`** holds the exact prompts and model versions you used to generate any
+variable that enters your analysis.
+
+A prompt *is* a measurement instrument. An undocumented prompt is an unreproducible
+instrument. You would not write "we surveyed some people somehow" in a paper.
+
+--
+
+**`ai-log.md`** records what you asked for, what you got, and, critically, what it got
+wrong that you caught.
+
+That last part is graded, and honest reporting helps your grade.
+
+---
+class: inverse, center, middle
+name: git
+
+# Version control
+
+---
+
+# Git, briefly
+
+Some of you use git already. Some of you have never touched it. Both are normal in
+your first two years.
+
+I am not going to drill syntax, ask a model, it is genuinely good at this. But I am
+going to make sure you have the mental model, because that is the part models explain
+badly.
+
+--
+
+&lt;br&gt;
+
+I am going to tell you what git is **for** in this course:
+
+.large2[It is how you find out what the model changed when you weren't looking.]
+
+---
+
+# The mental model
+
+Three places your work lives. Almost every git confusion comes from not knowing which
+one you are talking about.
+
+--
+
+.small90[
+| Place | What it is |
+|:--|:--|
+| **Working directory** | The files as they are right now |
+| **Staging area** | What you have marked to go in the next commit |
+| **Repository** | The permanent history of commits |
+]
+
+--
+
+&lt;br&gt;
+
+`git add` moves working directory → staging.
+`git commit` moves staging → repository.
+
+--
+
+That is the whole thing. Everything else is navigation.
+
+---
+
+# The commands you will use daily
+
+```bash
+git status                 # what is changed, what is staged
+git diff                   # changes NOT yet staged
+git diff --staged          # changes that ARE staged
+git add code/02-clean.R    # stage one file
+git add -A                 # stage everything
+git commit -m "message"    # commit staged changes
+git log --oneline          # history, compactly
+```
+
+--
+
+&lt;br&gt;
+
+`git status` is the answer to "what is going on." Run it constantly. It also tells you
+what to do next, git is unusually good about this.
+
+---
+
+# The workflow that matters
+
+```bash
+# BEFORE you let an agent touch your code
+git add -A &amp;&amp; git commit -m "working state: baseline results"
+
+# ... let the model do its thing ...
+
+git diff HEAD    # &lt;-- THIS. every time.
+```
+
+--
+
+&lt;br&gt;
+
+`git diff` is the highest-value command in your entire toolkit right now.
+
+An agentic tool can touch fifteen files. It will summarize what it did. **The summary is
+not the diff.** Read the diff.
+
+---
+
+# Reading a diff
+
+```diff
+--- a/code/02-clean.R
++++ b/code/02-clean.R
+@@ -14,7 +14,7 @@
+   listings &lt;- listings %&gt;%
+-    filter(price &gt; 0)
++    filter(price &gt; 0, price &lt; 1000)
+```
+
+--
+
+`-` is what was there. `+` is what replaced it.
+
+--
+
+&lt;br&gt;
+
+That one-line change dropped every luxury listing from your sample. Nobody mentioned
+it. It is one character short of invisible.
+
+--
+
+.large2[This is the skill. Not the syntax, the *reading*.]
+
+---
+
+# Commit discipline
+
+Commit **before** every AI-assisted change, not after.
+
+--
+
+Your commit history becomes a set of restore points. When you discover on Thursday that
+your coefficient changed on Tuesday, you can find the commit where it changed.
+
+--
+
+&lt;br&gt;
+
+Commit often. A commit is free. A lost afternoon is not.
+
+--
+
+&lt;br&gt;
+
+The habit to build: **commit whenever something works**, even if it is half-finished.
+"Working state" is a perfectly good commit message.
+
+---
+
+# Write commit messages for future you
+
+```bash
+# useless
+git commit -m "update"
+git commit -m "fixes"
+git commit -m "asdf"
+
+# useful
+git commit -m "Drop listings with price &gt; 1000 (outlier trim)"
+git commit -m "Switch clustering from city to tract level"
+git commit -m "Add LLM sentiment measure, v2 prompt"
+```
+
+--
+
+&lt;br&gt;
+
+You are writing to the person who, in eight months, has to explain to a referee why the
+sample size changed. That person is you, and they will not remember.
+
+---
+
+# Finding when things broke
+
+Your coefficient changed and you don't know when.
+
+--
+
+```bash
+git log --oneline                        # find candidate commits
+git diff abc123 def456 -- code/02-clean.R  # compare two points
+git log -p code/02-clean.R               # full history of ONE file
+git log -S "filter(price"                # commits that touched this string
+```
+
+--
+
+&lt;br&gt;
+
+That last one, `git log -S`, searches history for when a piece of code appeared or
+disappeared. It is how you find the commit that introduced a filter nobody remembers
+adding.
+
+---
+
+# Undoing things
+
+The three you actually need:
+
+```bash
+# discard uncommitted changes to a file
+git restore code/02-clean.R
+
+# unstage something you added by mistake
+git restore --staged data/raw/big.csv
+
+# go look at an old version without changing anything
+git checkout abc123
+git checkout main        # come back
+```
+
+--
+
+&lt;br&gt;
+
+Notice what is missing: nothing here rewrites history. Avoid `reset --hard` and force
+pushes until you are confident. Committed work is very hard to lose; uncommitted work
+is very easy to lose.
+
+---
+
+# Branches, minimally
+
+You do not need elaborate branching for a solo project. You need one pattern:
+
+--
+
+```bash
+git checkout -b robustness-alt-clustering
+# ... try the thing ...
+```
+
+--
+
+&lt;br&gt;
+
+If it works: merge it back.
+If it does not: `git checkout main` and the experiment never happened.
+
+--
+
+&lt;br&gt;
+
+Use this when you want to try a specification you suspect you will abandon. It is
+cheaper than commenting out forty lines and forgetting which ones.
+
+---
+
+# Working with coauthors
+
+You will hit conflicts. They are not a crisis.
+
+--
+
+```bash
+git pull                 # get their changes first, always
+# ... conflict? git marks it in the file ...
+# edit, keep what is right, then:
+git add the-file.R
+git commit
+```
+
+--
+
+&lt;br&gt;
+
+Two rules that prevent most conflicts:
+
+- **Pull before you start working**, not after you finish
+- Don't both edit the same file at the same time, split by script
+
+---
+
+# What NOT to commit
+
+.large2[Never commit data. Never commit credentials.]
+
+--
+
+&lt;br&gt;
+
+Data because it bloats the repo permanently, git keeps every version forever, so a
+2GB CSV committed once is in your history for good, even if you delete it.
+
+--
+
+Credentials because a leaked API key, the secret token that lets your code call a
+service, on a public repo gets scraped within *minutes*.
+People run bots for exactly this.
+
+--
+
+&lt;br&gt;
+
+Both are prevented by `.gitignore`, in two slides.
+
+---
+
+# GitHub for this course
+
+Course material: https://github.com/dadepro/mkt699
+
+--
+
+&lt;br&gt;
+
+**You create your own repository**, on your own account. Name it something real
+`mkt699-project` is fine, `hw` is not.
+
+--
+
+&lt;br&gt;
+
+Add me as a collaborator (`dadepro`) so I can see it. Private is fine.
+
+It is yours after the semester ends, and some of these become dissertation chapters.
+
+---
+
+# Submission
+
+Your project repository **is** your submission. Not a zip file, not an email
+attachment.
+
+--
+
+&lt;br&gt;
+
+Send me the URL. I clone it and run it.
+
+--
+
+.large2[If it does not run from a clean clone, it does not run.]
+
+--
+
+&lt;br&gt;
+
+Test this before you submit: clone your own repo into a fresh directory and run it.
+You will be surprised how often it fails.
+
+---
+
+# `.gitignore` — do this now
+
+```
+# never commit data
+data/raw/*
+data/clean/*
+!data/raw/.gitkeep
+
+# never commit credentials
+.Renviron
+.env
+*_key.txt
+
+# noise
+.Rhistory
+.RData
+.DS_Store
+```
+
+--
+
+&lt;br&gt;
+
+Write this file **first**, before your first commit. `.gitignore` only prevents future
+mistakes. It does nothing about what you already committed.
+
+---
+
+# If you commit a key anyway
+
+You will, or someone you work with will. What to do:
+
+--
+
+&lt;br&gt;
+
+.large2[1. Revoke the key. Immediately.]
+
+--
+
+&lt;br&gt;
+
+Not "remove it from the repo." **Revoke it at the provider.** Assume it is already
+compromised, scrapers are faster than you are.
+
+--
+
+&lt;br&gt;
+
+2. *Then* worry about cleaning history. In that order. Always.
+
+---
+
+# Keys go here instead
+
+`.Renviron` in your project root (and in `.gitignore`):
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-...
+OPENAI_API_KEY=sk-...
+```
+
+--
+
+Then in R:
+
+```r
+key &lt;- Sys.getenv("ANTHROPIC_API_KEY")
+```
+
+--
+
+&lt;br&gt;
+
+The key is never in a script, so it can never be committed, so it can never leak.
+Your code becomes shareable by construction.
+
+---
+class: inverse, center, middle
+name: shell
+
+# The shell and remote computing
+
+---
+
+# Why the shell still matters
+
+Some of you have never opened a terminal. That is fine, most PhD programs never
+teach it, and then assume you know it.
+
+--
+
+&lt;br&gt;
+
+The reason to learn it is not that syntax is hard. It is that the shell lets you
+**inspect things without loading them into memory**.
+
+--
+
+&lt;br&gt;
+
+Your 8GB CSV takes minutes to read into R. The shell answers "how many rows does it
+have" in under a second.
+
+---
+
+# What the shell actually is
+
+A program that reads a line you type, runs it, prints the result, and waits for the
+next one.
+
+--
+
+&lt;br&gt;
+
+Every command has the same shape:
+
+```bash
+command  -flags  arguments
+```
+
+--
+
+```bash
+ls              # command, no flags, no arguments
+ls -l           # with a flag: "long" format
+ls -l data/     # with a flag and an argument
+```
+
+--
+
+&lt;br&gt;
+
+That is the entire grammar. Everything you learn from here is vocabulary.
+
+---
+
+# Where am I?
+
+The shell always has a **current directory**. Every relative path is interpreted from
+there. Most beginner confusion is really "I was not where I thought I was."
+
+--
+
+```bash
+pwd                    # print working directory — where am I?
+ls                     # what is here?
+cd data/raw            # go into a directory
+cd ..                  # go UP one level
+cd ~                   # go to my home directory
+cd -                   # go back to where I just was
+```
+
+--
+
+&lt;br&gt;
+
+Type `pwd` whenever a command surprises you. It is the answer about half the time.
+
+---
+
+# Tab completion
+
+The single highest-value keystroke on this slide.
+
+--
+
+```bash
+cd data/ra&lt;TAB&gt;        # becomes cd data/raw/
+```
+
+--
+
+&lt;br&gt;
+
+Press `&lt;TAB&gt;` constantly. It completes file and directory names, which means:
+
+- you type less
+- you cannot typo a filename
+- if it does not complete, **the file does not exist**. Which is itself the answer
+
+--
+
+&lt;br&gt;
+
+Also: `↑` walks back through your previous commands. You will rarely retype anything.
+
+---
+
+# Looking at files
+
+```bash
+wc -l reviews.csv      # count lines: how many rows, actually?
+head -3 reviews.csv    # first 3 lines: what are the columns?
+tail -3 reviews.csv    # last 3 lines: did the file finish writing?
+less reviews.csv       # scroll through it (q to quit)
+```
+
+--
+
+&lt;br&gt;
+
+`head` on a new dataset, always, before you write a single line of R.
+
+--
+
+You will catch: a header row that is actually data, a file that is
+semicolon-separated, a "CSV" that is really tab-delimited, and an encoding problem.
+All in one second, before R has told you a confusing lie about any of them.
+
+---
+
+# Files and space
+
+```bash
+ls -lh data/raw/       # list with human-readable sizes
+du -sh data/raw/       # total size of a directory
+df -h                  # how much disk space is left
+```
+
+--
+
+&lt;br&gt;
+
+`-h` means "human readable", `2.4G` instead of `2516582400`. It works on most
+commands that print sizes.
+
+--
+
+&lt;br&gt;
+
+`du -sh` before you start is how you find out whether this fits in RAM, or whether you
+need DuckDB and a server. That is a Week 3 decision you can make in Week 1.
+
+---
+
+# Did this file change?
+
+```bash
+md5 data/raw/reviews.csv        # macOS
+md5sum data/raw/reviews.csv     # Linux (our servers)
+```
+
+--
+
+Prints a fingerprint of the file's contents. Same contents, same fingerprint. One byte
+different, completely different fingerprint.
+
+--
+
+&lt;br&gt;
+
+.large2[When your results shift, the first question is always: did the data change, or
+did the code change?]
+
+--
+
+Record the checksum of your raw files in your README. Then you can always answer it.
+
+---
+
+# Finding things
+
+```bash
+grep "sarcasm" prompts/*.md         # which prompt files mention this?
+grep -r "cluster" code/             # search recursively through a directory
+grep -c "error" logs/annotate.log   # count matches instead of printing them
+```
+
+--
+
+&lt;br&gt;
+
+```bash
+find . -name "*.parquet"            # where did that file go?
+find . -name "*.csv" -size +100M    # find the big ones
+```
+
+--
+
+&lt;br&gt;
+
+`grep` searches *inside* files. `find` searches *for* files. That is the distinction
+people mix up.
+
+---
+
+# Pipes: the one big idea
+
+`|` takes the output of one command and feeds it as input to the next.
+
+--
+
+```bash
+head -1 reviews.csv | tr ',' '\n' | wc -l
+```
+
+--
+
+&lt;br&gt;
+
+Read it left to right:
+
+1. `head -1`, take the header row
+2. `tr ',' '\n'`, turn every comma into a newline
+3. `wc -l`, count the lines
+
+--
+
+.large2[**How many columns does this file have?**]
+
+--
+
+Small tools, chained. That is the whole design philosophy.
+
+---
+
+# A pipe you will actually use
+
+Which cities appear in this file, and how often?
+
+```bash
+tail -n +2 reviews.csv | cut -d',' -f3 | sort | uniq -c | sort -rn | head
+```
+
+--
+
+.small90[
+```
+ 482913 Los Angeles
+ 291044 San Diego
+ 118220 San Francisco
+     17 los angeles      # &lt;-- there it is
+```
+]
+
+--
+
+&lt;br&gt;
+
+You just found an inconsistent-capitalization bug that would have silently split a
+city into two groups in your regression. In one line, before loading anything.
+
+---
+
+# Redirecting output
+
+```bash
+Rscript code/03-measure.R &gt; logs/run.log        # send output to a file
+Rscript code/03-measure.R &gt; logs/run.log 2&gt;&amp;1   # errors too
+Rscript code/03-measure.R &gt;&gt; logs/run.log       # append, don't overwrite
+```
+
+--
+
+&lt;br&gt;
+
+`&gt;` overwrites. `&gt;&gt;` appends. `2&gt;&amp;1` means "send errors to the same place as normal
+output."
+
+--
+
+&lt;br&gt;
+
+Do this for every long job. When your annotation run dies at hour six, the log is the
+only evidence of why.
+
+---
+
+# Getting help
+
+```bash
+man wc           # the manual page (q to quit)
+wc --help        # shorter version
+```
+
+--
+
+&lt;br&gt;
+
+Honestly? Ask a model. "What does `sort -rn` do?" gets you a better answer than `man
+sort`, faster.
+
+--
+
+&lt;br&gt;
+
+The shell is one of the things LLMs are genuinely excellent at, because the commands
+are short, well-documented, and have been discussed on the internet for forty years.
+
+--
+
+Learn the *concepts* here. Look up the flags forever.
+
+---
+
+# A warning
+
+`rm` deletes. There is no trash, no undo, no "are you sure."
+
+--
+
+```bash
+rm file.csv          # gone
+rm -r directory/     # gone, with everything in it
+```
+
+--
+
+&lt;br&gt;
+
+Be especially careful with `rm -rf` and wildcards. `rm -rf *` in the wrong directory
+is how people lose a chapter.
+
+--
+
+&lt;br&gt;
+
+This is also why `data/raw/` is read-only and why everything is in git. Not paranoia
+just the recognition that you will eventually run the wrong command in the wrong
+directory at 2am.
+
+---
+
+# Our servers
+
+You have two machines for this course. Addresses handed out in class, put them in your
+`.Renviron` or `~/.ssh/config` as `mkt699a` and `mkt699b`.
+
+```bash
+ssh mkt699a
+```
+
+--
+
+&lt;br&gt;
+
+You must be on a **USC network or the USC VPN** to reach them. These are internal
+addresses; they do not resolve from a coffee shop.
+
+---
+
+# Why you need them
+
+Annotating 200k reviews takes hours. Sometimes a day.
+
+--
+
+&lt;br&gt;
+
+You do not want that job on your laptop, because your laptop closes, sleeps, runs out
+of battery, and goes home with you.
+
+--
+
+&lt;br&gt;
+
+.large2[A measurement pipeline that has to be restarted four times is a measurement
+pipeline that never finishes.]
+
+---
+
+# Connecting
+
+```bash
+ssh you@mkt699a
+```
+
+--
+
+Move files with `scp` or, better, `rsync`:
+
+```bash
+rsync -avz data/raw/ you@mkt699a:~/project/data/raw/
+```
+
+--
+
+&lt;br&gt;
+
+`rsync` only transfers what changed. When you are moving 40GB of scraped HTML for the
+third time, this matters.
+
+---
+
+# The thing that actually saves you: `tmux`
+
+```bash
+ssh you@mkt699a
+tmux new -s annotate
+
+# start your annotation job
+Rscript code/03-measure.R
+
+# Ctrl-b, then d   -&gt; detach. job keeps running.
+# ... close laptop, go home, sleep ...
+
+ssh you@mkt699a
+tmux attach -t annotate     # still going
+```
+
+--
+
+&lt;br&gt;
+
+Learn this in week 1. You will need it in week 4.
+
+---
+
+# Two servers, one warning
+
+Pick one and stay on it for a given project.
+
+--
+
+&lt;br&gt;
+
+Your data is on the machine you put it on. There is no shared filesystem between them.
+The most common failure I expect: you run half a pipeline on one server, half on the
+other, and cannot reproduce either.
+
+--
+
+&lt;br&gt;
+
+Put the server name in your README.
+
+---
+class: inverse, center, middle
+name: env
+
+# Environments and dependencies
+
+---
+
+# The problem
+
+Your code works. Six months later a referee asks you to rerun it. It does not work.
+
+--
+
+Something upgraded. A package changed a default. `data.table` deprecated something.
+A function you relied on was removed.
+
+--
+
+&lt;br&gt;
+
+This was always annoying. It is now worse, because **model APIs change too**, and
+unlike a package, you cannot pin a model version forever.
+
+---
+
+# R: `renv`
+
+```r
+renv::init()      # snapshot current state
+renv::snapshot()  # after adding packages
+renv::restore()   # on another machine, or in 2 years
+```
+
+Creates `renv.lock` recording exact package versions. Commit it.
+
+--
+
+# Python: `uv`
+
+```bash
+uv init
+uv add anthropic pandas polars
+uv run python 03-measure.py
+```
+
+Fast, and produces a lockfile. Commit `uv.lock`.
+
+---
+
+# The part that is genuinely unsolved
+
+You cannot `renv::snapshot()` a model.
+
+--
+
+&lt;br&gt;
+
+`claude-sonnet-4-5` today and `claude-sonnet-4-5` in eighteen months may not be the same
+artifact. Providers deprecate model versions. Behavior drifts.
+
+--
+
+&lt;br&gt;
+
+**What you can do:**
+
+- Record the exact model string and the date accessed
+- Save the raw model outputs, not just the derived variable
+- Keep your validation sample, so a future you can re-validate
+
+--
+
+That third one is the important one. If you saved the gold-standard labels, you can
+re-run the measurement with a new model and check whether your conclusions survive.
+
+---
+class: inverse, center, middle
+name: ai
+
+# Setting up your AI workflow
+
+---
+
+# We are all using VS Code
+
+I am standardizing the class on **VS Code**. Install it before next week.
+
+https://code.visualstudio.com
+
+--
+
+&lt;br&gt;
+
+You may already have a setup you like, RStudio, Jupyter, PyCharm, Emacs. Keep it for
+your own work if you want.
+
+But when you are stuck in office hours and I am looking at your screen, I want us
+looking at the same thing.
+
+---
+
+# Why VS Code specifically
+
+Because it is the one editor that does **all** of this at once:
+
+--
+
+- **R** and **Python** in the same window, same project
+- An integrated **terminal**: the shell we just covered, no separate app
+- **Git** built in: stage, diff, and commit visually while you learn the commands
+- **Remote-SSH**: edit files *on our servers* as if they were local
+- Native home for **coding agents**
+
+--
+
+&lt;br&gt;
+
+That fourth one is the reason. You are going to be working on the servers a lot.
+
+---
+
+# Extensions to install
+
+In VS Code, open Extensions (`Cmd/Ctrl+Shift+X`) and install:
+
+--
+
+.small90[
+| Extension | What it gives you |
+|:--|:--|
+| **R** (REditorSupport) | R language support, run code in a terminal |
+| **Python** (Microsoft) | Python, notebooks, environments |
+| **Remote - SSH** | Work directly on our servers |
+| **Quarto** | Reproducible documents for assignments |
+| **Claude Code** *(or your agent)* | The coding agent, in the editor |
+]
+
+--
+
+&lt;br&gt;
+
+We will do this together at the end of class. Bring your laptop.
+
+---
+
+# Remote-SSH is the one to learn
+
+```
+Cmd/Ctrl+Shift+P  -&gt;  "Remote-SSH: Connect to Host"
+                  -&gt;  you@mkt699a
+```
+
+--
+
+&lt;br&gt;
+
+Now VS Code is running *on the server*. Your files, your terminal, your agent, all
+there. The editor just happens to be displayed on your laptop.
+
+--
+
+&lt;br&gt;
+
+.large2[This is how you work on data that will never fit on your laptop.]
+
+--
+
+No more editing locally, `scp`-ing up, running, `scp`-ing results back, and losing
+track of which copy is current.
+
+---
+
+# The three things you need
+
+**1. An editor.** VS Code. Settled.
+
+--
+
+**2. A coding agent.** Claude Code, Codex, or Cursor, all run inside VS Code.
+
+I am not neutral: I use Claude Code for most of my own work. Use what you like, but it
+must be an agent that reads your **whole repo**, not a chat window you paste into.
+
+--
+
+**3. API access.** For the Week 4–5 measurement pipeline.
+
+--
+
+&lt;br&gt;
+
+That third one catches people out. A ChatGPT Plus or Claude Pro subscription does
+**not** give you an API key. They are separate products, billed separately.
+
+---
+
+# The cost question
+
+You will be making tens of thousands of API calls for your project.
+
+--
+
+Rough orders of magnitude for annotation with a mid-tier model:
+
+- 10k short documents: a few dollars
+- 200k short documents: tens of dollars
+- Long documents with reasoning: multiply by 10–50
+
+--
+
+&lt;br&gt;
+
+This is cheap relative to hiring RAs. That is the entire reason this literature exists.
+
+But it is **not free**, and a runaway loop can burn real money. We will cover batching,
+caching, and rate limiting in Week 3.
+
+--
+
+Talk to me if cost is a constraint. There is departmental funding.
+
+---
+
+# A warning I want to give early
+
+The tools are good. They will make you fast.
+
+--
+
+&lt;br&gt;
+
+They will also make you fast at being **wrong**, and they will do it in a way that feels
+exactly like being right.
+
+--
+
+&lt;br&gt;
+
+There is no phenomenological difference between reading correct model output and
+reading confidently incorrect model output. None. The subjective experience is
+identical.
+
+--
+
+&lt;br&gt;
+
+.large2[The only defense is process.]
+
+That is what next week is about.
+
+---
+
+# Next week
+
+**AI-assisted analysis and the verification problem.**
+
+We spend the session on failure modes: silent merge errors, sample-selection changes,
+misapplied clustering, fabricated variable definitions, hallucinated citations.
+
+--
+
+&lt;br&gt;
+
+**In-class lab:** I will hand you a complete analysis produced by an AI agent from a
+dirty dataset. It runs. It produces a clean table. It is wrong in at least six ways.
+
+Find them.
+
+---
+
+# Before next class
+
+1. **Create your repository** on your own GitHub account, using the structure from
+   today. Add `dadepro` as a collaborator and send me the URL.
+
+2. **Install** VS Code (with the extensions above), R, Python (via `uv`), git, and a
+   coding agent.
+
+3. **Log in to a server** (either one) and start a `tmux`
+   session. Just prove to yourself you can do it.
+
+4. **Get API access** to at least one model provider.
+
+5. **Start thinking about your question.** Week 2 milestone is one paragraph. Come with
+   two or three candidates and we will talk about which is feasible.
+
+--
+
+&lt;br&gt;
+
+Office hours: TBD. Come early in the semester rather than late, a project that is
+badly scoped in Week 2 cannot be rescued in Week 6.
+
+---
+class: inverse, center, middle
+
+# Questions?
+
+### Let's set up API keys.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "highlightSpans": true,
+  "countIncrementalSlides": false,
+  "ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -1,0 +1,2522 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>MKT699: Empirical Methods in Marketing</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Davide Proserpio" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# MKT699: Empirical Methods in Marketing
+]
+.subtitle[
+## Lecture 3: Data Acquisition, Storage, and Provenance
+]
+.author[
+### Davide Proserpio
+]
+.institute[
+### Marshall School of Business
+]
+.date[
+### Fall 2026
+]
+
+---
+
+
+&lt;style type="text/css"&gt;
+/* base sizing -- bumped up for classroom projection */
+.remark-slide-content {
+  font-size: 23px;
+  padding: 1em 3em 1.5em 3em;
+}
+.remark-slide-content h1 { font-size: 46px; }
+.remark-slide-content h2 { font-size: 38px; }
+.remark-slide-content h3 { font-size: 30px; }
+
+/* code -- wrap rather than overflow the slide */
+.remark-code, .remark-inline-code {
+  font-size: 20px;
+}
+.remark-slide-content pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.remark-code-line {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* tables */
+.remark-slide-content table {
+  font-size: 21px;
+}
+
+.large2 { font-size: 165% }
+.small90 { font-size: 92% }
+.small75 { font-size: 82% }
+&lt;/style&gt;
+
+
+
+# Where we left off
+
+Last week was about verifying **code**. The model wrote something, it ran, and the
+question was whether it did what you thought.
+
+--
+
+&lt;br&gt;
+
+Today is about verifying **data**. Where did the rows come from, are they all there, and
+can you prove it in eighteen months.
+
+--
+
+&lt;br&gt;
+
+.large2[Same problem, one level down.]
+
+---
+
+# Table of contents
+
+1. [When your data outgrows memory](#memory)
+
+2. [SQL and relational databases](#sql)
+
+3. [Collecting data: APIs](#apis)
+
+4. [Scraping, honestly](#scraping)
+
+5. [How LLMs changed data collection](#llm)
+
+6. [Provenance and documentation](#provenance)
+
+7. [Sharing data and code](#sharing)
+
+---
+class: inverse, center, middle
+name: memory
+
+# When your data outgrows memory
+
+---
+
+# The moment it happens
+
+You have been working fine for two months. Then you get the full panel instead of the
+sample, and R dies.
+
+--
+
+&lt;br&gt;
+
+```
+Error: cannot allocate vector of size 4.2 Gb
+```
+
+--
+
+&lt;br&gt;
+
+Almost every marketing PhD student hits this. What happens next determines a lot.
+
+---
+
+# The two bad responses
+
+**Response 1: panic and buy nothing.** You spend three weeks writing chunked loops that
+process the file 100k rows at a time, badly, with a bug in the last chunk.
+
+--
+
+&lt;br&gt;
+
+**Response 2: subsample and never mention it.**
+
+You take a 10% random sample "for development," write the whole paper on it, and never
+go back. Or worse. You take the first 10 million rows, which is not a random sample,
+it is whatever the file was sorted by.
+
+--
+
+&lt;br&gt;
+
+.large2[Response 2 is the one that ends up in papers.]
+
+---
+
+# What actually fits
+
+Rough arithmetic, and it is worth doing it before you start.
+
+--
+
+- A numeric (double) column: **8 bytes per row**
+- An integer column: 4 bytes
+- A character column: highly variable, often 50--100+ bytes per row
+- A date: 8 bytes
+
+--
+
+&lt;br&gt;
+
+10M rows × 30 numeric columns ≈ **2.4 GB**.
+
+100M rows × 30 numeric columns ≈ **24 GB**.
+
+---
+
+# But that is the loaded size
+
+You do not get to use all your RAM.
+
+--
+
+&lt;br&gt;
+
+R copies. A `merge`, a `rbind`, a `mutate` on a data.frame, each one can duplicate the
+object. `data.table` avoids some of this with `:=`, but not all of it.
+
+--
+
+&lt;br&gt;
+
+**Working rule:** if the object is more than about **one third** of your RAM, you are
+going to have a bad time.
+
+--
+
+&lt;br&gt;
+
+16 GB laptop → keep it under ~5 GB. 64 GB workstation → under ~20 GB.
+
+---
+
+# Three real options
+
+--
+
+**(a) Put it in a database.** Query what you need, when you need it.
+
+--
+
+**(b) Use out-of-core tools.** `duckdb`, `arrow`. SQL and dplyr verbs that stream from
+disk without loading everything.
+
+--
+
+**(c) Get a bigger machine.**
+
+--
+
+&lt;br&gt;
+
+Option (c) is the one people skip. It is very often the right answer.
+
+---
+
+# In defense of just getting more RAM
+
+Your time is worth more than the machine.
+
+--
+
+&lt;br&gt;
+
+Three weeks of engineering a chunked pipeline, versus a machine with 256 GB of RAM where
+the naive code just works.
+
+--
+
+&lt;br&gt;
+
+You have access to CARC, the USC cluster we talked about in Week 1. Nodes there have
+far more memory than your laptop, and it costs you nothing.
+
+--
+
+&lt;br&gt;
+
+.large2[If your problem fits on a bigger machine, use a bigger machine.]
+
+---
+class: inverse, center, middle
+name: sql
+
+# SQL and relational databases
+
+---
+
+# Why this still matters
+
+Three reasons, and none of them is "SQL is a nice language."
+
+--
+
+**1. Structure is enforced.** A column declared `INTEGER` cannot silently become
+character because one row had a stray comma. Last week's entire Section 6.
+
+--
+
+**2. Data bigger than memory is normal.** The database was designed for it. Your laptop's
+R session was not.
+
+--
+
+**3. One source of truth.** Your coauthor and you query the same table. Nobody is
+emailing `listings_final_v3_USE_THIS.csv`.
+
+---
+
+# Core SQL, quickly
+
+
+``` r
+SELECT state,
+       room_type,
+       COUNT(*)   AS n_listings,
+       AVG(price) AS mean_price
+FROM airbnb_sample
+WHERE price &gt; 0
+GROUP BY state, room_type
+HAVING COUNT(*) &gt;= 50
+ORDER BY n_listings DESC;
+
+-- state room_type        n_listings  mean_price
+-- NY    Entire home/apt       32543         233
+-- CA    Entire home/apt       29719         251
+-- NY    Private room          17973         103
+```
+
+--
+
+&lt;br&gt;
+
+That is most of what you will write. `SELECT`, `WHERE`, `GROUP BY`, `ORDER BY`.
+
+--
+
+I am not going to drill this. Ask a model, it will write correct SQL faster than I can
+explain it.
+
+---
+
+# What I do want you to know cold
+
+.large2[JOIN semantics.]
+
+--
+
+&lt;br&gt;
+
+Not the syntax. The **semantics**, which rows survive, which rows duplicate, and which
+rows disappear.
+
+--
+
+&lt;br&gt;
+
+This is the same content as last week's silent merge errors, in a different language.
+
+---
+
+# The joins
+
+
+``` r
+-- keeps only rows with a match on both sides
+SELECT COUNT(*) FROM airbnb_sample l
+INNER JOIN zip_market z ON l.zipcode = z.zip;
+-- 199236
+
+-- keeps ALL rows of listings; NULLs where no match
+SELECT COUNT(*) FROM airbnb_sample l
+LEFT JOIN zip_market z ON l.zipcode = z.zip;
+-- 200000
+```
+
+--
+
+&lt;br&gt;
+
+`INNER` silently drops. `LEFT` preserves and marks.
+
+--
+
+**Default to `LEFT`.** Then count the NULLs. That count is information; an inner join
+throws it away.
+
+---
+
+# The anti-join
+
+
+``` r
+-- which listings have NO matching zip?
+SELECT l.zipcode, l.city, l.state, COUNT(*) n
+FROM airbnb_sample l
+LEFT JOIN zip_market z ON l.zipcode = z.zip
+WHERE z.zip IS NULL
+GROUP BY l.zipcode, l.city, l.state
+ORDER BY n DESC;
+
+-- zipcode  city           state   n
+-- NULL      New York       NY     93
+-- NULL      Los Angeles    CA     45
+-- NULL      San Francisco  CA     27
+```
+
+--
+
+&lt;br&gt;
+
+Or, more readably in a modern database:
+
+
+``` r
+SELECT * FROM airbnb_sample
+WHERE zipcode NOT IN (SELECT zip FROM zip_market);
+```
+
+---
+
+# Why I am making a fuss about this
+
+.large2[The anti-join is the single most underused diagnostic tool in empirical work.]
+
+--
+
+&lt;br&gt;
+
+Run it on our data and the 764 unmatched rows explain themselves:
+
+
+``` r
+unmatched[, .N, by = nchar(zipcode)][order(-N)]
+#    nchar     N
+# 1:    NA   649     &lt;- missing
+# 2:    10    71     &lt;- ZIP+4
+# 3:     6    25     &lt;- malformed
+```
+
+--
+
+&lt;br&gt;
+
+Every join has a question attached to it: **what did not match?**
+
+--
+
+Almost nobody asks. They run the join, check that the row count is plausible, and move
+on.
+
+--
+
+&lt;br&gt;
+
+Run it and the unmatched rows will show you one of three things: a **formatting** problem
+(stripped leading zeros, whitespace, case), a **coverage** problem (your crosswalk ends in
+2018 and your panel runs to 2021), or a **substantive pattern**: the unmatched are all
+one city, one host type, one quarter.
+
+--
+
+That third case is the one that matters. Non-random attrition in a merge is a selection
+problem wearing a technical costume.
+
+---
+
+# Make this a habit
+
+
+``` r
+library(data.table)
+
+merged &lt;- merge(listings, zip_market, by.x = "zipcode", by.y = "zip",
+                all.x = TRUE)
+
+# always, immediately, no exceptions
+unmatched &lt;- listings[!zip_market, on = .(zipcode = zip)]
+
+nrow(unmatched)                              # 764
+unmatched[, .N, by = city][order(-N)][1:5]
+unmatched[, .N, by = nchar(zipcode)]
+```
+
+--
+
+&lt;br&gt;
+
+Three lines. Do it after every single join in your pipeline.
+
+--
+
+If it returns zero rows, you have learned something. If it returns 400,000 rows, you have
+learned a great deal more.
+
+---
+
+# Indexes, and why your query is slow
+
+An index is a sorted lookup structure on a column. Without one, the database reads every
+row.
+
+--
+
+&lt;br&gt;
+
+
+``` r
+CREATE INDEX idx_airbnb_state_room ON airbnb_sample(state, room_type);
+```
+
+--
+
+&lt;br&gt;
+
+A query on `state` goes from scanning every row to jumping straight to the right block.
+
+Seconds instead of minutes.
+
+---
+
+# But here is the thing
+
+Most of you do not need MySQL or Postgres.
+
+--
+
+&lt;br&gt;
+
+Setting up a server, managing users, loading data through an ETL step. That is real
+overhead, and for a single-researcher project it buys you very little.
+
+--
+
+&lt;br&gt;
+
+.large2[Use **DuckDB**.]
+
+---
+
+# DuckDB
+
+An embedded analytical database. No server. No daemon. It is a library.
+
+--
+
+&lt;br&gt;
+
+- Runs inside your R or Python process
+- Queries **parquet and CSV files directly**, no import step
+- Columnar and vectorized, built for analytical queries
+- Streams from disk, so "bigger than RAM" is the normal case, not the exception
+
+--
+
+&lt;br&gt;
+
+It is SQLite's shape with a column store's engine.
+
+---
+
+# What it looks like
+
+
+``` r
+library(duckdb)
+library(DBI)
+
+con &lt;- dbConnect(duckdb())
+
+dbGetQuery(con, "
+  SELECT state,
+         room_type,
+         COUNT(*)   AS n,
+         AVG(price) AS mean_price
+  FROM 'data/airbnb_parquet/*.parquet'
+  WHERE price BETWEEN 10 AND 5000
+  GROUP BY state, room_type
+  ORDER BY n DESC
+")
+#   state  room_type            n  mean_price
+# 1    NY  Entire home/apt  32541       232.5
+# 2    CA  Entire home/apt  29716       251.2
+# 3    NY  Private room     17973       102.5
+```
+
+--
+
+&lt;br&gt;
+
+There is no `CREATE TABLE`. There is no `LOAD DATA INFILE`. It reads the parquet files
+where they sit.
+
+--
+
+&lt;br&gt;
+
+Those four files are in the course repo. **Run this one.** Note the `*`. It reads all
+four as if they were one table.
+
+---
+
+# The part that surprises people
+
+That query works on **40 GB of parquet from a 16 GB laptop**.
+
+--
+
+&lt;br&gt;
+
+DuckDB reads only the columns you asked for (`state`, `room_type`, `price`, not the other
+80), only the row groups that can contain matching rows, and aggregates in a streaming
+fashion.
+
+--
+
+&lt;br&gt;
+
+Peak memory: a few hundred MB.
+
+--
+
+&lt;br&gt;
+
+This is the single most useful practical thing in today's lecture.
+
+---
+
+# You can also skip SQL entirely
+
+
+``` r
+library(duckdb)
+
+# DuckDB can also query a data.table in memory directly
+result &lt;- dbGetQuery(con, "
+  SELECT state, room_type, COUNT(*) AS n, AVG(price) AS mean_price
+  FROM 'data/airbnb_parquet/*.parquet'
+  WHERE price &gt; 0
+  GROUP BY state, room_type
+")
+
+setDT(result)
+```
+
+--
+
+&lt;br&gt;
+
+`dbplyr` translates the verbs into SQL and pushes them into DuckDB. You write dplyr, the
+database does the work.
+
+--
+
+`collect()` is where it runs and where the result comes back into R. Everything before it
+is lazy.
+
+---
+
+# When you DO want a real server
+
+- Multiple people writing to the same data concurrently
+- Data that must live somewhere central with access control
+- A production system, or a long-lived research infrastructure
+- Your data provider hands you a Postgres connection string and that is that
+
+--
+
+&lt;br&gt;
+
+Then: Postgres. Not MySQL, if you get a choice, Postgres has better analytical
+functions and better type handling.
+
+--
+
+&lt;br&gt;
+
+For an individual dissertation chapter, DuckDB over parquet is almost always right.
+
+---
+
+# Parquet vs CSV
+
+.large2[Stop shipping CSVs.]
+
+--
+
+&lt;br&gt;
+
+**CSV:** a text file with commas. It has no types. Every read is a guess.
+
+--
+
+**Parquet:** columnar binary format with a schema.
+
+- Types are stored and preserved
+- Compressed. Our sample: **28.5 MB as CSV, 7.2 MB as parquet**, 4× smaller, and it
+  still knows `zipcode` is text
+- Columnar: reading 3 of 80 columns reads ~3/80 of the bytes
+- Row-group statistics let readers skip blocks entirely
+
+---
+
+# The types argument alone should convince you
+
+Last week: leading zeros stripped from ZIP codes, dates read as strings, IDs read as
+doubles losing precision, `"NA"` becoming a character level.
+
+--
+
+&lt;br&gt;
+
+Every one of those is a **CSV** problem. Parquet stores that `zip` is `VARCHAR` and hands
+it back as `VARCHAR`.
+
+--
+
+&lt;br&gt;
+
+
+``` r
+library(arrow)
+write_parquet(clean_panel, "data/clean/panel.parquet")
+panel &lt;- read_parquet("data/clean/panel.parquet")   # types intact
+```
+
+---
+class: inverse, center, middle
+name: apis
+
+# Collecting data: APIs
+
+---
+
+# The hierarchy
+
+--
+
+1. **Someone already assembled it.** Nielsen, Kilts, Compustat, IRI, the library's
+   subscriptions. Check first.
+
+--
+
+2. **There is an API**: an application programming interface, a documented way to
+   request the data programmatically. Use it.
+
+--
+
+3. **There is no API.** Now we talk about scraping.
+
+--
+
+&lt;br&gt;
+
+.large2[Most people skip step 1 and half of them skip step 2.]
+
+---
+
+# Why APIs first, always
+
+- The data is **structured**. You get JSON, a machine-readable text format with
+  labelled fields, not HTML you have to parse.
+- It is **stable**. HTML changes weekly; APIs are versioned.
+- It is **documented**. You know what each field means.
+- It is **sanctioned**. You are not in a legal gray zone.
+- It has **explicit rate limits**, so you know what you are allowed to do.
+
+--
+
+&lt;br&gt;
+
+Scraping is what you do when none of that is available. It is not the default.
+
+---
+
+# Authentication
+
+Nearly every API needs a key. That key is a credential.
+
+--
+
+&lt;br&gt;
+
+```bash
+# ~/.Renviron  -- NOT in your repo, NOT in git
+CENSUS_API_KEY=abc123...
+ANTHROPIC_API_KEY=sk-ant-...
+YELP_API_KEY=...
+```
+
+
+``` r
+key &lt;- Sys.getenv("CENSUS_API_KEY")
+```
+
+--
+
+&lt;br&gt;
+
+.large2[Week 1's rule, restated: **never commit a key**.]
+
+--
+
+Check your `.gitignore` right now. `.Renviron`, `.env`, `*_key.txt`.
+
+---
+
+# A basic request
+
+
+``` r
+library(httr2)
+library(jsonlite)
+
+resp &lt;- request("https://api.example.com/v1/listings") %&gt;%
+  req_headers(Authorization = paste("Bearer", Sys.getenv("API_KEY"))) %&gt;%
+  req_url_query(city = "los-angeles", limit = 50) %&gt;%
+  req_perform()
+
+dat &lt;- resp_body_json(resp)
+```
+
+--
+
+&lt;br&gt;
+
+That gets you 50 rows. You need 400,000. Everything interesting is in what comes next.
+
+---
+
+# Pagination
+
+APIs never hand you everything at once.
+
+
+``` r
+fetch_page &lt;- function(offset) {
+  request("https://api.example.com/v1/listings") %&gt;%
+    req_headers(Authorization = paste("Bearer", Sys.getenv("API_KEY"))) %&gt;%
+    req_url_query(city = "los-angeles", limit = 50, offset = offset) %&gt;%
+    req_perform() %&gt;%
+    resp_body_json()
+}
+
+all_pages &lt;- list()
+offset &lt;- 0
+repeat {
+  page &lt;- fetch_page(offset)
+  if (length(page$results) == 0) break
+  all_pages[[length(all_pages) + 1]] &lt;- page$results
+  offset &lt;- offset + 50
+}
+```
+
+--
+
+Common schemes: offset/limit, page numbers, and **cursor tokens** (the response tells you
+where to continue). Read the docs; guessing wastes a day.
+
+---
+
+# The pagination trap
+
+Many APIs cap total results. You request 400,000 and the API quietly stops at 10,000.
+
+--
+
+&lt;br&gt;
+
+Your loop terminates. You have data. Nothing errored.
+
+--
+
+&lt;br&gt;
+
+**You now have a non-random 10,000-row sample**, ordered by whatever the API's default
+sort is, usually relevance or recency.
+
+--
+
+&lt;br&gt;
+
+Check the documented maximum. Then check whether your collected count is suspiciously
+round.
+
+---
+
+# Rate limits and backoff
+
+Every API has a rate limit. Exceed it and you get `429 Too Many Requests`. Exceed it
+aggressively and you get banned.
+
+
+``` r
+req %&gt;% req_throttle(capacity = 10, fill_time_s = 60)   # 10 req/min
+```
+
+--
+
+&lt;br&gt;
+
+And when a request fails transiently, do not retry immediately in a tight loop. That is
+how you get banned instead of throttled.
+
+--
+
+
+``` r
+resp &lt;- request(url) %&gt;%
+  req_retry(
+    max_tries = 5,
+    backoff = function(i) 2^i,          # 2, 4, 8, 16, 32 seconds
+    is_transient = function(resp) resp_status(resp) %in% c(429, 500, 502, 503)
+  ) %&gt;%
+  req_perform()
+```
+
+--
+
+&lt;br&gt;
+
+Note `is_transient`. A `404` is not transient, the resource does not exist. Retrying it
+five times is pointless.
+
+--
+
+A `429` and a `503` are transient. Wait and try again.
+
+---
+
+# Cache every response to disk
+
+.large2[Never request the same thing twice.]
+
+--
+
+&lt;br&gt;
+
+Write the **raw response**, before parsing, before cleaning.
+
+
+``` r
+dir.create("data/raw/api/listings", recursive = TRUE, showWarnings = FALSE)
+
+save_raw &lt;- function(id, resp) {
+  writeLines(resp_body_string(resp),
+             sprintf("data/raw/api/listings/%s.json", id))
+}
+```
+
+--
+
+&lt;br&gt;
+
+Save-then-parse, never parse-then-save. If you keep only the parsed data frame, you have
+baked your parsing assumptions into the only copy of the data you have.
+
+--
+
+&lt;br&gt;
+
+API calls cost money or quota, the endpoint may disappear, and you *will* discover a
+parsing bug three weeks in and need to reparse without recollecting.
+
+This is Week 1's raw-data immutability rule, applied at the moment of collection.
+
+---
+
+# Idempotent collection
+
+.large2[Your collection script must be interruptible and resumable.]
+
+--
+
+&lt;br&gt;
+
+It will run for six hours. Your laptop will sleep, the VPN will drop, the API will have
+an outage, or you will hit Ctrl-C by accident.
+
+--
+
+&lt;br&gt;
+
+If restarting means starting over, you have a script you are afraid of. And a script you
+are afraid of does not get rerun, which means it does not get fixed.
+
+---
+
+# The pattern
+
+
+``` r
+collect_all &lt;- function(ids, outdir = "data/raw/api/listings") {
+  dir.create(outdir, recursive = TRUE, showWarnings = FALSE)
+
+  # 1. what do I already have?
+  have &lt;- tools::file_path_sans_ext(list.files(outdir, pattern = "\\.json$"))
+
+  # 2. what is still missing?
+  todo &lt;- setdiff(as.character(ids), have)
+  message(sprintf("%d done, %d remaining", length(have), length(todo)))
+
+  # 3. request only that
+  for (id in todo) {
+    resp &lt;- try(fetch_one(id), silent = TRUE)
+    if (inherits(resp, "try-error")) { log_failure(id); next }
+    writeLines(resp, file.path(outdir, paste0(id, ".json")))
+  }
+}
+```
+
+--
+
+Run it again and it picks up where it stopped. Run it after it finishes and it does
+nothing.
+
+---
+
+# Log the collection itself
+
+
+``` r
+log_entry &lt;- data.frame(
+  id          = id,
+  url         = url,
+  status      = resp_status(resp),
+  n_returned  = length(dat$results),
+  accessed_at = Sys.time(),
+  api_version = "v1"
+)
+```
+
+--
+
+&lt;br&gt;
+
+When a referee asks "when was this collected?" you have an answer with a timestamp
+instead of "sometime last spring."
+
+--
+
+When your 2019 counts look wrong, you can check whether those were collected on the day
+the API was returning garbage.
+
+---
+class: inverse, center, middle
+name: scraping
+
+# Scraping, honestly
+
+---
+
+# The disclaimer, up front
+
+.large2[I am not a lawyer. This is not legal advice.]
+
+--
+
+&lt;br&gt;
+
+I am going to describe the landscape as I understand it, because you need to know it
+exists. Not so you can make a legal determination yourself.
+
+--
+
+&lt;br&gt;
+
+**For anything sensitive, or anything you plan to publish: talk to me first, and if it
+involves personal data, talk to USC's IRB and to the general counsel's office.**
+
+--
+
+Those conversations take a week. Doing them after collection takes a year.
+
+---
+
+# The four things that create exposure
+
+--
+
+**1. Terms of service.** The site's contract with users. A ToS violation is a contract
+issue, not usually a criminal one. But it is real, and it can matter for publication.
+
+--
+
+**2. Computer Fraud and Abuse Act (CFAA).** The federal anti-hacking statute. Turns on
+"unauthorized access."
+
+--
+
+**3. Load and disruption.** If you degrade someone's service, the analysis changes
+regardless of what the ToS says.
+
+--
+
+**4. Personal data.** GDPR (EU) and CCPA (California). Separate legal regime entirely.
+
+---
+
+# On the CFAA
+
+*hiQ Labs v. LinkedIn* is the case people cite.
+
+--
+
+&lt;br&gt;
+
+Broadly: US courts in that line of cases have been **reluctant to treat scraping of
+publicly accessible web pages as "unauthorized access" under the CFAA**. The Supreme
+Court's decision in *Van Buren* (2021) also narrowed how broadly "exceeds authorized
+access" is read.
+
+--
+
+&lt;br&gt;
+
+That is the general direction. It is not a green light, and I am stating it at a level of
+generality on purpose.
+
+--
+
+&lt;br&gt;
+
+And it applies to **public** pages. It says nothing about anything behind a **login** or a
+**paywall**, about **circumventing** CAPTCHAs or IP blocks, or about ignoring a
+cease-and-desist after you have received one.
+
+--
+
+.large2[Logging in changes the analysis. Do not treat it as a detail.]
+
+---
+
+# Personal data is its own problem
+
+CFAA questions and privacy questions are separate. Winning one does not settle the other.
+
+--
+
+&lt;br&gt;
+
+If you are collecting data about **identifiable individuals**, names, reviews tied to
+profiles, photos, locations, employment histories. You may be in scope for GDPR or CCPA
+regardless of whether the pages were public.
+
+--
+
+&lt;br&gt;
+
+You may also be doing **human subjects research**, which is an IRB question.
+
+--
+
+&lt;br&gt;
+
+Public availability is not consent. Those are different concepts.
+
+---
+
+# The honest summary
+
+Recent US case law has generally been more permissive about scraping publicly accessible
+pages than the pre-2019 conventional wisdom assumed.
+
+--
+
+&lt;br&gt;
+
+**And** ToS violations, server load, authentication barriers, and personal data are all
+live sources of exposure that case law does not resolve.
+
+--
+
+&lt;br&gt;
+
+**And** none of that is a determination anyone in this room is qualified to make about
+your specific project.
+
+--
+
+&lt;br&gt;
+
+.large2[Come talk to me before you collect, not after.]
+
+---
+
+# Being a good citizen
+
+Separate from what you are permitted to do: what you should do.
+
+--
+
+**Rate limit yourself.** One request every 1--3 seconds is polite. Ten concurrent workers
+hammering a small business's website is not.
+
+--
+
+**Identify your scraper.**
+
+
+``` r
+req_headers(req,
+  `User-Agent` = "USC-Marshall-research (proserpi@marshall.usc.edu)")
+```
+
+--
+
+A real contact address means someone emails you before they block you.
+
+--
+
+**Read `robots.txt`.** Not legally binding, but a clear statement of the operator's
+wishes. And disregarding it looks bad in exactly the situation where you need it to look
+good.
+
+--
+
+**Cache aggressively**, never fetch a page twice, and **stop when asked**. If you get a
+cease-and-desist, you stop and you come talk to me.
+
+---
+
+# The tools
+
+**Static HTML**: the page's content is in the source.
+
+
+``` r
+library(rvest)
+page  &lt;- read_html("https://example.com/listing/123")
+price &lt;- page %&gt;% html_element(".price") %&gt;% html_text2()
+```
+
+--
+
+&lt;br&gt;
+
+Python: `requests` + `BeautifulSoup` or `lxml`.
+
+--
+
+Test: view source. If the number you want is in there, you are in the easy case.
+
+---
+
+# JS-heavy pages
+
+If the content is loaded by JavaScript after the page renders, `rvest` gets you an empty
+shell.
+
+--
+
+&lt;br&gt;
+
+**Option 1, find the underlying API.** Open your browser's network tab, reload, and look
+at the XHR requests. Very often the page is calling a JSON endpoint that you can call
+directly.
+
+--
+
+&lt;br&gt;
+
+.large2[Do this before reaching for a browser. It works more often than you expect.]
+
+--
+
+It is faster, more stable, and gives you structured data instead of HTML.
+
+--
+
+&lt;br&gt;
+
+**Option 2, drive a real browser.** Playwright (the current default), Selenium, or
+`chromote` in R. They render, click, scroll, and extract.
+
+--
+
+Cost: 10--100× slower, far more fragile, and much heavier on the target server, which is
+the citizenship point again.
+
+---
+
+# Mobile app traffic
+
+Last resort. Some data only exists in a mobile app.
+
+--
+
+&lt;br&gt;
+
+You can proxy the phone's traffic through your machine and inspect the API calls the app
+makes. `mitmproxy` is the usual tool.
+
+--
+
+&lt;br&gt;
+
+Two warnings. Technically: apps increasingly use certificate pinning specifically to
+prevent this.
+
+--
+
+Legally: this is further from "reading a public web page" than anything else on this
+list. **Do not do this without talking to me first.**
+
+---
+
+# Scrapers break
+
+.large2[Every scraper you write will break. The only question is when you notice.]
+
+--
+
+&lt;br&gt;
+
+A CSS class gets renamed. A field moves. A layout gets an A/B test. An anti-bot system
+gets deployed.
+
+--
+
+&lt;br&gt;
+
+For a one-shot collection this is annoying. For **panel data** it is fatal.
+
+---
+
+# The panel problem
+
+Your project needs prices observed weekly for six months.
+
+--
+
+&lt;br&gt;
+
+That is a scraper running unattended for 26 weeks. On week 9, the site changes its
+markup.
+
+--
+
+&lt;br&gt;
+
+Your scraper does not error. `html_element(".price")` returns `NA`. Your loop writes a
+row with a missing price and continues.
+
+--
+
+&lt;br&gt;
+
+You find out in month five that you have **17 weeks of NAs** and no way to recover them.
+The pages are gone.
+
+---
+
+# Monitoring
+
+Do not check the data at the end. Check it every run.
+
+
+``` r
+run_checks &lt;- function(dat) {
+  stopifnot(nrow(dat) &gt; 0.8 * expected_n)
+  stopifnot(mean(is.na(dat$price)) &lt; 0.05)
+  stopifnot(all(dat$price &gt; 0 &amp; dat$price &lt; 100000))
+  stopifnot(n_distinct(dat$listing_id) &gt; 0.9 * expected_ids)
+  invisible(TRUE)
+}
+```
+
+--
+
+&lt;br&gt;
+
+Assertions on the **shape** of the data, not the content. Row count, missingness rate,
+range, cardinality.
+
+---
+
+# Alerting
+
+A check that nobody reads is not a check.
+
+
+``` r
+result &lt;- try(run_checks(dat), silent = TRUE)
+
+if (inherits(result, "try-error")) {
+  send_email(
+    to      = "you@usc.edu",
+    subject = "SCRAPER FAILED: listings, run 2026-03-14",
+    body    = as.character(result)
+  )
+}
+```
+
+--
+
+&lt;br&gt;
+
+Simplest version: a cron job that emails you the row count every morning. You will notice
+a zero.
+
+--
+
+Set a calendar reminder to look at the data weekly. The technology is less important than
+the habit.
+
+---
+
+# The reproducibility problem
+
+This one is specific to scraping and it is worse than people think.
+
+--
+
+&lt;br&gt;
+
+An API you can point to. A dataset you can cite. A scrape is a snapshot of a website that
+**no longer exists**.
+
+--
+
+&lt;br&gt;
+
+Six months later the pages have changed. A referee cannot verify your data. A replicator
+cannot rebuild it.
+
+--
+
+&lt;br&gt;
+
+.large2[Neither can you.]
+
+---
+
+# Archive the raw HTML
+
+.large2[This is non-negotiable and almost nobody does it.]
+
+--
+
+&lt;br&gt;
+
+
+``` r
+fetch_and_archive &lt;- function(url, id, date_stamp) {
+  html &lt;- httr2::request(url) %&gt;%
+    httr2::req_perform() %&gt;%
+    httr2::resp_body_string()
+
+  path &lt;- sprintf("data/raw/html/%s", date_stamp)
+  dir.create(path, recursive = TRUE, showWarnings = FALSE)
+
+  # gzip: HTML compresses ~10x
+  con &lt;- gzfile(file.path(path, paste0(id, ".html.gz")), "w")
+  writeLines(html, con); close(con)
+
+  html
+}
+```
+
+--
+
+Two scripts: `01-collect.R` touches the network, `02-parse.R` never does.
+
+---
+
+# What the archive buys you
+
+- Fix a parsing bug without recollecting anything
+- Extract a field you did not think to extract in month one
+- Hand a replicator the HTML and have them reproduce your parse exactly
+- Show a referee the actual page your number came from
+
+---
+
+# "But that is a lot of disk"
+
+400,000 pages × 200 KB, gzipped at roughly 10:1 ≈ **8 GB**.
+
+--
+
+&lt;br&gt;
+
+Storage costs approximately nothing. Your data does not exist twice.
+
+--
+
+&lt;br&gt;
+
+&lt;br&gt;
+
+.large2[If you scrape and do not archive the raw pages, your data is not reproducible by
+anyone, including you.]
+
+--
+
+I will ask about this when I grade your milestone.
+
+---
+class: inverse, center, middle
+name: llm
+
+# How LLMs changed data collection
+
+---
+
+# What is genuinely new
+
+Not "the model writes the scraper faster." That is nice but it is last week's lecture.
+
+--
+
+&lt;br&gt;
+
+.large2[The new capability is **extraction from unstructured sources at scale**.]
+
+--
+
+&lt;br&gt;
+
+Sources that were previously unusable (not expensive, *unusable*) are now within reach
+of a single PhD student.
+
+---
+
+# What was previously impossible
+
+--
+
+- 40,000 PDF regulatory filings, each formatted differently
+- Scanned documents from before 1995
+- HTML where each page's structure differs because 12,000 restaurants each built their
+  own menu page
+- Product descriptions written by 200,000 different sellers with no schema
+- Numbers that exist only inside chart images in old industry reports
+- Six thousand hours of earnings calls
+
+--
+
+&lt;br&gt;
+
+The old answer was: hire RAs, or pick a different question.
+
+--
+
+Most people picked a different question. That is the important part, this changes which
+questions get asked.
+
+---
+
+# The boundary I want to draw
+
+**This lecture:** extraction. Getting a field out of a source when the field is *there*
+and the problem is that it is formatted badly.
+
+--
+
+&lt;br&gt;
+
+**Next week:** measurement. Constructing a research construct that does not exist
+verbatim anywhere, and validating it.
+
+--
+
+&lt;br&gt;
+
+Extracting `price = 145` from a listing page is extraction.
+
+Deciding whether a review "expresses frustration with the host" is measurement.
+
+--
+
+&lt;br&gt;
+
+The line is blurrier than that, and I will come back to it.
+
+---
+
+# Structured output
+
+The mechanism that makes this work: you specify a schema, and you get typed fields back.
+
+
+``` r
+schema &lt;- list(
+  type = "object",
+  properties = list(
+    price          = list(type = "number"),
+    bedrooms       = list(type = "integer"),
+    pets_allowed   = list(type = "boolean"),
+    parking        = list(type = "string",
+                          enum = c("garage", "street", "none", "unknown")),
+    lease_months   = list(type = "integer")
+  ),
+  required = c("price", "bedrooms", "pets_allowed", "parking")
+)
+```
+
+--
+
+Not free text you regex afterwards. A JSON object with the types you asked for.
+
+---
+
+# Why the schema matters more than the prompt
+
+--
+
+**It forces you to define your variables.** You cannot write `enum = c(...)` without
+deciding what the categories are. That is a research decision, and the schema makes you
+make it explicitly.
+
+--
+
+**It makes output parseable.** No "sometimes it says 'Yes' and sometimes 'yes, pets are
+allowed'."
+
+--
+
+**It is documentation.** The schema file *is* your data dictionary. Commit it.
+
+--
+
+&lt;br&gt;
+
+Put it in `prompts/`, next to the prompt. Week 1's directory structure was not decorative.
+
+---
+
+# The `unknown` category
+
+Notice `enum = c("garage", "street", "none", "unknown")`.
+
+--
+
+&lt;br&gt;
+
+Always give the model an explicit "not stated" option.
+
+--
+
+&lt;br&gt;
+
+Without one, it will pick the most plausible value when the information is absent. You
+will get a complete column with no missingness, and the missingness will have been
+**silently imputed by a language model**.
+
+--
+
+&lt;br&gt;
+
+.large2[A field with no NAs from an unstructured source should worry you.]
+
+---
+
+# Example: product attributes
+
+Marketplace listings. Free-text descriptions, no structured attributes.
+
+
+``` r
+prompt &lt;- "Extract product attributes from this listing description.
+Return only fields explicitly stated. Use null when a field is not mentioned.
+Do not infer from the product category.
+
+Description: {description}"
+```
+
+--
+
+&lt;br&gt;
+
+Schema: `material`, `color`, `size_cm`, `warranty_months`, `country_of_origin`.
+
+--
+
+&lt;br&gt;
+
+"Do not infer from the product category" is doing real work in that prompt. Without it,
+every leather item gets `country_of_origin = "Italy"`.
+
+---
+
+# Example: contracts and filings
+
+SEC filings, franchise agreements, supplier contracts.
+
+--
+
+&lt;br&gt;
+
+Extract: effective date, counterparty names, contract value, termination clause presence,
+exclusivity terms, renewal structure.
+
+--
+
+&lt;br&gt;
+
+This used to be a law-student-army task. There are published finance and accounting
+papers whose entire contribution was hand-coding a few thousand contracts.
+
+--
+
+&lt;br&gt;
+
+That contribution is now cheap. Which means the bar moved: the contribution has to be the
+question, not the coding.
+
+---
+
+# Example: charts in old reports
+
+Industry reports from the 1990s. The underlying data is gone. There is a bar chart in a
+PDF.
+
+--
+
+&lt;br&gt;
+
+Multimodal models can read values off it.
+
+--
+
+&lt;br&gt;
+
+Approximately. With error. **Systematically** with error, possibly.
+
+--
+
+&lt;br&gt;
+
+This one needs validation more than any of the others, and "validate against the subset
+where the report also printed a table" is exactly the design you would want.
+
+---
+
+# Entity resolution
+
+The classic painful task, and one where LLMs are genuinely strong.
+
+--
+
+&lt;br&gt;
+
+```
+"Procter &amp; Gamble Co."     vs  "P&amp;G"
+"Procter and Gamble"       vs  "PROCTER &amp; GAMBLE CO"
+"Nestlé S.A."              vs  "Nestle SA"
+"Alphabet Inc. (Google)"   vs  "Google LLC"
+```
+
+--
+
+&lt;br&gt;
+
+Fuzzy string matching gets you 80% and then plateaus, because the remaining 20% requires
+**knowing that P&amp;G is Procter &amp; Gamble**. That is world knowledge, not string distance.
+
+---
+
+# The right way to do entity resolution
+
+Do not ask the model to match every pair. That is O(n²) and expensive.
+
+--
+
+&lt;br&gt;
+
+**1. Block.** Cheap filter first, same country, same industry, first letter, TF-IDF
+similarity above a threshold. Cuts the candidate set enormously.
+
+--
+
+**2. Match.** Send the surviving candidate pairs to the model.
+
+--
+
+**3. Ask for confidence.** Have it return a match probability, not just a binary.
+
+--
+
+**4. Review the middle.** Auto-accept high confidence, auto-reject low, and hand-check
+the ambiguous band. That band is usually small.
+
+---
+
+# Now the caveat
+
+.large2[Extraction is measurement.]
+
+--
+
+&lt;br&gt;
+
+I have spent ten slides telling you this is a solved data-engineering problem. It is
+mostly true and it is not entirely true.
+
+---
+
+# What an extracted field actually is
+
+.large2[Every field you extract with a model is a **generated variable**.]
+
+--
+
+&lt;br&gt;
+
+It has an error rate. That error rate is almost certainly **not random**.
+
+--
+
+&lt;br&gt;
+
+If long descriptions get extracted more accurately than short ones, and long descriptions
+come from bigger sellers, your extraction error is correlated with a variable that is in
+your regression.
+
+--
+
+&lt;br&gt;
+
+That is not noise. That is bias.
+
+---
+
+# The three questions
+
+For every extracted field, you owe an answer to:
+
+--
+
+**1. What is the error rate?** Against hand-labeled ground truth, on a sample you drew
+properly.
+
+--
+
+**2. Is the error correlated with anything?** With treatment, with time, with document
+length, with source.
+
+--
+
+**3. What does it do to your estimate?** Attenuation, or something worse.
+
+--
+
+&lt;br&gt;
+
+Next week is entirely about those three questions. I am not answering them today.
+
+--
+
+&lt;br&gt;
+
+A verbatim field (a price, a date, a name) is closer to parsing, and a few hundred
+hand-checks will do. A field requiring judgment is measurement wearing extraction's
+clothes.
+
+--
+
+.large2[When in doubt, treat it as measurement.]
+
+---
+
+# Cost control
+
+You will run this over hundreds of thousands of documents. Costs compound.
+
+--
+
+**1. Cache by content hash.**
+
+
+``` r
+key &lt;- digest::digest(paste(prompt_version, model, document))
+if (file.exists(cache_path(key))) return(readRDS(cache_path(key)))
+```
+
+--
+
+Note `prompt_version` and `model` in the hash. Change the prompt, the cache correctly
+misses. Do not hash only the document.
+
+--
+
+**2. Batch.** Most providers offer a batch API at a large discount for non-time-sensitive
+jobs. Your annotation run is not time-sensitive.
+
+--
+
+**3. Tier your models.** Cheap model for easy fields, expensive model for hard ones.
+
+--
+
+**4. Escalate on disagreement.** Run the cheap model twice at temperature &gt; 0. Where the
+runs agree, keep it; where they disagree, escalate to the expensive model. Disagreement is
+a decent proxy for difficulty, and it concentrates your spend on the hard cases.
+
+---
+
+# Test on 100 first
+
+.large2[Never launch a 400,000-document job you have not run on 100.]
+
+--
+
+&lt;br&gt;
+
+Run 100. **Read the output yourself.** All hundred.
+
+--
+
+&lt;br&gt;
+
+You will find: a field that is always null because the schema name does not match the
+prompt, a category the model never uses, an edge case you did not anticipate, or a
+systematic misreading.
+
+--
+
+&lt;br&gt;
+
+Fixing that after 100 documents costs a coffee. After 400,000 it costs your API budget
+and a week.
+
+---
+class: inverse, center, middle
+name: provenance
+
+# Provenance and documentation
+
+---
+
+# The question
+
+.large2[What does "the data" mean when part of it was generated by a model?]
+
+--
+
+&lt;br&gt;
+
+Your panel has 40 columns. Six came from an administrative source. Twenty were derived by
+your own code. Nine were scraped. Five were extracted by an LLM.
+
+--
+
+&lt;br&gt;
+
+They are all just columns in a data frame. They look identical.
+
+--
+
+&lt;br&gt;
+
+They have wildly different epistemic status, and nothing in the file records that.
+
+---
+
+# Provenance
+
+For every variable in your analysis file: **where did it come from?**
+
+--
+
+&lt;br&gt;
+
+Categories that matter:
+
+- **Administrative / vendor**, someone else collected it, you trust their process
+- **Survey / experimental**. You collected it under a design
+- **API**, machine-collected, structured at source
+- **Scraped**, machine-collected, parsed by you
+- **LLM-extracted**, generated by a model
+- **Derived**, computed by your code from other variables
+
+--
+
+&lt;br&gt;
+
+A referee reading your table should be able to tell which is which. Usually they cannot.
+
+---
+
+# The provenance table
+
+Maintain one file. One row per variable. Commit it.
+
+.small75[
+
+| variable | source | date_accessed | process | validation |
+|:--|:--|:--|:--|:--|
+| `listing_id` | Airbnb scrape | 2026-02-01 | `01-collect.R` | key, unique |
+| `price` | Airbnb scrape | 2026-02-01 | `02-parse.R` CSS `.price` | range checked |
+| `median_income` | ACS 5-yr 2019 | 2026-01-15 | Census API | vendor |
+| `is_prof_host` | derived |, | `03-clean.R:L84` |, |
+| `has_pool` | LLM extract | 2026-02-20 | `prompts/amenities_v3.md`, `claude-sonnet-4-5` | 500 labeled, κ=0.89 |
+| `complaint_type` | LLM extract | 2026-02-22 | `prompts/complaints_v2.md`, `claude-opus-4-1` | **pending** |
+
+]
+
+--
+
+&lt;br&gt;
+
+That last row is honest and it is fine at this stage. An empty validation column that
+stays empty is not fine.
+
+---
+
+# Why the model string matters
+
+`claude-sonnet-4-5` is not a permanent artifact. Week 1: you cannot `renv::snapshot()` a
+model.
+
+--
+
+&lt;br&gt;
+
+Recording the exact model string and the date is the closest thing to a version pin you
+have.
+
+--
+
+&lt;br&gt;
+
+It lets a future reader say "this was extracted with a 2026 model". Which is information
+they need and which is otherwise unrecoverable.
+
+--
+
+&lt;br&gt;
+
+And it lets *you*, in 2028, re-extract with a new model and check whether your
+conclusions moved.
+
+---
+
+# Raw data immutability, again
+
+.large2[`data/raw/` is read-only. Third time I have said this.]
+
+--
+
+&lt;br&gt;
+
+This week it means something specific:
+
+- The API's JSON, exactly as returned
+- The gzipped HTML, exactly as fetched
+- The raw model responses, **before** you parsed them into fields
+
+--
+
+&lt;br&gt;
+
+That last one is the one people skip.
+
+---
+
+# Save the raw model output
+
+You asked for JSON. You parsed it into five columns. You threw away the response.
+
+--
+
+&lt;br&gt;
+
+Then you discover the model was also returning a `reasoning` field you ignored, which
+would have told you which cases it was unsure about.
+
+--
+
+&lt;br&gt;
+
+Or you discover a parsing bug in how you handled `null`.
+
+--
+
+&lt;br&gt;
+
+Re-running costs money and, because the model may have changed, **will not give you the
+same output**. Re-parsing costs nothing.
+
+---
+
+# The sample construction table
+
+The most useful table in your appendix, and it costs you twenty minutes.
+
+.small90[
+
+| Step | Rows | Units | Dropped | Reason |
+|:--|--:|--:|--:|:--|
+| Raw scrape | 4,201,338 | 218,442 |, |, |
+| Parsed successfully | 4,118,902 | 214,003 | 82,436 | page structure changed wk 9--12 |
+| Non-missing price | 3,904,551 | 209,881 | 214,351 | price field absent |
+| Matched to tract | 3,655,120 | 196,214 | 249,431 | geocode failure |
+| Active ≥ 6 months | 2,890,447 | 121,338 | 764,673 | panel balance requirement |
+| **Analysis sample** | **2,890,447** | **121,338** | | |
+
+]
+
+--
+
+&lt;br&gt;
+
+Row 2 tells you your scraper broke in weeks 9--12. Row 4 tells you geocoding dropped 6%
+of units, and you should check whether those were random.
+
+---
+class: inverse, center, middle
+name: sharing
+
+# Sharing data and code
+
+---
+
+# The policy landscape
+
+Most top marketing and economics journals now require code, and where possible data, as a
+condition of acceptance.
+
+--
+
+&lt;br&gt;
+
+*Marketing Science*, *Management Science*, *JMR*, the AEA journals, *Econometrica*, all
+have data and code availability policies. Several have a dedicated replication editor who
+runs your package before publication.
+
+--
+
+&lt;br&gt;
+
+Check your target journal's current policy. They have tightened over the past few years
+and they will keep tightening.
+
+---
+
+# Proprietary data
+
+The obvious problem: Nielsen, Compustat, and your platform partner's data cannot be
+posted.
+
+--
+
+&lt;br&gt;
+
+Journals know this. The standard accommodations:
+
+--
+
+- **Post all code**, unconditionally. Code is essentially never proprietary.
+- **A data availability statement**: what the data is, who owns it, how someone else
+  could obtain it, what it cost, whether there is an NDA.
+- **Synthetic or simulated data** with the same schema, so a replicator can run the
+  pipeline end to end and verify it executes.
+- **Aggregated or de-identified extracts** where the agreement permits.
+
+---
+
+# The synthetic data trick
+
+Generate a fake dataset with the same column names, types, and rough distributions.
+
+
+``` r
+# code/00-make-synthetic.R
+set.seed(699)
+synth &lt;- data.frame(
+  listing_id = sprintf("L%06d", 1:50000),
+  city_id    = sample(1:40, 50000, replace = TRUE),
+  year       = sample(2015:2019, 50000, replace = TRUE),
+  price      = round(rlnorm(50000, 4.8, 0.6), 2),
+  has_pool   = rbinom(50000, 1, 0.22)
+)
+arrow::write_parquet(synth, "data/synthetic/listings.parquet")
+```
+
+--
+
+&lt;br&gt;
+
+A replicator runs your entire pipeline on it. The coefficients are meaningless. **The
+code either runs or it does not**, and that is what they are checking.
+
+---
+
+# Where to put it
+
+- **openICPSR**: the AEA's repository. If you are targeting an econ journal, this is
+  where the package goes.
+- **Harvard Dataverse**, general purpose, widely used in social science.
+- **Zenodo**, general purpose, integrates directly with GitHub, gives you a DOI on
+  release.
+
+--
+
+&lt;br&gt;
+
+All three issue a **DOI**. That is the point.
+
+--
+
+&lt;br&gt;
+
+.large2[A GitHub link is not an archive.]
+
+You can force-push over it, delete it, or make it private. Referees know this.
+
+---
+
+# Privacy and licensing
+
+Two constraints that are easy to forget until they block you.
+
+--
+
+&lt;br&gt;
+
+**You may not be allowed to redistribute what you were allowed to collect.**
+
+--
+
+Scraped content is generally still under someone's copyright or ToS. Collecting it for
+research analysis and republishing it as a dataset are different acts.
+
+--
+
+&lt;br&gt;
+
+Post the **derived variables** you need, and the **code** that produced them. Not the
+scraped corpus.
+
+--
+
+&lt;br&gt;
+
+**And de-identification helps without being a guarantee.** Removing names does not
+anonymize a dataset, quasi-identifiers in combination (ZIP, birth date, gender; or a
+review history) can be enough to re-identify.
+
+--
+
+That is an **IRB** conversation, and IRB timelines are measured in weeks. Have it early.
+
+---
+
+# What a good replication package looks like
+
+```
+replication/
+├── README.md
+├── DATA_AVAILABILITY.md
+├── code/
+│   ├── 00-run-all.R          &lt;- master script
+│   ├── 01-collect.R          &lt;- MARKED: requires API key
+│   ├── 02-parse.R
+│   ├── 03-extract-llm.R      &lt;- MARKED: costs ~$340
+│   ├── 04-validate.R
+│   └── 05-analysis.R
+├── data/
+│   ├── synthetic/
+│   └── intermediate/         &lt;- cached outputs of the marked steps
+├── prompts/
+├── output/
+└── renv.lock
+```
+
+---
+
+# The master script
+
+
+``` r
+# 00-run-all.R
+source("code/02-parse.R")      # ~4 min
+source("code/04-validate.R")   # ~1 min
+source("code/05-analysis.R")   # ~12 min, produces all tables/figures
+
+# STEPS NOT RUN BY DEFAULT
+# ------------------------
+# code/01-collect.R   Requires Airbnb access + ~6 hours.
+#                     Output cached: data/intermediate/raw_listings.parquet
+#
+# code/03-extract-llm.R  Requires ANTHROPIC_API_KEY. ~$340, ~9 hours.
+#                     Output cached: data/intermediate/extracted.parquet
+```
+
+--
+
+One command reproduces every table and figure. The steps a replicator cannot run are
+**named, priced, and their outputs shipped**.
+
+---
+class: inverse, center, middle
+
+# Wrapping up
+
+---
+
+# What I want you to take from today
+
+--
+
+**Storage:** DuckDB over parquet. Get a bigger machine before you get clever.
+
+--
+
+**Collection:** APIs before scraping. Idempotent, cached, logged.
+
+--
+
+**Scraping:** archive the raw HTML. Talk to me before you collect anything sensitive.
+
+--
+
+**Extraction:** genuinely transformative, and every extracted field is a generated
+variable.
+
+--
+
+**Provenance:** one row per variable, source, date, process, validation status.
+
+--
+
+&lt;br&gt;
+
+.large2[If you cannot say where a column came from, you do not have data. You have
+numbers.]
+
+---
+
+# Assignment 1 — due next week
+
+**Build a reproducible data pipeline.**
+
+--
+
+Given a raw source, produce a clean analysis file, with:
+
+- A collection script that is **idempotent** and logs what it got
+- Raw data preserved unmodified
+- Anti-join diagnostics after every merge, reported
+- A sample-construction table
+- A provenance table covering every variable
+- A `README` such that I can clone it and run it
+
+--
+
+&lt;br&gt;
+
+I will clone it and run it. If it does not run from a clean clone, it does not run.
+
+---
+
+# Week 3 milestone
+
+**Data acquired, pipeline reproducible.**
+
+--
+
+&lt;br&gt;
+
+Not "I found a website." Not "I have a plan."
+
+--
+
+&lt;br&gt;
+
+Data on disk, in `data/raw/`, immutable, with a script that turns it into something you
+can analyze.
+
+--
+
+&lt;br&gt;
+
+&lt;br&gt;
+
+If your data source turned out to be infeasible, that is a legitimate outcome. But I
+need to know **this week**, not in Week 6, because we will need to change the project.
+
+---
+
+# Next week
+
+**LLMs as measurement instruments I: validation.**
+
+--
+
+&lt;br&gt;
+
+You will have the data. Today was about getting it and being able to prove where it came
+from.
+
+--
+
+&lt;br&gt;
+
+Next week we ask a harder question: does your variable **measure what you say it
+measures**?
+
+--
+
+&lt;br&gt;
+
+Human labels, gold standards, agreement statistics, sampling for validation, and what
+happens to your standard errors when the dependent variable was generated by a model.
+
+---
+class: inverse, center, middle
+
+# Questions?
+
+### Bring a laptop. We are setting up DuckDB and running your first collection script.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "highlightSpans": true,
+  "countIncrementalSlides": false,
+  "ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

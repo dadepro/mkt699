@@ -1,0 +1,4 @@
+.Renviron
+output/*
+!output/.gitkeep
+.Rhistory

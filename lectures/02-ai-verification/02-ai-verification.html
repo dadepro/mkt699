@@ -1,0 +1,2944 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>MKT699: Empirical Methods in Marketing</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Davide Proserpio" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# MKT699: Empirical Methods in Marketing
+]
+.subtitle[
+## Lecture 2: AI-Assisted Analysis and the Verification Problem
+]
+.author[
+### Davide Proserpio
+]
+.institute[
+### Marshall School of Business
+]
+.date[
+### Fall 2026
+]
+
+---
+
+
+&lt;style type="text/css"&gt;
+/* base sizing -- bumped up for classroom projection */
+.remark-slide-content {
+  font-size: 23px;
+  padding: 1em 3em 1.5em 3em;
+}
+.remark-slide-content h1 { font-size: 46px; }
+.remark-slide-content h2 { font-size: 38px; }
+.remark-slide-content h3 { font-size: 30px; }
+
+/* code -- wrap rather than overflow the slide */
+.remark-code, .remark-inline-code {
+  font-size: 20px;
+}
+.remark-slide-content pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.remark-code-line {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* tables */
+.remark-slide-content table {
+  font-size: 21px;
+}
+
+.large2 { font-size: 165% }
+.small90 { font-size: 92% }
+.small75 { font-size: 82% }
+&lt;/style&gt;
+
+
+
+# Where we left off
+
+Last week: the cost of *producing* analysis collapsed. The cost of knowing whether it is
+right did not.
+
+--
+
+&lt;br&gt;
+
+Today we make that concrete.
+
+--
+
+&lt;br&gt;
+
+First half: exactly how AI-assisted analysis goes wrong, with examples.
+
+Second half: the workflow that catches it.
+
+Then you find six bugs in a real one.
+
+---
+
+# Table of contents
+
+1. [Working with coding agents](#agents)
+
+2. [The central problem](#problem)
+
+3. [Defensive workflow](#defense)
+
+4. [Reading code you did not write](#reading)
+
+5. [Building your own tools: agents and skills](#building)
+
+6. [Data at scale, briefly](#scale)
+
+7. [The lab](#lab)
+
+---
+class: inverse, center, middle
+name: agents
+
+# Working with coding agents
+
+---
+
+# What they are actually good at
+
+- Boilerplate. Package loading, path handling, output formatting.
+- Data cleaning and reshaping. Long to wide, string parsing, date handling.
+- Plotting. `ggplot2` syntax you would have looked up anyway.
+- Translating between languages. Stata to R, R to Python, pandas to `data.table`.
+- Explaining unfamiliar code. Someone's replication package written in 2013.
+- Refactoring. Turning 400 lines of copy-paste into a function.
+
+--
+
+&lt;br&gt;
+
+This is not a small list. This is most of what you spent your first year doing.
+
+---
+
+# The common structure
+
+Look at that list again.
+
+--
+
+&lt;br&gt;
+
+.large2[Every item has a **checkable output**.]
+
+--
+
+&lt;br&gt;
+
+You can look at the reshaped data. You can look at the plot. You can run both versions
+of the translated code and compare.
+
+The task and its verification are the same length.
+
+---
+
+# Where it inverts
+
+Now consider: "construct the estimation panel and run the main specification."
+
+--
+
+&lt;br&gt;
+
+The output is a coefficient. A single number.
+
+--
+
+There is no way to look at `0.043` and tell whether the merge duplicated rows.
+
+--
+
+&lt;br&gt;
+
+.large2[Agents are good when errors are **loud**. They are dangerous when errors are
+**silent and cumulative**.]
+
+---
+
+# Prompting is a research skill
+
+It is not a hack and it is not beneath you.
+
+--
+
+&lt;br&gt;
+
+The failure mode is almost always the same: you gave the model a **description** of your
+data instead of your **data**.
+
+--
+
+&lt;br&gt;
+
+The model then invents a plausible schema and writes code against the schema it invented.
+
+The code runs. It is operating on a fictional dataset.
+
+---
+
+# A bad prompt
+
+```
+Merge the Airbnb listings with the zip-level market data and run a
+regression of price on instant bookability with city fixed effects,
+clustering standard errors appropriately.
+```
+
+--
+
+&lt;br&gt;
+
+Everything here is a word the model has to guess the meaning of.
+
+Which key? What type? What is "the treatment indicator"? Appropriately by whose
+standard?
+
+--
+
+&lt;br&gt;
+
+You will get code. It will run.
+
+---
+
+# A good prompt
+
+```
+&gt; head(listings, 3)
+  listing_id host_id      city state zipcode price        room_type
+1        883    1112  Rockport    MA   01966    98     Private room
+2       1988    2193 West Dover    VT   05356   250  Entire home/apt
+3       2183      70 Providence    RI   02909    55     Private room
+  reviews_count star_rating
+1            20           5
+2             8           4
+3             4          NA
+
+&gt; head(zip_market, 3)
+    zip n_listings mean_price
+1 01966         37     203.41
+```
+
+--
+
+`listings` is one row per listing. 200,000 rows, US only.
+`zipcode` is **character, zero-padded**, 14,014 begin with 0, and 106 are ZIP+4.
+`zip_market$zip` is **character, also zero-padded**. Join on the strings. Do not coerce
+either side to numeric.
+
+**Do not drop rows.** Report row counts before and after the merge.
+Cluster on `host_id`, 138,635 hosts, and price is set at the host level.
+
+---
+
+# What changed between those two
+
+- Actual `head()` output, not a description
+- Types stated explicitly, including the leading-zero problem
+- Unit of observation stated
+- Expected row count stated
+- **The direction of the type conversion specified**, this one line prevents the single
+  most expensive bug in this lecture
+- The clustering decision made **by you**, with the number of clusters given
+- An explicit instruction to report the thing that will break
+
+--
+
+&lt;br&gt;
+
+The second prompt is longer than the first by a factor of five and takes you two minutes
+to write.
+
+--
+
+It also removes about six of the failure modes in the next section.
+
+---
+
+# Context management
+
+Give it the data dictionary. Give it the actual head of the data.
+
+--
+
+&lt;br&gt;
+
+If your variable is called `hhi_2`, the model does not know what that is, and it will not
+ask.
+
+--
+
+It will assume. Confidently.
+
+--
+
+&lt;br&gt;
+
+Keep a `CLAUDE.md` or equivalent in your repo: unit of observation, key variables, known
+data quirks, the merges that are legitimate. Agents read it. It is cheap insurance.
+
+---
+
+# The rule for the rest of the lecture
+
+.large2[Use agents for tasks whose output you can check in less time than the task
+took.]
+
+--
+
+&lt;br&gt;
+
+For everything else, you need process. That is Section 3.
+
+---
+class: inverse, center, middle
+name: problem
+
+# The central problem
+
+---
+
+# Everything from here runs
+
+The rest of this lecture uses real data. You can run every example on your laptop as we
+go, and I would like you to.
+
+
+``` r
+library(DBI); library(RMySQL); library(data.table)
+
+con &lt;- dbConnect(MySQL(),
+                 host     = Sys.getenv("MKT615_HOST"),
+                 dbname   = "mkt615",
+                 user     = Sys.getenv("MKT615_USER"),
+                 password = Sys.getenv("MKT615_PWD"))
+
+listings   &lt;- setDT(dbGetQuery(con, "SELECT * FROM airbnb_sample"))
+zip_market &lt;- setDT(dbGetQuery(con, "SELECT * FROM zip_market"))
+dbDisconnect(con)
+
+dim(listings)     # [1] 200000     26
+dim(zip_market)   # [1]  11398      5
+```
+
+--
+
+200,000 US Airbnb listings, 26 columns, about 35MB. A real scrape, with all the
+problems a real scrape has.
+
+--
+
+&lt;br&gt;
+
+`zip_market` is a zip-level lookup, listing counts and mean prices, one row per zip.
+Note that its key is stored as a **number**. That will matter shortly.
+
+--
+
+&lt;br&gt;
+
+Host, user, and password go in your `.Renviron`. I will give them out in class. They
+never go in a script, and never in a repo.
+
+---
+
+# Say it plainly
+
+.large2[LLMs produce plausible code that runs and returns wrong numbers.]
+
+--
+
+&lt;br&gt;
+
+Not code that errors. Not code that returns `NA`. Not code that looks suspicious.
+
+--
+
+&lt;br&gt;
+
+Code that runs cleanly, produces a well-formatted table, and is wrong.
+
+---
+
+# Why this is worse than a bug
+
+A normal bug announces itself. The script fails, you fix it, you move on.
+
+--
+
+&lt;br&gt;
+
+This class of error produces a **number**. Numbers do not look wrong.
+
+--
+
+&lt;br&gt;
+
+And the model is not lying to you. It does not know. There is no internal state
+corresponding to "I am unsure whether that join was one-to-many."
+
+--
+
+&lt;br&gt;
+
+What follows is a taxonomy. Seven failure modes. You will see all seven in your career;
+you will see five of them in the lab today, across six bugs.
+
+---
+
+# 1. Silent merge errors
+
+The single most common way empirical results go wrong. Was true before LLMs. Much easier
+to hit now.
+
+--
+
+&lt;br&gt;
+
+Four variants:
+
+- many-to-many joins that silently multiply rows
+- inner joins that silently drop a third of the sample
+- key type mismatches
+- whitespace in keys
+
+---
+
+# Many-to-many
+
+You want host characteristics on each listing. So you build a host table.
+
+
+``` r
+hosts &lt;- listings[, .(host_id, city, state)]   # &lt;- looks per-host. is not.
+
+panel &lt;- merge(listings, hosts, by = "host_id", all.x = TRUE)
+# Error: Join results in 2201094 rows; more than 400000 =
+#   nrow(x)+nrow(i). Check for duplicate key values in i...
+#   rerun with allow.cartesian=TRUE
+```
+
+--
+
+&lt;br&gt;
+
+.large2[200,000 rows in. **2,201,094** rows out.]
+
+--
+
+&lt;br&gt;
+
+`data.table` caught this one. It refuses joins that blow past
+`nrow(x) + nrow(i)` unless you pass `allow.cartesian = TRUE`.
+
+--
+
+&lt;br&gt;
+
+.large2[Now read that error message again. It offers you a flag that makes it go away.]
+
+--
+
+A model that hits this error will often just add the flag.
+
+---
+
+# Why it happened
+
+`hosts` was built from `listings`, so it has **one row per listing**, not per host.
+
+--
+
+
+``` r
+nrow(listings)                       # 200,000
+uniqueN(listings$host_id)            # 138,635
+```
+
+--
+
+&lt;br&gt;
+
+**87,859 listings** belong to hosts who own more than one. One host has **621**, every
+one of their rows gets matched 621 times.
+
+--
+
+&lt;br&gt;
+
+Multi-listing hosts are commercial operators. They are systematically different from
+casual hosts, and you have just weighted them by the square of their size.
+
+---
+
+# Many-to-many, continued
+
+Run it yourself. Then fix it:
+
+
+``` r
+hosts &lt;- listings[, .(n_listings = .N), by = host_id]
+
+stopifnot(!any(duplicated(hosts$host_id)))
+
+panel &lt;- merge(listings, hosts, by = "host_id", all.x = TRUE)
+
+stopifnot(nrow(panel) == nrow(listings))
+```
+
+--
+
+&lt;br&gt;
+
+That last assertion is the whole game. A left join must not change the row count of the
+left table. If it did, you had duplicates on the right.
+
+--
+
+One line. It would have caught an 11× error.
+
+---
+
+# The inner join that eats your sample
+
+You want quality controls, so you merge in the rating subscores.
+
+
+``` r
+quality &lt;- listings[!is.na(review_rating_cleanliness),
+                    .(listing_id, review_rating_cleanliness,
+                      review_rating_location, review_rating_value)]
+
+panel &lt;- merge(listings, quality, by = "listing_id")   # inner
+
+nrow(panel)
+# [1] 69616
+```
+
+--
+
+&lt;br&gt;
+
+You started with 200,000. You have **69,616**.
+
+--
+
+You lost 65% of your sample and the script printed nothing.
+
+---
+
+# Why this one is dangerous
+
+The lost rows are not random. **Only reviewed listings have ratings.**
+
+--
+
+Run it and compare:
+
+
+``` r
+listings[, mean(price, na.rm = TRUE)]   # 195.69
+panel[,    mean(price, na.rm = TRUE)]   # 177.19
+```
+
+--
+
+&lt;br&gt;
+
+.large2[Mean price moved 9.5% and you did not change a single line of the
+specification.]
+
+--
+
+&lt;br&gt;
+
+Unreviewed listings are new, inactive, or unattractive. And systematically more
+expensive. You have conditioned your entire analysis on having been booked.
+
+---
+
+# Say what you did
+
+That merge was a sample restriction wearing a merge costume.
+
+--
+
+&lt;br&gt;
+
+If you had written
+
+
+``` r
+listings &lt;- listings[reviews_count &gt; 0]
+```
+
+you would have known you did it. Someone reading your code would have known too.
+
+--
+
+&lt;br&gt;
+
+.large2[Every dropped row is a selection decision. Make it on purpose.]
+
+--
+
+Report the count. Every time.
+
+---
+
+# Key type mismatches
+
+You want zip-level market controls. Both keys are character. But a model that has not
+looked will often "helpfully" coerce.
+
+
+``` r
+class(listings$zipcode)     # "character"
+class(zip_market$zip)       # "character"
+```
+
+--
+
+
+``` r
+# this one is correct -- both sides character
+merge(listings, zip_market, by.x = "zipcode", by.y = "zip")
+
+# but suppose an earlier line already did this:
+listings[, zipcode := as.numeric(zipcode)]
+merge(listings, zip_market, by.x = "zipcode", by.y = "zip")
+# Error in bmerge(...) : typeof x.zipcode (double)
+#   != typeof i.zip (character)
+```
+
+That one is fine. It errored. You will fix it.
+
+--
+
+&lt;br&gt;
+
+The problem is what the model does next.
+
+---
+
+# What the model does next
+
+
+``` r
+listings[, zipcode := as.numeric(zipcode)]
+```
+
+--
+
+Run this on the real data and look:
+
+
+``` r
+listings[, zipcode_chr := zipcode]   # keep a copy BEFORE coercing
+listings[, zipcode := as.numeric(zipcode)]
+
+listings[zipcode_chr %chin% c("01966","02909","07093"),
+         .(city, state, zipcode_chr, zipcode)]
+#             city  state zipcode_chr zipcode
+# 1:    Guttenberg     NJ       07093    7093
+# 2:      Rockport     MA       01966    1966
+# 3: West New York     NJ       07093    7093
+```
+
+--
+
+&lt;br&gt;
+
+.large2[14,014 listings just stopped matching anything.]
+
+---
+
+# Who did you just delete?
+
+Leading zeros are not random. They are **New England and the Northeast**.
+
+--
+
+&lt;br&gt;
+
+Massachusetts (6,139), New Jersey (3,213), Vermont, Maine, Connecticut, New Hampshire,
+Rhode Island, plus Puerto Rico and the US Virgin Islands.
+
+--
+
+Not New York: NY zips run 10xxx-14xxx. The NYC-metro exposure is on the **New Jersey**
+side, West New York and Guttenberg are both 07093.
+
+--
+
+&lt;br&gt;
+
+Your merge now silently fails for every listing in Boston, Providence, and much of the
+NYC metro. And those are among the densest, most regulated, most expensive markets in
+the country.
+
+--
+
+&lt;br&gt;
+
+Nothing errors. Your market controls are just `NA` for 7% of the sample, concentrated
+exactly where the interesting variation is.
+
+---
+
+# It is worse than leading zeros
+
+
+``` r
+head(listings[grepl("[^0-9]", zipcode_chr), zipcode_chr])
+# [1] "62621-8070" "10026-1328" "10128 "     "72113-6035"
+# [5] "90039-2715" "2661 0271"
+```
+
+--
+
+&lt;br&gt;
+
+ZIP+4, trailing spaces, a zip with a space in the middle. 104 of them. `as.numeric()` turns every one into `NA`, with a
+warning you will not read.
+
+--
+
+&lt;br&gt;
+
+.large2[The general rule: coerce toward **character**, never toward numeric.]
+
+An ID is not a number. You are never going to take its mean.
+
+---
+
+# Keys that are almost the same
+
+You decide to add state fixed effects. Reasonable. How many states are there?
+
+
+``` r
+uniqueN(listings$state)
+# [1] 116
+```
+
+--
+
+&lt;br&gt;
+
+.large2[One hundred and sixteen.]
+
+--
+
+&lt;br&gt;
+
+There are fifty.
+
+---
+
+# Look at what is in there
+
+
+``` r
+listings[nchar(state) != 2 | state != toupper(state),
+         .N, by = state][order(-N)]
+#         state     N
+# 1:         Mt    35     &lt;- case, not spelling
+# 2:               18     &lt;- empty
+# 3: California    10
+# 4:    Florida     8
+# 5:         Co     5
+# 6:   New York     5
+# 7:     Oregon     5
+# 8: Washington     4
+```
+
+--
+
+&lt;br&gt;
+
+`CA` and `California` are different fixed effects. So are `CO` and `COLORADO`.
+
+--
+
+And `Warwickshire` is in England, in a table you filtered to `country_code = 'US'`.
+
+---
+
+# What that does to your regression
+
+Every variant becomes its own dummy.
+
+--
+
+&lt;br&gt;
+
+You now have 116 state effects instead of 50, most of them estimated off a handful of
+observations. Those coefficients are noise, and they are absorbing variation you
+wanted in your treatment effect.
+
+--
+
+&lt;br&gt;
+
+The same thing happens to `city`: **7,230** distinct strings that collapse to **7,202**
+once you trim and lowercase.
+
+--
+
+&lt;br&gt;
+
+Nothing errors. `factor()` is happy to make you a level out of anything.
+
+---
+
+# The fix, and the assertion
+
+
+``` r
+listings[, state := toupper(trimws(state))]
+
+stopifnot(all(nchar(listings$state) == 2))
+```
+
+--
+
+&lt;br&gt;
+
+That assertion fails on this data. **Good**. That is the point.
+
+--
+
+It fails on the empty strings and on `California`, and now you have to decide what to do
+about them, in code, visibly, instead of letting `factor()` decide silently.
+
+--
+
+&lt;br&gt;
+
+.large2[An assertion that fails is doing its job.]
+
+---
+
+# 2. Sample selection changes
+
+You ask the model to "clean the data."
+
+--
+
+&lt;br&gt;
+
+Somewhere in the 80 lines it writes, this appears:
+
+
+``` r
+df &lt;- df[price &gt; 0 &amp; price &lt; 1000 &amp; !is.na(review_score)]
+```
+
+--
+
+&lt;br&gt;
+
+Three decisions, none of which you made.
+
+---
+
+# What each one cost you
+
+`price &gt; 0`, reasonable, probably.
+
+--
+
+`price &lt; 1000`. You just dropped the entire luxury segment. If your treatment affects
+high-end listings differently, your estimate is now for a different population.
+
+--
+
+`!is.na(review_score)`. You dropped every **new** listing. Reviews accumulate over time.
+This is a filter on tenure disguised as a filter on data quality.
+
+--
+
+&lt;br&gt;
+
+.large2[The third one changes what your paper is about.]
+
+---
+
+# `na.omit()` is worse
+
+
+``` r
+df &lt;- na.omit(df)
+```
+
+--
+
+&lt;br&gt;
+
+This drops a row if *any* column is missing. Including columns not in your regression.
+Including columns you were going to delete anyway.
+
+--
+
+&lt;br&gt;
+
+I have seen a project lose 60% of its sample to a `notes` field that was populated for
+only some vendors.
+
+--
+
+&lt;br&gt;
+
+Never `na.omit()` a data frame. Drop on the variables you actually use, explicitly, and
+count what you dropped.
+
+---
+
+# Do it like this instead
+
+
+``` r
+n0 &lt;- nrow(df)
+
+df &lt;- df[price &gt; 0]
+message("dropped ", n0 - nrow(df), " non-positive prices")
+
+n1 &lt;- nrow(df)
+df &lt;- df[!is.na(price) &amp; !is.na(instant_bookable) &amp; !is.na(zipcode)]
+message("dropped ", n1 - nrow(df), " missing on regression vars")
+
+stopifnot(nrow(df) &gt; 0.95 * n0)
+```
+
+--
+
+&lt;br&gt;
+
+Now the sample construction is a documented sequence of decisions, and the `stopifnot()`
+fires if any single step eats more than you expected.
+
+---
+
+# 3. Wrong standard errors
+
+The model will produce standard errors. It will not tell you it guessed.
+
+--
+
+&lt;br&gt;
+
+
+``` r
+# what it wrote
+feols(price ~ instant_bookable | city, data = listings,
+      vcov = "hetero")
+```
+
+--
+
+Robust standard errors. Fine if every listing is an independent draw.
+
+--
+
+&lt;br&gt;
+
+They are not. 138,635 hosts own 200,000 listings, and instant booking is mostly a
+host-level setting, a host who turns it on tends to turn it on everywhere. One host has
+621 listings.
+
+--
+
+Your effective sample is much smaller than 200,000, and robust SEs do not know that.
+
+---
+
+# Clustering at the wrong level
+
+Cluster at the level of treatment assignment, not the level of observation.
+
+--
+
+&lt;br&gt;
+
+
+``` r
+# instant_bookable is set by the host -&gt; cluster on host
+feols(price ~ instant_bookable | city, data = listings,
+      cluster = ~ host_id)
+```
+
+--
+
+&lt;br&gt;
+
+Run both. The point estimate does not move at all. The standard error goes from
+**1.94** to **2.97**, half again as large.
+
+--
+
+&lt;br&gt;
+
+The model will often cluster on the finest available identifier, `listing_id`, because
+it is the obvious ID column.
+
+That is almost never right here. `listing_id` is unique, so clustering on it is just
+robust SEs with extra steps. The correlation you care about is **within host**.
+
+---
+
+# Clustering with too few clusters
+
+
+``` r
+feols(y ~ treated | region + year, data = df,
+      cluster = ~ region)
+
+length(unique(df$region))
+# [1] 3
+```
+
+--
+
+&lt;br&gt;
+
+Three clusters. The cluster-robust variance estimator is inconsistent here and your
+p-values are meaningless, usually too small.
+
+--
+
+&lt;br&gt;
+
+The model will do this without comment because the code is syntactically perfect.
+
+--
+
+Rule of thumb: report the number of clusters. Below ~40, you need wild bootstrap
+(`fwildclusterboot`) or a design-based alternative. Below 10, be very careful.
+
+---
+
+# The general point on inference
+
+.large2[Standard errors are an **identification** decision, not a coding decision.]
+
+--
+
+&lt;br&gt;
+
+The model cannot make it, because it does not know your design.
+
+--
+
+Decide the clustering level yourself, before you ask for the regression, and put it in
+the prompt.
+
+---
+
+# 4. Fabricated variable definitions
+
+You ask for "a measure of market concentration."
+
+--
+
+&lt;br&gt;
+
+You get:
+
+
+``` r
+# Market concentration (HHI) computed as the sum of squared
+# shares of listings by host within each zip code.
+hhi &lt;- listings[, .N, by = .(zipcode, host_id)
+       ][, .(hhi = sum((N / sum(N))^2)), by = zipcode]
+```
+
+--
+
+&lt;br&gt;
+
+That is a real HHI. It is well-formed. The comment is fluent.
+
+--
+
+It is also computed on **listing counts** when you meant **revenue**, at the **city**
+level when your market is the neighborhood, and using **host** as the firm when your
+theory is about property managers.
+
+---
+
+# Why this one is insidious
+
+There is no error. There is no warning.
+
+--
+
+&lt;br&gt;
+
+There is a variable named `hhi` in your data with a plausible distribution, and a comment
+in the code that reads like a footnote in a published paper.
+
+--
+
+&lt;br&gt;
+
+Six weeks later you will write "we measure concentration as a host-level HHI" in your
+draft, because that is what the comment said.
+
+--
+
+&lt;br&gt;
+
+.large2[You will have outsourced a construct definition to a model and forgotten you did
+it.]
+
+---
+
+# The fix is boring
+
+Every constructed variable gets:
+
+1. A definition **you wrote**, in the data dictionary, before the code exists
+2. A unit of observation
+3. A sanity check on its distribution
+
+--
+
+
+``` r
+# hhi_nbhd_rev: revenue-based HHI, property-manager as firm,
+#   neighborhood-month as market. Range [0,1].
+stopifnot(all(hhi$hhi &gt;= 0 &amp; hhi$hhi &lt;= 1))
+summary(hhi$hhi)
+hist(hhi$hhi)
+```
+
+--
+
+&lt;br&gt;
+
+If you cannot write the definition sentence yourself, you do not yet know what you are
+measuring, and you are not ready to ask for the code.
+
+---
+
+# 5. Hallucinated citations
+
+The model will give you references. Confidently.
+
+--
+
+&lt;br&gt;
+
+&gt; Proserpio and Zervas (2019) show that management responses to reviews increase
+&gt; subsequent ratings by 0.12 stars in a difference-in-differences design.
+
+--
+
+&lt;br&gt;
+
+Plausible authors. Plausible effect size. Plausible method.
+
+--
+
+&lt;br&gt;
+
+I wrote that paper. The effect **is** 0.12 stars.
+
+--
+
+The year is **2017**, and it is in *Marketing Science*.
+
+---
+
+# Why that example is the dangerous kind
+
+Everything checkable at a glance was right.
+
+--
+
+&lt;br&gt;
+
+Right authors. Right finding. Right magnitude. Right general approach.
+
+--
+
+&lt;br&gt;
+
+.large2[One wrong field, buried in four correct ones.]
+
+--
+
+&lt;br&gt;
+
+If it had been wrong about the *effect*, you would have caught it. Being right about the
+hard part is what makes you stop checking the easy part.
+
+---
+
+# It gets worse when it is about your own work
+
+I can catch an error in a citation to my own paper.
+
+--
+
+&lt;br&gt;
+
+You cannot catch one in a citation to a paper you have not read. And that is most
+papers, for all of us.
+
+--
+
+&lt;br&gt;
+
+The 2019/2017 slip is exactly the kind of thing that survives into a submitted
+manuscript, because nobody re-derives a year they have no reason to doubt.
+
+---
+
+# The harder case
+
+Sometimes the paper is real and the **claim** is not.
+
+--
+
+&lt;br&gt;
+
+The model correctly cites a paper you have not read, and attributes to it a finding that
+is adjacent to but not actually in that paper.
+
+--
+
+&lt;br&gt;
+
+This is the version that gets past you, because the citation checks out.
+
+---
+
+# The rule
+
+.large2[Check that **every** reference exists and says what you claim it says.]
+
+--
+
+&lt;br&gt;
+
+Not "the ones that look unfamiliar." Every one.
+
+--
+
+&lt;br&gt;
+
+Open the PDF. Find the sentence. If you are citing a number, find the table.
+
+--
+
+&lt;br&gt;
+
+A hallucinated citation in a submitted paper is a career problem, not an embarrassment.
+Editors have started asking about this explicitly.
+
+---
+
+# 6. Silent type coercion
+
+Dates are the worst offenders.
+
+
+``` r
+df$date &lt;- as.Date(df$date)
+sort(unique(df$date))[1:3]
+# [1] "2016-01-02" "2016-01-03" "2016-01-04"
+```
+
+--
+
+Looks fine. Until the file had `03/04/2016` and you are in the US, so
+`as.Date()` returned `NA` for everything and the model then wrote `filter(!is.na(date))`.
+
+--
+
+&lt;br&gt;
+
+Or, worse: mixed formats, half of which parsed as day-first and half as month-first. Now
+you have real dates that are wrong by up to eleven months, and they will not look wrong.
+
+---
+
+# Factors are the other one
+
+
+``` r
+df$rating &lt;- factor(df$rating)     # levels: "1","2","3","4","5"
+df$rating_num &lt;- as.numeric(df$rating)
+```
+
+--
+
+&lt;br&gt;
+
+`as.numeric()` on a factor returns the **level codes**, not the values.
+
+--
+
+If your levels happened to sort as `"1","10","2","3"`, which they do, because sorting is
+lexicographic, your rating of 10 is now a 2.
+
+--
+
+&lt;br&gt;
+
+
+``` r
+df$rating_num &lt;- as.numeric(as.character(df$rating))   # correct
+stopifnot(all(df$rating_num %in% 1:10))
+```
+
+---
+
+# 7. Reward hacking
+
+This is the one people do not expect, and it is the most important.
+
+--
+
+&lt;br&gt;
+
+You run the regression. The coefficient is insignificant. You type:
+
+```
+Can you fix the regression?
+```
+
+--
+
+&lt;br&gt;
+
+.large2[You have just told a system optimized for your approval that you are unhappy with
+a number.]
+
+---
+
+# What "fix" gets you
+
+It may:
+
+- add controls until the coefficient moves
+- drop "outliers", defined as whatever is inconvenient
+- change the clustering level to one that produces smaller SEs
+- restrict to a subsample where the effect is present
+- switch to a log specification without saying so
+- trim the top 1% of the outcome
+
+--
+
+&lt;br&gt;
+
+Each of these is a defensible choice in *some* paper. None of them was your choice here.
+
+---
+
+# It is not being deceptive
+
+The model has no representation of your research integrity. It has a representation of
+what output would end this exchange satisfactorily.
+
+--
+
+&lt;br&gt;
+
+"Fix the regression" is, semantically, "make this output different in the direction I
+seem to want."
+
+--
+
+&lt;br&gt;
+
+It will comply. Fluently. With a comment explaining why the new specification is more
+appropriate.
+
+---
+
+# How to not do this
+
+Never phrase a request in terms of the **result**.
+
+--
+
+&lt;br&gt;
+
+Bad: "make the coefficient significant" / "fix the regression" / "this seems too small"
+
+--
+
+Good: "run the same specification clustering on host_id instead, and show both
+side by side"
+
+--
+
+&lt;br&gt;
+
+Ask for **specifications**, not for **outcomes**. Ask for the comparison, not the
+replacement.
+
+--
+
+&lt;br&gt;
+
+And commit before you ask. Then read the diff.
+
+---
+
+# The taxonomy
+
+.small90[
+| # | Failure | Detected by |
+|:--|:--|:--|
+| 1 | Silent merge errors | row-count assertions |
+| 2 | Sample selection changes | logging N at every step |
+| 3 | Wrong standard errors | knowing your own design |
+| 4 | Fabricated definitions | data dictionary written first |
+| 5 | Hallucinated citations | opening the PDF |
+| 6 | Type coercion | range and class assertions |
+| 7 | Reward hacking | reading the diff |
+]
+
+--
+
+&lt;br&gt;
+
+Every row in the right column is something *you* do. None of them is something the model
+does for you.
+
+---
+class: inverse, center, middle
+name: defense
+
+# Defensive workflow
+
+---
+
+# The actual answer
+
+You cannot verify by reading. You will read the code, it will look fine, and it will be
+wrong.
+
+--
+
+&lt;br&gt;
+
+.large2[You verify by making the code **check itself**, and by anchoring on quantities
+you know independently.]
+
+--
+
+&lt;br&gt;
+
+Six techniques. The first one does 60% of the work.
+
+---
+
+# 1. Assertion-based programming
+
+
+``` r
+stopifnot(nrow(panel) == 2100000)
+```
+
+--
+
+&lt;br&gt;
+
+That is it. That is the technique.
+
+--
+
+&lt;br&gt;
+
+An assertion is a claim about your data that must be true, placed in the code, that
+crashes the script if it is false.
+
+--
+
+It converts a silent error into a loud one. That is the entire value proposition of this
+lecture.
+
+---
+
+# Where to put them
+
+**After every join:**
+
+
+``` r
+n_before &lt;- nrow(listings)
+panel &lt;- merge(listings, zip_market,
+               by.x = "zipcode", by.y = "zip", all.x = TRUE)
+stopifnot(nrow(panel) == n_before)
+```
+
+--
+
+**On every key, before joining:**
+
+
+``` r
+stopifnot(!any(duplicated(zip_market$zip)))
+stopifnot(!any(is.na(zip_market$zip)))
+```
+
+--
+
+**On merge coverage:**
+
+
+``` r
+stopifnot(panel[, mean(!is.na(mean_price))] &gt; 0.98)
+```
+
+---
+
+# More assertions worth writing
+
+
+``` r
+# the estimation sample is what you think it is
+m &lt;- feols(price ~ instant_bookable | city, panel, cluster = ~host_id)
+stopifnot(nobs(m) == nrow(panel))          # nothing silently dropped
+
+# the key is unique the way you think
+stopifnot(!any(duplicated(panel$listing_id)))
+
+# ranges
+stopifnot(all(panel$price &gt; 0))
+stopifnot(all(panel$instant_bookable %in% c(0, 1, NA)))   # NAs are real
+
+# is instant_bookable really a host-level choice, as you assumed?
+panel[!is.na(instant_bookable),
+      .(k = uniqueN(instant_bookable)), by = host_id][, .N, by = k][order(k)]
+#    k      N
+# 1: 1 125052
+# 2: 2   2785   &lt;- 2,785 hosts set it BOTH ways
+
+# drop the !is.na() and you get a third category, k = 3,
+# because uniqueN() counts NA as a level. 16,806 listings are NA.
+```
+
+--
+
+&lt;br&gt;
+
+That last one has caught real bugs in my own work, including in this lecture.
+
+---
+
+# What that check just found
+
+I built these slides assuming `instant_bookable` was a host-level choice. That is what
+justified clustering on `host_id`.
+
+--
+
+&lt;br&gt;
+
+It is mostly true: **125,052** hosts set it one way for all their listings.
+
+--
+
+**2,785 do not.** Among hosts with any non-missing value, the assumption is **97.8%**
+right.
+
+--
+
+&lt;br&gt;
+
+.large2[97.8% right is exactly the kind of wrong that survives.]
+
+--
+
+&lt;br&gt;
+
+And the check found something I was not looking for: **16,806 listings** have no value
+at all. Drop the `!is.na()` and `uniqueN()` counts `NA` as a level, inventing a third
+category. I did not know either fact until I ran it.
+
+--
+
+Clustering on host is still defensible. But now I know it is a choice, not a fact, and I
+can say so in the paper instead of being told by a referee.
+
+---
+
+# `nobs(m) == nrow(df)` deserves its own slide
+
+.large2[Always check the number of observations your regression actually used.]
+
+--
+
+&lt;br&gt;
+
+Every regression function silently drops rows with missings. Every one.
+
+--
+
+If `nobs(m)` is 1,840,221 and your data frame has 2,100,000 rows, you have 260k
+observations disappearing into `NA` on some variable, and you do not know which.
+
+--
+
+&lt;br&gt;
+
+Find out which. It is usually the interesting one.
+
+---
+
+# Python, same idea
+
+
+``` python
+n0 = len(listings)
+panel = listings.merge(zip_market, on="zipcode", how="left",
+                       validate="many_to_one")   # &lt;- this
+assert len(panel) == n0, f"{n0} -&gt; {len(panel)}"
+assert panel["median_inc"].notna().mean() &gt; 0.98
+```
+
+--
+
+&lt;br&gt;
+
+`validate="many_to_one"` in pandas raises if the right table has duplicate keys. Use it
+on every merge. It is free.
+
+--
+
+In `data.table`, `merge()` warns when the join is many-to-many. Better: assert the
+right-hand key is unique *before* you merge, which is the habit from earlier today.
+
+---
+
+# 2. Unit tests for data
+
+There are real frameworks for this.
+
+--
+
+&lt;br&gt;
+
+**R:** `pointblank`, `validate`, `assertr`
+
+**Python:** `pandera`, `great_expectations`
+
+--
+
+&lt;br&gt;
+
+They give you schema validation, reporting, and failure logs.
+
+---
+
+# But honestly
+
+.large2[Hand-rolled `stopifnot()` is fine.]
+
+--
+
+&lt;br&gt;
+
+It is enormously better than nothing, it takes zero setup, and you will actually do it.
+
+--
+
+&lt;br&gt;
+
+I use `pointblank` on pipelines I will maintain for years. For a semester project,
+twenty `stopifnot()` calls scattered through `02-clean.R` will catch essentially
+everything in Section 2.
+
+--
+
+Do not let the search for the right framework stop you from writing the assertion.
+
+---
+
+# 3. Reconcile against known quantities
+
+Assertions check internal consistency. They cannot tell you your whole pipeline is
+shifted.
+
+--
+
+&lt;br&gt;
+
+For that you need an **external anchor**.
+
+---
+
+# Anchors
+
+- Does your total revenue match the 10-K?
+- Does your city count match the Census?
+- Does your number of listings match what the platform reports publicly?
+- Does your monthly total match the figure in the paper you are replicating?
+- Does the mean of your outcome match the summary stat in the data provider's docs?
+
+--
+
+&lt;br&gt;
+
+You will almost never match exactly. That is fine.
+
+--
+
+You are looking for **order of magnitude and direction**. If the 10-K says $4.2B and you
+have $310M, stop and find out why before you run anything.
+
+---
+
+# This is the step people skip
+
+It feels like busywork. It is not.
+
+--
+
+&lt;br&gt;
+
+Reconciliation is the only check that can detect an error affecting *every* row of your
+data, a units problem, a currency problem, a duplicated file, a wrong vintage.
+
+--
+
+&lt;br&gt;
+
+Assertions cannot catch those. Everything is internally consistent. It is consistently
+wrong.
+
+---
+
+# 4. The two-implementations trick
+
+Have the model write the pipeline.
+
+--
+
+Then, independently, write the key step yourself. Or ask a **different** model, in a
+fresh context, with no sight of the first answer.
+
+--
+
+&lt;br&gt;
+
+Compare the numbers.
+
+---
+
+# Why it works
+
+If two independent implementations agree, the probability that both made the *same*
+error is low.
+
+--
+
+&lt;br&gt;
+
+If they disagree, you have something better than a warning: you have the error
+**localized** to a specific step.
+
+--
+
+&lt;br&gt;
+
+You do not need to do this for the whole pipeline. Do it for:
+
+- the treatment variable
+- the estimation sample count
+- the main coefficient
+
+--
+
+Three numbers. Twenty minutes.
+
+---
+
+# 5. Adversarial self-review
+
+Models are much better at criticizing analysis than at producing it correctly the first
+time.
+
+--
+
+&lt;br&gt;
+
+Exploit the asymmetry.
+
+---
+
+# Prompts that actually work
+
+```
+You are a hostile referee at Marketing Science. Read this script and
+identify every reason the estimate might be wrong. Be specific about
+which line.
+```
+
+--
+
+```
+What did you assume about the data that I did not tell you?
+```
+
+--
+
+```
+List every row-dropping operation in this script and how many rows
+each one drops.
+```
+
+--
+
+```
+What would have to be true about the data for this code to give a
+wrong answer without erroring?
+```
+
+--
+
+&lt;br&gt;
+
+That last one is my favorite. It reliably surfaces the join assumptions.
+
+---
+
+# A caveat on self-review
+
+It is not a substitute for the assertions. It is a **generator of hypotheses** about
+where to put them.
+
+--
+
+&lt;br&gt;
+
+The model will also produce some critique that is wrong, or generic, or hedging. Ignore
+that part.
+
+--
+
+You are mining for the two specific, checkable objections. Then you check them.
+
+---
+
+# 6. Read the diff. Always.
+
+Callback to last week.
+
+```bash
+git add -A &amp;&amp; git commit -m "baseline: main table replicates"
+# ... agent works ...
+git diff HEAD
+```
+
+--
+
+&lt;br&gt;
+
+An agent touched eleven files. It gave you a four-bullet summary.
+
+--
+
+.large2[The summary is not the diff.]
+
+--
+
+&lt;br&gt;
+
+The summary describes what it *intended*. The diff is what it *did*. These differ, and
+the difference is where your bug is.
+
+---
+
+# The rule that subsumes all six
+
+.large2[Never accept a number you cannot derive a rough magnitude for independently.]
+
+--
+
+&lt;br&gt;
+
+Before you look at the regression output, say out loud what you expect: sign, and order
+of magnitude.
+
+--
+
+&lt;br&gt;
+
+If the output surprises you, that is information. Either your prior was wrong, which is
+a finding, or the code is wrong.
+
+--
+
+&lt;br&gt;
+
+If you had no prior, you cannot tell the difference, and you will publish whichever one
+it was.
+
+---
+class: inverse, center, middle
+name: reading
+
+# Reading code you did not write
+
+---
+
+# The position you are now in
+
+You used to write code and debug your own errors. You knew what you meant.
+
+--
+
+&lt;br&gt;
+
+Now most of the code in your project was written by something else.
+
+--
+
+&lt;br&gt;
+
+.large2[You are permanently a **code reviewer** rather than a code author.]
+
+--
+
+&lt;br&gt;
+
+That is a genuinely different skill, and nobody taught it to you. It is not in your
+econometrics sequence and it is not in your programming class, because in 2019 it was
+not the job.
+
+---
+
+# What reviewers do differently
+
+An author asks: does this do what I meant?
+
+--
+
+A reviewer asks: what would have to be true for this to be wrong, and is it?
+
+--
+
+&lt;br&gt;
+
+You cannot review by reading top to bottom. Analysis scripts are long, and the important
+lines are not the interesting ones.
+
+--
+
+You need an order.
+
+---
+
+# The order
+
+Check these, in this order:
+
+--
+
+**1. Sample size at every step.** `nrow()` after every operation.
+
+--
+
+**2. The merges.** Type of join, key, key uniqueness, coverage after.
+
+--
+
+**3. The specification.** Fixed effects, functional form, what varies at what level.
+
+--
+
+**4. The standard errors.** Clustering level, number of clusters.
+
+---
+
+# Why that order
+
+It is the order of expected damage.
+
+--
+
+&lt;br&gt;
+
+A sample-selection error changes what your paper is **about**. It cannot be fixed by a
+robustness check because everything downstream is on the wrong population.
+
+--
+
+A merge error is usually a sample-selection error with extra steps.
+
+--
+
+A specification error is a genuine mistake but it is *visible*, a referee will catch it,
+and so will you if you look at the table.
+
+--
+
+A clustering error changes your standard errors by a factor of two or three. Bad, but
+it is one number and it is fixable in an afternoon.
+
+--
+
+&lt;br&gt;
+
+Read from the most-load-bearing to the least.
+
+---
+
+# The fifteen-minute review
+
+
+``` r
+# 1. sample: put this after every block
+message(deparse(substitute(df)), ": ", nrow(df), " rows")
+
+# 2. merges: grep for them
+#    grep -n "join\|merge" code/02-clean.R
+#    for each: is it inner? is the right key unique?
+
+# 3. specification: print the model call, read it as a sentence
+#    "price on instant_bookable, absorbing city, ..."
+
+# 4. SEs: how many clusters?
+#    length(unique(df$host_id))
+```
+
+--
+
+&lt;br&gt;
+
+Fifteen minutes. Do it on every script an agent produces, before you look at the
+coefficient.
+
+--
+
+Before, specifically. Once you have seen the number, you will rationalize it.
+
+---
+class: inverse, center, middle
+name: building
+
+# Building your own tools
+
+### Agents and skills
+
+---
+
+# The shift
+
+So far you have been a *user* of these tools. You type, it responds.
+
+--
+
+&lt;br&gt;
+
+That is the beginner mode, and most people never leave it.
+
+--
+
+&lt;br&gt;
+
+.large2[The people getting real leverage out of this are the ones who **build
+infrastructure** on top of the models.]
+
+--
+
+Two things make that possible: **skills** and **agents**. They are simpler than they
+sound.
+
+---
+
+# Skills: the idea
+
+A skill is a **written instruction set** the model loads when it is relevant.
+
+--
+
+&lt;br&gt;
+
+That is genuinely all it is. A markdown file with a description and some instructions.
+
+--
+
+&lt;br&gt;
+
+You already do this informally. Every time you paste "remember, our fiscal quarters
+start in February, cluster at the DMA level, and use booktabs for tables". That is a
+skill you are retyping by hand every session.
+
+--
+
+Write it down once instead.
+
+---
+
+# What a skill looks like
+
+```markdown
+---
+name: regression-tables
+description: Produce LaTeX regression tables in our house style.
+  Use whenever exporting model results to a table.
+---
+
+Use `modelsummary` with `output = "latex"`.
+
+- booktabs rules only. No vertical lines. Ever.
+- Coefficients to 3 decimals, SEs in parentheses below.
+- Stars: * p&lt;0.10, ** p&lt;0.05, *** p&lt;0.01.
+- Always report N and the FE structure in the panel below.
+- Cluster level goes in the notes, spelled out.
+```
+
+--
+
+That is a complete, working skill.
+
+---
+
+# Why this is more than a convenience
+
+Three reasons it matters for research specifically.
+
+--
+
+**1. Consistency.** Every table in the paper comes out the same way. No drift between
+the version you made in March and the one in September.
+
+--
+
+**2. It is version-controlled.** The skill lives in your repo. When a coauthor clones
+it, they get your conventions.
+
+--
+
+**3. It is documentation.** A skill file is a written record of a methodological
+choice. Six months later it tells you *why* you clustered where you did.
+
+---
+
+# Skills worth writing for your project
+
+- **House style for tables and figures**: the example above
+- **Your data dictionary**, variable definitions, units, known quirks, which
+  merges are legitimate
+- **Your annotation instructions**: the construct definition, inclusion and exclusion
+  criteria, edge cases (this becomes your Week 4 prompt)
+- **Your verification checklist**: the assertions from earlier today, so an agent
+  writes them automatically instead of when you remember
+
+--
+
+&lt;br&gt;
+
+That last one is the highest-value thing in this lecture.
+
+---
+
+# Turn today's lecture into a skill
+
+```markdown
+---
+name: verify-analysis
+description: Checks to run on any analysis script before
+  trusting its output.
+---
+
+After writing or modifying any analysis script:
+
+1. Assert row counts before and after every join.
+2. Assert no duplicates on the join key.
+3. Assert nobs(model) equals the intended sample size.
+4. Report how many rows each filter removed.
+5. Confirm the cluster level matches treatment assignment.
+6. State every variable definition you assumed.
+```
+
+--
+
+Now the checks happen every time, not when you happen to be careful.
+
+---
+
+# Agents: the idea
+
+An agent is a **model given a job, a set of tools, and its own context**.
+
+--
+
+&lt;br&gt;
+
+The distinction from a skill: a skill *tells* the model how to do something. An agent
+is a separate worker you *delegate* something to.
+
+--
+
+&lt;br&gt;
+
+The practical difference that matters: an agent has its own context window. It can
+read two hundred files and hand you back one paragraph, without filling up your
+session with two hundred files.
+
+---
+
+# Why the separate context matters
+
+You are cleaning data. You need to know whether any of eleven replication packages in
+your literature use the same instrument.
+
+--
+
+&lt;br&gt;
+
+**Without an agent:** you read eleven papers into your session. Your context is now
+mostly other people's appendices, and the model starts losing track of your actual
+task.
+
+--
+
+&lt;br&gt;
+
+**With an agent:** you dispatch it, it reads all eleven, it returns "three use it;
+here they are." Your session stays on your task.
+
+---
+
+# Where agents genuinely help in research
+
+- **Literature sweeps.** "Find every paper in this folder that uses a shift-share
+  instrument and summarize the exclusion restriction each one argues for."
+- **Codebase archaeology.** "Read this 2013 replication package and tell me how they
+  construct the market definition."
+- **Parallel independent checks.** Same task, three agents, compare answers. Where they
+  disagree is where your bug is.
+- **The adversarial referee.** An agent whose whole job is to attack your design.
+
+---
+
+# The referee agent
+
+```markdown
+---
+name: hostile-referee
+description: Reviews an empirical claim as a skeptical referee.
+---
+
+You are refereeing for Marketing Science. You are fair
+but hard to convince.
+
+For the analysis you are shown:
+1. What is the estimand? State it precisely.
+2. What must be true for it to be identified?
+3. What is the most damaging alternative explanation?
+4. What would you ask the authors to run?
+
+Do not compliment the work. Do not soften. If the
+identification does not hold, say so directly.
+```
+
+--
+
+Run this on your own project in Week 6. It is uncomfortable and useful.
+
+---
+
+# Why the adversarial framing works
+
+Models are **much better at criticizing than at being right the first time**.
+
+--
+
+&lt;br&gt;
+
+Asking "is this analysis correct?" gets you agreement, because agreement is the
+socially smooth answer and these models are trained to be agreeable.
+
+--
+
+&lt;br&gt;
+
+Asking "you are a referee, find the fatal flaw" gets you a real critique, because now
+finding problems *is* the task.
+
+--
+
+&lt;br&gt;
+
+.large2[Frame the job so that the answer you fear is the answer it is rewarded for
+giving.]
+
+---
+
+# Multiple agents, one question
+
+The most useful pattern I know:
+
+--
+
+&lt;br&gt;
+
+Give the **same** question to three agents independently. Do not let them see each
+other's answers.
+
+--
+
+&lt;br&gt;
+
+- All three agree → probably fine
+- Two agree, one differs → look at the disagreement
+- All three differ → you asked an ambiguous question, or the answer is hard
+
+--
+
+&lt;br&gt;
+
+This is cheap triangulation. It is also, roughly, what inter-rater reliability does
+which is exactly where we are going in Week 4.
+
+---
+
+# The honest limits
+
+Agents fail in specific ways, and you should expect them.
+
+--
+
+- **They do not know what they did not read.** An agent that searched badly returns a
+  confident answer based on nothing.
+- **They compound errors.** A wrong conclusion in step 2 propagates silently through
+  steps 3 through 9.
+- **They are hard to debug.** You get the output, not the reasoning that produced it.
+- **They are expensive.** Multiple agents means multiple full contexts.
+
+--
+
+&lt;br&gt;
+
+Delegate tasks with **checkable output**. Never delegate a judgment you cannot verify.
+
+---
+
+# The rule for agents
+
+.large2[An agent is a research assistant who never says "I'm not sure."]
+
+--
+
+&lt;br&gt;
+
+You would not put a research assistant's output in a paper without checking it. You would especially
+not do it if the RA were incapable of expressing doubt.
+
+--
+
+&lt;br&gt;
+
+Same standard. Same reason.
+
+---
+
+# What to do this week
+
+Write **one** skill for your project. Start with the data dictionary. It is the one
+you will use every session.
+
+--
+
+&lt;br&gt;
+
+Put it in your repo under `.claude/skills/` (or your tool's equivalent).
+
+--
+
+&lt;br&gt;
+
+Commit it. It is part of your methodology now, and it should be reviewable like the
+rest of your methodology.
+
+---
+class: inverse, center, middle
+name: scale
+
+# Data at scale, briefly
+
+---
+
+# Why this is short now
+
+This used to be two full lectures: `data.table` syntax, SQL joins, indexing, `dplyr`
+verbs.
+
+--
+
+&lt;br&gt;
+
+You will get the syntax from a model. In nine seconds. Correctly, most of the time,
+because this is exactly the checkable-output regime from Section 1.
+
+--
+
+&lt;br&gt;
+
+.large2[What you need is knowing **which tool** and **when**.]
+
+---
+
+# The decision
+
+**Fits comfortably in RAM (&lt; ~1/3 of your memory):**
+`data.table`. We use it throughout this course.
+
+--
+
+**Large but fits (10--100M rows):**
+`data.table` in R, `polars` in Python. Both are fast, both do grouped operations without
+copying your data four times.
+
+--
+
+**Does not fit in memory:**
+`duckdb`. Query parquet and CSV files directly from disk with SQL. This is the answer
+for almost everything you will hit in this course.
+
+--
+
+**Actually enormous, or shared with coauthors:**
+A real database, or cloud (BigQuery, Snowflake). Week 3.
+
+---
+
+# "Too big for memory" in practice
+
+A rough rule: a numeric column costs 8 bytes per row. A character column costs much more.
+
+--
+
+&lt;br&gt;
+
+100M rows × 20 numeric columns ≈ 16 GB. On a 16 GB laptop that is not going to work,
+because R will copy it.
+
+--
+
+&lt;br&gt;
+
+R copies more than you expect. `data.table` modifies in place (`:=`) specifically to
+avoid this.
+
+--
+
+&lt;br&gt;
+
+If your machine starts swapping, you are done. It is not slow, it is a hundred times
+slower.
+
+---
+
+# `duckdb` is the one to learn
+
+
+``` r
+library(duckdb)
+con &lt;- dbConnect(duckdb())
+
+dbGetQuery(con, "
+  SELECT state, room_type, COUNT(*) AS n, AVG(price) AS mean_price
+  FROM 'data/raw/listings_*.parquet'
+  WHERE price &gt; 0
+  GROUP BY state, room_type
+")
+```
+
+--
+
+&lt;br&gt;
+
+That queries 40 GB of parquet on a laptop, never loading it into R.
+
+--
+
+It also means your aggregation step is written in SQL, which is verifiable, portable, and
+the same language your data provider speaks.
+
+---
+
+# What to actually know
+
+- The difference between an operation that streams and one that materializes
+- That joins are where memory blows up
+- That parquet is columnar, compresses well, and preserves types, CSV does none of that
+- That `.rds` / `.RData` are not portable across languages
+
+--
+
+&lt;br&gt;
+
+Save intermediates as **parquet**. Not CSV. CSV loses your types, and Section 2 was
+mostly about types.
+
+---
+
+# Visualization: the principle
+
+.large2[Plot your data before you regress it.]
+
+--
+
+&lt;br&gt;
+
+Not after. Before.
+
+--
+
+&lt;br&gt;
+
+Every failure mode in Section 2 is visible in a plot and invisible in a coefficient.
+A duplicated merge shows up as a bimodal distribution. A date parsing error shows up as
+a gap in your time series. A truncated sample shows up as a wall at `price = 1000`.
+
+---
+
+# What to plot
+
+- The distribution of your outcome. Not its mean.
+- The distribution of your key regressor.
+- Counts by group and by period, this is your panel structure, and it is where
+  imbalance shows up.
+- The raw time series around your treatment date.
+
+--
+
+&lt;br&gt;
+
+.large2[A figure that shows the identifying variation is worth more than a table.]
+
+--
+
+&lt;br&gt;
+
+If you cannot draw a picture of where your identification comes from, you may not have
+any.
+
+---
+
+# `ggplot2`, one slide
+
+
+``` r
+ggplot(panel, aes(x = month, y = price, color = factor(treated))) +
+  stat_summary(fun = mean, geom = "line") +
+  geom_vline(xintercept = as.Date("2018-07-01"), linetype = 2) +
+  labs(x = NULL, y = "Mean nightly price", color = "Treated") +
+  theme_minimal()
+```
+
+--
+
+&lt;br&gt;
+
+The grammar: data → aesthetic mapping → geometry → scales → theme.
+
+--
+
+Learn the grammar, not the functions. The model will supply the functions; it cannot
+decide that you should have faceted by market size.
+
+---
+class: inverse, center, middle
+name: lab
+
+# The lab
+
+---
+
+# What you are getting
+
+A complete analysis. Produced by an agent, from a genuinely dirty dataset, in one pass.
+
+--
+
+&lt;br&gt;
+
+It runs end to end without error.
+
+--
+
+It produces a clean, well-formatted regression table.
+
+--
+
+It has a coefficient with three stars.
+
+--
+
+&lt;br&gt;
+
+.large2[It is wrong in at least six ways.]
+
+---
+
+# The task
+
+Find them.
+
+--
+
+&lt;br&gt;
+
+Work **on your own**. You will be tempted to compare notes, don't, not yet. Finding
+these yourself is the only way to know whether you can.
+
+--
+
+&lt;br&gt;
+
+We will pool what everyone found at the end, and you will see that different people
+caught different things. That is the two-implementations idea, applied to humans.
+
+--
+
+&lt;br&gt;
+
+You have the repo, the raw data, and the script. Not the answers.
+
+---
+
+# The rules
+
+- You may run anything, print anything, plot anything
+- You may use an AI agent. I would be a hypocrite to forbid it
+- You may **not** ask it "find the bugs in this script" as your first move
+
+--
+
+&lt;br&gt;
+
+Do the fifteen-minute review yourself first. Then use the model to check specific
+hypotheses.
+
+--
+
+&lt;br&gt;
+
+The point is not to find the bugs. The point is to build the habit that finds bugs you
+have not seen before.
+
+---
+
+# Hint order
+
+.large2[Sample size → merges → specification → standard errors.]
+
+--
+
+&lt;br&gt;
+
+That is Section 4. It is the order of expected damage and it is the order in which these
+bugs will fall out.
+
+--
+
+&lt;br&gt;
+
+Start with `nrow()`. Every step. Write the numbers down.
+
+--
+
+If you get stuck for more than ten minutes at any stage, come get me.
+
+---
+
+# Where the bugs come from
+
+Every error in that script is drawn from the taxonomy in Section 2.
+
+---
+
+# Which ones
+
+Five of the seven appear. Not mode 5, a script has no citations, and not mode 7,
+which needs a conversation.
+
+--
+
+.small90[
+| # | Failure |
+|:--|:--|
+| 1 | Silent merge errors |
+| 2 | Sample selection changes |
+| 3 | Wrong standard errors |
+| 4 | Fabricated variable definitions |
+| 5 | Hallucinated citations |
+| 6 | Silent type coercion |
+| 7 | Reward hacking |
+]
+
+--
+
+&lt;br&gt;
+
+I am telling you this because it is not a puzzle. It is a drill.
+
+---
+
+# Deliverable
+
+By Sunday, push to your repo:
+
+1. A short memo listing each error you found, the **line number**, and what it does to
+   the estimate
+2. A corrected script with `stopifnot()` assertions that would have caught each one
+3. The corrected table, next to the original
+
+--
+
+&lt;br&gt;
+
+Two pages, maximum.
+
+--
+
+Credit for the assertions specifically. Finding the bug is worth less than writing the
+check that catches it next time.
+
+---
+
+# Also due
+
+**Project milestone (Week 2):** one paragraph stating your question, and an identified
+data source.
+
+--
+
+&lt;br&gt;
+
+One paragraph means one paragraph. It should contain:
+
+- the question
+- the unit of observation
+- what variable you intend to measure with an LLM
+- where the data comes from and whether you can actually get it
+
+--
+
+&lt;br&gt;
+
+That last clause is where most of these fail. "Twitter data" is not a data source in
+2026.
+
+---
+
+# Next week
+
+**Data acquisition, storage, and provenance.**
+
+--
+
+- APIs, scraping, and what you are actually allowed to do
+- Rate limits, batching, and not burning your credits in an afternoon
+- Storage: parquet, duckdb, when you need a real database
+- Provenance: knowing where every row came from, and being able to prove it six months
+  later
+
+--
+
+&lt;br&gt;
+
+Provenance is the theme. Today was about verifying your **code**. Next week is about
+verifying your **data**.
+
+---
+
+# The thing to take away
+
+You will use these tools. I use them constantly. They are not going away and pretending
+otherwise would be silly.
+
+--
+
+&lt;br&gt;
+
+But the entire value of your PhD is now concentrated in a narrower place than it used to
+be.
+
+--
+
+&lt;br&gt;
+
+.large2[It is in knowing whether the number is right.]
+
+--
+
+&lt;br&gt;
+
+Nothing else you do is scarce anymore.
+
+---
+class: inverse, center, middle
+
+# Questions?
+
+### Repo link on Blackboard. Work individually.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "highlightSpans": true,
+  "countIncrementalSlides": false,
+  "ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
