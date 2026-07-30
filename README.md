@@ -12,7 +12,7 @@ models, are not in this repository.
 
 This course provides PhD students with the toolkit for conducting rigorous empirical research in marketing. The first half focuses on empirical research workflows in the age of large language models. Two things have changed since this course was last offered. First, the marginal cost of writing code, cleaning data, and producing a regression table has collapsed. The binding constraint on empirical research is no longer execution; it is judgment, knowing what analysis to run, whether the output is correct, and whether the resulting claim is credible. Second, LLMs have become research instruments in their own right: they are used to measure constructs from unstructured data, to simulate respondents, and to automate parts of the research pipeline. Each use introduces statistical problems that do not appear in standard econometrics training. These seven weeks therefore cover reproducible and AI-assisted research workflows, the econometrics of working with AI-generated variables, and the design of credible research when analysis is cheap and verification is expensive.
 
-For more information about this class, take a look at the **[Syllabus](https://github.com/dadepro/mkt699/tree/main/syllabus)**
+For more information about this class, take a look at the **[Syllabus](syllabus/mkt-699-Fall2026-revised.md)** ([Word version](syllabus/mkt-699-Fall2026-revised.docx))
 
 ### Lectures
 
