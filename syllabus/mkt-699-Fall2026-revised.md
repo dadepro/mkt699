@@ -178,6 +178,14 @@ The project is a **measurement** project: use an LLM to measure something previo
 | 6 | Sep 30 | Corrected estimates reported; identification argument revised; robustness plan |
 | 7 | Oct 7 | 20-minute presentation + short written report |
 
+**The identification memo.** The Week 3 deliverable is a memo of roughly 400–600 words, in the project repository, stating: the question; the data; the estimand; the variation that identifies it; what must be true for that variation to identify it; and what would break it. The last two are the memo. A memo that describes a dataset and a regression without naming an assumption that could fail has not done the assignment.
+
+**The revision.** The Week 6 deliverable revisits the Week 3 memo in light of the validation study, and is due with the corrected estimates. The question it answers is whether measurement error changed what you are willing to claim. Mark changes from the Week 3 version so the revision is legible as a revision.
+
+Often it will change a great deal. If validation shows classifier error is correlated with your treatment or your covariates, the estimand may need narrowing, the identifying assumption may need to be restated conditional on the error structure, and the naive and corrected estimates may support different conclusions. That case is the point of Weeks 4 and 5, and the revision should be a rewrite.
+
+**But not always.** If validation shows error that is modest and plausibly unrelated to the variation you exploit, and the corrected estimates track the naive ones, then the Week 3 argument survives and rewriting it would be theater. In that case the revision is a short note — a paragraph or two — reporting the validation result, showing the naive and corrected estimates side by side, and stating that the identifying assumption is unchanged and why. Say so plainly. An honest half-page that reports a stable design is worth more than three pages manufacturing a revision that the evidence does not call for. What is *not* acceptable is silence: every project reports the comparison, whether or not it moved anything.
+
 Null results are acceptable and will be graded on the quality of the design and the honesty of the reporting, not on whether the effect is significant. A well-executed project that finds nothing will receive a higher grade than a poorly identified project that finds something.
 
 ---
