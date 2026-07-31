@@ -22,7 +22,7 @@ The class is taught in two equal parts. **The first part focuses on empirical re
 
 The second part focuses on the fundamentals of structural analysis, particularly choice modeling in empirical industrial organization and marketing. These models bridge economic theory and empirical data, allowing researchers to estimate policy-invariant primitive parameters that are not directly observable and to evaluate counterfactual policies. This course emphasizes empirical data handling, model construction, and estimation challenges in applied research. We provide opportunities for you to "get your hands dirty" with data and estimation. At the end, we aim to expose you to classic and modern papers in choice modeling, help you become comfortable reading them, and prepare you to apply canonical methods in your own research.
 
-This is a PhD-level, research-oriented class, intense and fast-paced. There is no set book for this course and students will be required to read and digest up to 4 research papers per week. These will be reviewed in class through student presentations and instructor-led discussion. These will be accompanied by a portion of lecture and applied analysis. Students will be required to program in R and Python.
+This is a PhD-level, research-oriented class, intense and fast-paced. There is no set book for this course and students will be required to read and digest up to 4 research papers per week. In the first half, papers are reviewed through instructor-led discussion, and every student is expected to have read them and to participate. In the second half, papers are pre-assigned to students who present them to the class. These will be accompanied by a portion of lecture and applied analysis. Students will be required to program in R and Python.
 
 While prior programming language experience is not required for this course, you are expected to do a large amount of work on your own to learn and own the tools we will use in this class.
 
@@ -402,9 +402,8 @@ Each half of the course will be evaluated by the respective instructors. The fin
 | | Points | % of Grade |
 |---|---|---|
 | 2 Programming assignments | 20 | 20% |
-| Semester project, presentation and report | 45 | 45% |
+| Semester project, presentation and report | 55 | 55% |
 | Project milestones | 15 | 15% |
-| Paper presentation | 10 | 10% |
 | Class participation | 10 | 10% |
 | **TOTAL** | **100** | **100%** |
 
