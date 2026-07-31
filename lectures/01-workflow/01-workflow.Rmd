@@ -297,23 +297,17 @@ you can do the project.
 
 # How to read for this class
 
-You will read up to four papers a week. You cannot read them the way you read for a
-first-year theory class.
-
---
-
-For each paper, you should be able to answer:
+You will read up to four papers a week related to the topics we cover in class. If the paper is about a design, you should be able to answer the following questions:
 
 1. What is the **estimand**? What number are they trying to learn?
 2. What is the **identifying assumption**? What has to be true?
-3. **What would break it?** What is the most damaging thing a referee could say?
-4. Would this design work in *your* setting?
+3. **What would break it?**
 
 --
 
 <br>
 
-If you can answer these four, you have read the paper. If you can only summarize what
+If you can answer these three, you have read the paper. If you can only summarize what
 they did, you have not.
 
 ---
@@ -333,10 +327,10 @@ Starting today, you develop an original empirical project that uses an LLM as a
 
 <br>
 
-It is deliberately scoped to be:
+It should be scoped to be:
 
 - small enough to finish in seven weeks
-- large enough to become a dissertation chapter if it works
+- large enough to potentially become a real paper
 
 --
 

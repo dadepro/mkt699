@@ -34,6 +34,13 @@ tables:   yelp_lacounty_reviews      (~6.6M rows)
 Credentials will be distributed in class. **They do not go in your repository**, see
 the section on secrets below.
 
+The server uses a self-signed certificate, so `RMySQL` will refuse to connect until you
+set this before `dbConnect()`:
+
+```r
+Sys.setenv(MARIADB_TLS_DISABLE_PEER_VERIFICATION = 1)
+```
+
 `yelp_lacounty_reviews` is one row per review: `review_id`, `business_id`, `user_id`,
 `review_date`, `review_text`, `review_rating`, `useful_votes`, `funny_votes`,
 `cool_votes`, `check_in`.
