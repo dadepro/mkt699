@@ -86,7 +86,7 @@ honesty of the reporting, not on whether the effect is significant.
 |---|---|---|
 | 1 | Aug 26 | Repository initialized |
 | 2 | Sep 2 | One-paragraph question and data source identified |
-| 3 | Sep 9 | Data acquired; pipeline reproducible; **identification argument drafted** |
+| 3 | Sep 9 | Data acquired; pipeline reproducible; identification argument drafted |
 | 4 | Sep 16 | Measurement approach specified; prompt and model documented; validation sample designed |
 | 5 | Sep 23 | Validation complete; naive estimates reported |
 | 6 | Sep 30 | Corrected estimates reported; identification argument revised; robustness plan |
