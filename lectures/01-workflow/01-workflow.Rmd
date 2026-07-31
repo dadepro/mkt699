@@ -71,12 +71,10 @@ opts_chunk$set(
 
 `r fa('envelope')` [proserpi@marshall.usc.edu](mailto:proserpi@marshall.usc.edu)
 
-I do empirical work on digital platforms, algorithmic decision-making, and their market
-consequences. Airbnb, online reviews, housing, algorithmic pricing.
 
 ### About you
 
-Names, field, what you want to work on, and what you are already using AI for.
+Names, what you want to work on, and what you are already using AI for.
 
 ---
 
@@ -108,7 +106,7 @@ name: changed
 
 # I last taught this class in 2021
 
-The syllabus was a tooling course.
+The syllabus was a tooling course ([mkt615](https://github.com/dadepro/mkt-615))
 
 Git. Shell. R. `data.table`. `ggplot2`. MySQL. Scraping.
 
@@ -132,7 +130,7 @@ It is mostly wrong now.
 # The cost of producing analysis has collapsed
 
 You can now get a working merge, a panel construction, a fixed-effects regression,
-and a publication-quality figure in about ninety seconds.
+and a publication-quality figure in a few minutes.
 
 --
 
@@ -142,8 +140,8 @@ Not *good* versions of those things, necessarily. But running versions.
 
 <br>
 
-If I spend three hours teaching you `dplyr` verbs, I am teaching you something you can
-get from a model in nine seconds.
+If I spend three hours teaching you `data.table` verbs, I am teaching you something you
+can get from a model in nine seconds.
 
 --
 
@@ -162,14 +160,15 @@ That is no longer where your time is best spent.
 Producing a regression table is now nearly free.
 
 Knowing whether that table means what you think it means is exactly as hard as it was
-in 2021.
+in 2021 (perhaps harder).
 
 --
 
 <br>
 
-The ratio between those two costs has moved by orders of magnitude. That is the single
-most important fact about doing empirical research right now.
+The ratio between the cost of producing results and verifying them has moved by orders of
+magnitude. That is one of the most important facts about doing empirical research right
+now.
 
 ---
 
@@ -178,7 +177,7 @@ most important fact about doing empirical research right now.
 An LLM will write you code that:
 
 - runs without error
-- produces sensible-looking output
+- produces output that looks good
 - silently drops 40% of your sample in a join
 - and gives you a coefficient you will put in a paper
 
