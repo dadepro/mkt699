@@ -47,6 +47,7 @@ readings start in Week 4 and must be read by every student before class.
 
 **6 · Week 6 (Sep 30), [Credibility: Design, Specification Search, and Experiments](https://raw.githack.com/dadepro/mkt699/main/lectures/06-credibility/06-credibility.html)**
 
+- **Required** · MIT Department of Economics (2025). [Assuring an accurate research record](https://economics.mit.edu/news/assuring-accurate-research-record), and the [arXiv withdrawal record](https://arxiv.org/abs/2412.17866) for Toner-Rodgers, *Artificial intelligence, scientific discovery, and product innovation*. Two pages. Read the retraction record, not the paper: the paper is withdrawn and its results are void. We discuss the case, not the findings.
 - **Required** · Berman & Van den Bulte (2022). [False discovery in A/B testing](https://doi.org/10.1287/mnsc.2021.4207). *Management Science* 68(9), 6762–6782.
 - **Required** · Johnson, Lewis & Nubbemeyer (2017). [Ghost ads: Improving the economics of measuring online ad effectiveness](https://doi.org/10.1509/jmr.15.0297). *JMR* 54(6), 867–884.
 - Simmons, Nelson & Simonsohn (2011). [False-positive psychology](https://doi.org/10.1177/0956797611417632). *Psychological Science* 22(11), 1359–1366.
