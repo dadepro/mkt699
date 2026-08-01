@@ -71,7 +71,7 @@ works.
 The project must:
 
 1. Pose a marketing or economics research question that cannot be answered with off-the-shelf structured data
-2. Describe the data, and state an **identification argument**: what variation identifies the estimand, and what would break it
+2. Describe the data, and state an **identification argument**: what variation identifies the estimand, what must be true for it to do so, and what would break it
 3. Use an LLM to construct at least one variable from unstructured data (text, images, audio, or documents)
 4. Include a **validation study** against human-labeled or otherwise verified gold-standard data, with the sampling scheme described explicitly
 5. Report downstream estimates using an appropriate **correction** for the generated regressor, compared against the naive plug-in estimates
@@ -86,11 +86,31 @@ honesty of the reporting, not on whether the effect is significant.
 |---|---|---|
 | 1 | Aug 26 | Repository initialized |
 | 2 | Sep 2 | One-paragraph question and data source identified |
-| 3 | Sep 9 | Data acquired; pipeline reproducible; identification argument drafted |
+| 3 | Sep 9 | Data acquired; pipeline reproducible; **identification memo** |
 | 4 | Sep 16 | Measurement approach specified; prompt and model documented; validation sample designed |
 | 5 | Sep 23 | Validation complete; naive estimates reported |
-| 6 | Sep 30 | Corrected estimates reported; identification argument revised; robustness plan |
+| 6 | Sep 30 | Corrected estimates reported; **revised identification memo**; robustness plan |
 | 7 | Oct 7 | 20-minute presentation + short written report |
+
+**The identification memo (Week 3).** Roughly 400–600 words, in your project repository,
+stating: the question; the data; the estimand; the variation that identifies it; what must
+be true for that variation to identify it; and what would break it. The last two are the
+memo. A memo that describes a dataset and a regression without naming an assumption that
+could fail has not done the assignment.
+
+**The revision (Week 6).** Revisit the Week 3 memo in light of your validation study, due
+with the corrected estimates. The question it answers is whether measurement error changed
+what you are willing to claim. Mark your changes so the revision is legible as a revision.
+
+If validation shows classifier error correlated with your treatment or your covariates,
+expect to rewrite: the estimand may need narrowing, the identifying assumption may need to
+be restated conditional on the error structure, and the naive and corrected estimates may
+support different conclusions. But if the error is modest and unrelated to the variation
+you exploit, and the corrected estimates track the naive ones, the Week 3 argument
+survives and rewriting it would be theater — a paragraph or two reporting the validation
+result, showing both estimates side by side, and stating that the assumption is unchanged
+and why, is the right answer. What is *not* acceptable is silence: every project reports
+the comparison, whether or not it moved anything.
 
 **Read this early:
 [Presenting the project](https://raw.githack.com/dadepro/mkt699/main/lectures/07-presentations/07-presentations.html)**
