@@ -140,6 +140,7 @@ There is no set book for this section of the course. The lecture slides are deta
 
 *Papers:*
 
+- **Required:** MIT Department of Economics (2025). Assuring an accurate research record. https://economics.mit.edu/news/assuring-accurate-research-record — and the arXiv withdrawal record for Toner-Rodgers, *Artificial intelligence, scientific discovery, and product innovation* (arXiv:2412.17866), https://arxiv.org/abs/2412.17866. [Two pages. Read the retraction record, not the paper: the paper is withdrawn and its results are void. We discuss the case, not the findings.]
 - **Required:** Berman, R., & Van den Bulte, C. (2022). False discovery in A/B testing. *Management Science*, 68(9), 6762–6782.
 - **Required:** Johnson, G. A., Lewis, R. A., & Nubbemeyer, E. I. (2017). Ghost ads: Improving the economics of measuring online ad effectiveness. *Journal of Marketing Research*, 54(6), 867–884.
 - Simmons, J. P., Nelson, L. D., & Simonsohn, U. (2011). False-positive psychology. *Psychological Science*, 22(11), 1359–1366.
@@ -226,7 +227,22 @@ These are not required weekly readings. They are background for anyone whose mea
 - Luo, X., Tong, S., Fang, Z., & Qu, Z. (2019). Frontiers: Machines vs. humans: The impact of artificial intelligence chatbot disclosure on customer purchases. *Marketing Science*, 38(6), 937–947.
 - Longoni, C., Bonezzi, A., & Morewedge, C. K. (2019). Resistance to medical artificial intelligence. *Journal of Consumer Research*, 46(4), 629–650.
 
-*A note on the retracted MIT paper.* Toner-Rodgers, "Artificial intelligence, scientific discovery, and product innovation" (*arXiv:2412.17866*) was withdrawn after MIT stated it had no confidence in the provenance or validity of the data. It was publicly endorsed by prominent economists before the fraud surfaced. We will discuss it in Week 6 as a case study in why reproducible pipelines and data provenance are not bureaucratic overhead.
+*A note on the retracted MIT paper.* Toner-Rodgers, "Artificial intelligence, scientific discovery, and product innovation" (*arXiv:2412.17866*) is deliberately absent from the list above. In May 2025 MIT stated it had "no confidence in the provenance, reliability or validity of the data," and arXiv withdrew it for data concerns and incomplete IRB requirements. It had been publicly endorsed by prominent economists first. We discuss it in Week 6 as a case study in why reproducible pipelines and data provenance are not bureaucratic overhead; the required reading there is the retraction record, not the paper.
+
+---
+
+
+## Course Outline and Schedule (First Half)
+
+| Week | Date | Topic | Deliverable |
+|---|---|---|---|
+| 1 | Aug 26 | **Reproducible research infrastructure**: course overview; laptop setup; Git/GitHub; shell and remote computing; environment management; setting up an AI-assisted workflow | Project repo |
+| 2 | Sep 2 | **AI-assisted analysis and the verification problem**: AI coding assistants for research tasks; failure modes; defensive workflow and testing; data manipulation and visualization | **Assignment 1 out**; project question |
+| 3 | Sep 9 | **Data acquisition, storage, and provenance**: SQL and databases; APIs and scraping; LLM-based extraction from unstructured sources; documentation and sharing | Identification memo |
+| 4 | Sep 16 | **LLMs as measurement instruments I**: annotation and classification; validation design; prompt sensitivity as researcher degrees of freedom | **Assignment 1 due**; **Assignment 2 out**; measurement plan |
+| 5 | Sep 23 | **LLMs as measurement instruments II**: inference with generated variables; DSL, prediction-powered inference, bias correction; silicon sampling and its limits | Validation complete |
+| 6 | Sep 30 | **Credibility**: specification search with cheap analysis; pre-registration; experiments, false discovery, incrementality; null results; journals and reviewers | **Assignment 2 due**; revised identification memo |
+| 7 | Oct 7 | **Project presentations** | Presentation + report |
 
 ---
 
@@ -246,19 +262,10 @@ In each week, we will discuss several papers on a particular topic. In most case
 ---
 
 
-## Overall Course Outline and Proposed Schedule
+## Course Outline and Schedule (Second Half)
 
 | Week | Date | Topic | Deliverable |
 |---|---|---|---|
-| 1 | Aug 26 | **Reproducible research infrastructure**: course overview; laptop setup; Git/GitHub; shell and remote computing; environment management; setting up an AI-assisted workflow | Project repo |
-| 2 | Sep 2 | **AI-assisted analysis and the verification problem**: AI coding assistants for research tasks; failure modes; defensive workflow and testing; data manipulation and visualization | **Assignment 1 out**; project question |
-| 3 | Sep 9 | **Data acquisition, storage, and provenance**: SQL and databases; APIs and scraping; LLM-based extraction from unstructured sources; documentation and sharing | Identification memo |
-| 4 | Sep 16 | **LLMs as measurement instruments I**: annotation and classification; validation design; prompt sensitivity as researcher degrees of freedom | **Assignment 1 due**; **Assignment 2 out**; measurement plan |
-| 5 | Sep 23 | **LLMs as measurement instruments II**: inference with generated variables; DSL, prediction-powered inference, bias correction; silicon sampling and its limits | Validation complete |
-| 6 | Sep 30 | **Credibility**: specification search with cheap analysis; pre-registration; experiments, false discovery, incrementality; null results; journals and reviewers | **Assignment 2 due**; revised identification memo |
-| 7 | Oct 7 | **Project presentations** | Presentation + report |
-
-| | | **SECOND PART** | |
 | 8 | Oct 14 | Basics of Structural and Non-Structural Analysis: course overview; descriptive vs. reduced-form vs. structural; when and why structural analysis: benefits and limitations | |
 | 9 | Oct 21 | Basics of Model Identification and Estimation: model identification; estimation methods: (S)MLE, (S)GMM, NNE; empirical identification: sensitivity of estimates to moments | |
 | 10 | Oct 28 | Discrete Choice Models (Individual-Level Data): binary choices: logit, probit; multiple choices: (L)MNL, MNP, (L)Nested logit; ordered responses | Assignment 1 |
