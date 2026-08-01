@@ -105,12 +105,15 @@ what you are willing to claim. Mark your changes so the revision is legible as a
 If validation shows classifier error correlated with your treatment or your covariates,
 expect to rewrite: the estimand may need narrowing, the identifying assumption may need to
 be restated conditional on the error structure, and the naive and corrected estimates may
-support different conclusions. But if the error is modest and unrelated to the variation
-you exploit, and the corrected estimates track the naive ones, the Week 3 argument
-survives and rewriting it would be theater — a paragraph or two reporting the validation
-result, showing both estimates side by side, and stating that the assumption is unchanged
-and why, is the right answer. What is *not* acceptable is silence: every project reports
-the comparison, whether or not it moved anything.
+support different conclusions.
+
+Every project reports the naive and corrected estimates side by side, whether or not they
+differ. This is the part that is not optional. If the two estimates agree, and the error is
+modest and plausibly unrelated to the variation you exploit, then the Week 3 argument
+stands. Report the validation result, show both estimates, state that the identifying
+assumption is unchanged, and explain why. A paragraph or two is enough. Do not pad it. A
+short memo that documents a stable design is worth more than a long one that manufactures
+a revision the evidence does not support.
 
 **Read this early:
 [Presenting the project](https://raw.githack.com/dadepro/mkt699/main/lectures/07-presentations/07-presentations.html)**
