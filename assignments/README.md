@@ -4,7 +4,7 @@
 |:--|:--|:--|--:|
 | [Lab 2, Find the bugs](lab-02-broken-analysis/) |, | in class, Week 2 (Sep 2) | ungraded, participation |
 | [Assignment 1, Reproducible data pipeline](assignment-01-pipeline.md) | Week 2 (Sep 2) | Week 4 (Sep 16) | 10% |
-| [Assignment 2, Measuring authenticity with an LLM](assignment-02-measurement.md) | Week 4 (Sep 16) | Week 6 (Sep 30) | 10% |
+| [Assignment 2, Measuring service complaints with an LLM](assignment-02-measurement.md) | Week 4 (Sep 16) | Week 6 (Sep 30) | 10% |
 
 Each assignment is released after the lecture covering the material it needs, and you get
 two weeks.

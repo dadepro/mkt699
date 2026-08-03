@@ -1,4 +1,4 @@
-# Assignment 2 — Measuring Authenticity with an LLM
+# Assignment 2 — Measuring Service Complaints with an LLM
 
 **Released** Week 4 (Sep 16) · **Due** Week 6 (Sep 30), start of class
 
@@ -11,8 +11,8 @@
 You are going to build a measurement instrument out of a language model, find out how
 good it is, and then find out what happens when you use it anyway.
 
-The construct is **experiential authenticity**: does this review read like it was
-written by someone who actually went there?
+The construct is the **locus of complaint**: when a reviewer is dissatisfied, are they
+faulting how they were treated or what they were served?
 
 The deliverable is not a classifier. It is an honest account of a classifier's error and
 what that error does to a regression coefficient. If you finish this assignment believing
@@ -24,25 +24,34 @@ your measure is good, you have probably not validated it hard enough.
 
 For each review, we want a binary label:
 
-> **Authentic (1):** the review contains concrete, verifiable specifics that indicate
-> first-hand experience, named dishes, prices, staff, timing, spatial detail, sensory
-> description tied to a particular visit, or a narrative of what happened.
+> **1:** the review contains a complaint about **service**, the interaction or
+> environment rather than the product: staff behaviour, wait, order accuracy,
+> cleanliness of the premises, noise or crowding, facilities, or billing and policy
+> friction.
 >
-> **Generic (0):** the review expresses evaluation without first-hand specifics. Praise
-> or complaint that could apply to any business in the category, with no detail that
-> anchors it to an actual visit.
+> **0:** everything else. This includes reviews that complain about the **food** and
+> reviews that complain about **nothing at all**.
 
-Two things to be clear about.
+Three things to be clear about.
 
-**This is not a fake-review detector.** You are measuring textual specificity, not
-deception. A genuine customer can write "Great food, will come back!" and a paid shill
-can invent convincing detail. Do not claim in your write-up that you are detecting fraud.
-Referees will destroy you for it, and they will be right.
+**Every review gets a label.** There is no "not applicable" category. A purely positive
+review is a 0, and so is a review whose only complaint is about the food. This matters
+more than it looks: if the label decided which rows entered your regression, you would
+have selection on the outcome, and none of the Week 5 corrections would repair it. They
+assume the sample is fixed and only the labels are noisy.
 
-**The boundary is genuinely contested.** Is "the carnitas were dry" authentic? It names a
-dish. Is "best sushi in LA" generic? It makes a specific claim about a category. You will
-have to decide, write your decision down, and live with it. That decision *is* the
-instrument.
+**The hard boundary is not service versus food.** That distinction is reasonably crisp.
+The hard part is deciding **when a mention becomes a complaint.** Reviews routinely note
+a wait, a price, or a cramped room without treating any of it as a fault. "Come early
+because the line gets long" is advice to the reader; "we waited an hour and nobody
+acknowledged us" is a grievance. Both mention a wait. You will have to decide where the
+line is, write your decision down, and live with it. That decision *is* the instrument.
+
+**Do not use the star rating to decide the label.** It is in the data, and it will be
+tempting, since a one-star review probably contains a complaint. But star rating is a
+control in your regression. If it informs your labels, you have built a correlation
+between your outcome and a regressor, and that correlation will look exactly like a
+finding. Code from the text alone.
 
 ---
 
@@ -58,8 +67,8 @@ Restrict to reviews between 2015-01-01 and 2019-12-31 with `CHAR_LENGTH(review_t
 between 200 and 2000, at businesses in California. That is **3,083,906 reviews**, you
 will use a small fraction.
 
-Very short reviews are excluded because "Great!" is trivially generic and would inflate
-your accuracy for free.
+Very short reviews are excluded because "Great!" carries no complaint either way and
+would inflate your accuracy for free.
 
 On the California restriction: check what `state` actually contains in this table before
 you assume you know what it means. If you were in the Week 2 lab you already know why.
@@ -78,7 +87,7 @@ statistic is computed against. Your prompt will be coding instructions, write it
 Write `coding-instructions.md` containing:
 
 - the construct definition, in your own words
-- inclusion criteria: what makes a review authentic
+- inclusion criteria: what counts as a service complaint
 - exclusion criteria: what does not count
 - **at least six worked edge cases** with your ruling and your reasoning
 
@@ -104,16 +113,32 @@ Compute **Cohen's kappa** between the two of you, `irr::kappa2()` in R, or
 
 Annotate with an LLM. Requirements:
 
-- **temperature = 0**
 - prompt stored in `prompts/`, version-controlled, with model name and date
-- **structured output** (JSON) so parsing does not silently fail
+- **structured output** (JSON schema) so parsing does not silently fail
 - store the **raw response**, not just the parsed label
 - handle refusals and malformed output loudly, never by dropping the row
 
+On sampling parameters: current frontier models no longer accept `temperature`, and
+sending it returns an error. Do not set it. Determinism was never guaranteed by
+`temperature = 0` anyway; what makes your run reproducible is versioning the prompt and
+storing the raw responses.
+
 Annotate **5,000 reviews** for the analysis sample, plus the 150 you labeled by hand.
 
-Budget: this should cost a few dollars with a mid-tier model. Batch your requests, and
-test your prompt on 20 reviews before spending anything.
+**Budget.** With a mid-tier model this costs roughly **$12 through the standard API, or
+$6 through the Batch API**. Use the Batch API: it is half price, nothing here is
+latency-sensitive, and it avoids the rate-limit pileup when twenty of you fire several
+thousand calls in the same week. On a frontier model the same run costs about five times
+as much, which is not a good use of departmental funds for a classification task.
+
+Test your prompt on 20 reviews before spending anything.
+
+Two things that will surprise you. **Cost scales with the length of your coding
+instructions**, because they are re-sent on every call. Adding six edge cases can double
+your bill; measure your per-call token count after you finish writing them, not before.
+And **prompt caching will not help you here** unless your instructions run past ~1,000
+tokens, which is the minimum cacheable prefix on most mid-tier models. Below it, caching
+fails silently: no error, and `cache_creation_input_tokens` stays 0.
 
 ### Part 4 — Validate
 
@@ -128,25 +153,37 @@ least fifteen of its errors. This is the most important paragraph in the assignm
 Vague answers here indicate you did not actually look.
 
 **And the critical question:** is the error correlated with anything in your analysis?
-Not "is it random", check. Compute the error rate separately by star rating and by
-reviewer type. If the model is worse on 1-star reviews than 5-star, and rating is in your
+Not "is it random", check. Compute the error rate separately by star rating and by elite
+status. If the model is worse on 1-star reviews than 5-star, and rating is in your
 regression, you have a problem that no amount of accuracy fixes.
+
+Report how many validation cases sit in each cell when you do this. If one group has ten
+reviews in it, an error rate of 0/10 tells you almost nothing: the upper end of its
+confidence interval is around 30%. A test that cannot reject a difference is not evidence
+that there is none, and the correction in Part 5 assumes there is none.
 
 ### Part 5 — Use it, twice
 
 Estimate this:
 
 ```
-authentic_i = β · one_off_reviewer_i + controls + ε_i
+service_complaint_i = β · elite_i + controls + ε_i
 ```
 
-where `one_off_reviewer` = 1 if the reviewer wrote exactly one review in the 2015–2019
-window. Include business fixed effects and star-rating controls. Cluster appropriately
-think about where the variation is.
+where `elite` = 1 if the reviewer holds Yelp Elite status. Include star-rating controls,
+and cluster by business, think about where the variation is.
 
-**For context**, in the full data: one-off reviewers give 1- or 5-star ratings 78.6% of
-the time versus 60.3% for repeat reviewers, despite nearly identical mean ratings (3.92
-vs 3.93). Whether that extremeness comes with less first-hand detail is your question.
+**On business fixed effects.** Do not include them, and be able to say why. Your 5,000
+reviews are drawn from three million, so most businesses in your sample appear exactly
+once. Check how many of your businesses have both an elite and a non-elite reviewer:
+that is the only variation a within-business estimator can use. Report the number. A
+specification that is nominally estimated but substantively empty is worth recognising
+on sight.
+
+**For context**, elite reviewers are 17.3% of the analysis population. Yelp awards the
+status partly on review volume and quality, so it is assigned on the basis of writing
+behaviour, plausibly including how people express dissatisfaction. That is an
+identification problem, not a nuisance: say what it means for what you can claim.
 
 Report **two** sets of estimates:
 
