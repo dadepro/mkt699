@@ -47,11 +47,17 @@ because the line gets long" is advice to the reader; "we waited an hour and nobo
 acknowledged us" is a grievance. Both mention a wait. You will have to decide where the
 line is, write your decision down, and live with it. That decision *is* the instrument.
 
-**Do not use the star rating to decide the label.** It is in the data, and it will be
-tempting, since a one-star review probably contains a complaint. But star rating is a
-control in your regression. If it informs your labels, you have built a correlation
-between your outcome and a regressor, and that correlation will look exactly like a
-finding. Code from the text alone.
+**Do not use the star rating to decide the label, and do not put it in your coding
+sheet.** It is tempting, since a one-star review probably contains a complaint. But star
+rating is a control in your regression. If it informs your labels, you have built a
+correlation between your outcome and a regressor, and that correlation will look exactly
+like a finding.
+
+Telling yourself not to look at a column printed next to the text is not a control. **Build
+the coding sheet with `review_id` and `review_text` only, and rejoin the rating by
+`review_id` after coding.** The same applies to anything else that ends up on the right
+hand side of your regression. This costs one line in your sampling script and removes a
+whole class of doubt about what your labels mean.
 
 ---
 
