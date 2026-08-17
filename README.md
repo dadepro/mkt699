@@ -6,7 +6,7 @@ This repository contains the material for the **first half** of MKT 699 at USC M
 Weeks 8–15, taught by Professor Guangying Chen on the structural estimation of choice
 models, are not in this repository.
 
-**Wednesdays, 1:00–4:00 pm, August 26 – October 7, 2026.**
+**Wednesdays, 1:00–4:00 pm, HOH 706. August 26 – October 7, 2026.**
 
 ### Course Description
 

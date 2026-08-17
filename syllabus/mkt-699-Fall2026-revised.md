@@ -3,13 +3,13 @@
 **Professor:** Davide Proserpio (first half) and Guangying Chen (second half)
 **Email:** proserpi@usc.edu, guangying.chen@marshall.usc.edu
 
-**Office hours:** HOH 706
+**Office hours:** By appointment
 
 **Course website:** Davide's part: https://github.com/dadepro/mkt699
 
 ## Class Hours and Locations
 
-**Wednesdays, 1:00–4:00 pm.** First meeting August 26, 2026. Room TBD.
+**Wednesdays, 1:00–4:00 pm, HOH 706.** First meeting August 26, 2026.
 
 The first half (weeks 1–7, Professor Proserpio) runs August 26 through October 7. The
 second half (weeks 8–15, Professor Chen) runs October 14 through December 2.
