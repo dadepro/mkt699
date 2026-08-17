@@ -3,9 +3,9 @@
 **Professor:** Davide Proserpio (first half) and Guangying Chen (second half)
 **Email:** proserpi@usc.edu, guangying.chen@marshall.usc.edu
 
-**Office hours:** TBD
+**Office hours:** HOH 706
 
-**Course website:** TBD
+**Course website:** Davide's part: https://github.com/dadepro/mkt699
 
 ## Class Hours and Locations
 
