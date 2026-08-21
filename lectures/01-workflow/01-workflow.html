@@ -234,8 +234,7 @@ People use them to:
 
 &lt;br&gt;
 
-Each of these introduces statistical problems that **do not appear anywhere in your
-econometrics sequence**.
+Each of these introduces statistical problems that need to be addressed.
 
 Weeks 4 and 5 are about those problems. That is the methodological core of my half.
 
@@ -293,10 +292,6 @@ Material lives at https://github.com/dadepro/mkt699
 
 --
 
-&lt;br&gt;
-
-Note the weighting. **The project is the course.** The assignments exist to make sure
-you can do the project.
 
 ---
 
@@ -377,8 +372,7 @@ interactions; visual attributes of listings; complaint taxonomies in reviews.*
 
 &lt;br&gt;
 
-The constraint is deliberate. A measurement project forces you through validation and
-correction, which is what this half of the course is for.
+The goal is to ensure that you understand the importance of validation and correction in the context of using LLMs for measurement.
 
 ---
 
@@ -398,7 +392,7 @@ correction, which is what this half of the course is for.
 
 --
 
-These are graded. They exist so that you cannot do this project in the last week
+These milestones exist so that you cannot do this project in the last week
 because a project done in the last week will not have a validation study, and a project
 without a validation study is not a project.
 
@@ -413,7 +407,6 @@ badly identified project that finds something.]
 
 &lt;br&gt;
 
-That is the grading rule, not a sentiment.
 
 You are going to spend a career deciding whether to believe your own results. Start now.
 
@@ -463,9 +456,7 @@ first place.
 
 --
 
-&lt;br&gt;
 
-This is not hypothetical. This is the single most common way I see people get burned.
 
 ---
 
@@ -548,7 +539,7 @@ name: git
 Some of you use git already. Some of you have never touched it. Both are normal in
 your first two years.
 
-I am not going to drill syntax, ask a model, it is genuinely good at this. But I am
+I am not going to drill syntax. (ask a model, it is genuinely good at this). But I am
 going to make sure you have the mental model, because that is the part models explain
 badly.
 
@@ -582,11 +573,11 @@ one you are talking about.
 &lt;br&gt;
 
 `git add` moves working directory → staging.
+
 `git commit` moves staging → repository.
 
 --
 
-That is the whole thing. Everything else is navigation.
 
 ---
 
@@ -657,7 +648,7 @@ it. It is one character short of invisible.
 
 --
 
-.large2[This is the skill. Not the syntax, the *reading*.]
+.large2[Knowledge of the diff is the key to understanding what has changed.]
 
 ---
 
@@ -802,10 +793,9 @@ git commit
 
 &lt;br&gt;
 
-Two rules that prevent most conflicts:
+One rule that prevents most conflicts:
 
 - **Pull before you start working**, not after you finish
-- Don't both edit the same file at the same time, split by script
 
 ---
 
@@ -851,7 +841,7 @@ Course material: https://github.com/dadepro/mkt699
 
 Add me as a collaborator (`dadepro`) so I can see it. Private is fine.
 
-It is yours after the semester ends, and some of these become dissertation chapters.
+It is yours after the semester ends, and some of these become papers (maybe).
 
 ---
 
@@ -1111,7 +1101,7 @@ commands that print sizes.
 &lt;br&gt;
 
 `du -sh` before you start is how you find out whether this fits in RAM, or whether you
-need DuckDB and a server. That is a Week 3 decision you can make in Week 1.
+need DuckDB and a server.
 
 ---
 
@@ -1134,9 +1124,34 @@ different, completely different fingerprint.
 .large2[When your results shift, the first question is always: did the data change, or
 did the code change?]
 
+---
+
+# You do not memorise the checksum
+
+You write it down once, and let the machine do the comparing.
+
+```bash
+# Once, when you first pull the data
+md5 -r data/raw/*.csv &gt; data/raw/CHECKSUMS.txt
+```
+
 --
 
-Record the checksum of your raw files in your README. Then you can always answer it.
+```bash
+# Any time later
+md5 -r data/raw/*.csv | diff - data/raw/CHECKSUMS.txt &amp;&amp; echo "unchanged"
+```
+
+--
+
+&lt;br&gt;
+
+Silence means nothing moved. Any output names the file that did.
+
+--
+
+.small[On Linux use `md5sum` in place of `md5 -r`, and `md5sum -c CHECKSUMS.txt` to
+check.]
 
 ---
 
@@ -1382,9 +1397,6 @@ tmux attach -t annotate     # still going
 
 --
 
-&lt;br&gt;
-
-Learn this in week 1. You will need it in week 4.
 
 ---
 
@@ -1397,8 +1409,6 @@ Pick one and stay on it for a given project.
 &lt;br&gt;
 
 Your data is on the machine you put it on. There is no shared filesystem between them.
-The most common failure I expect: you run half a pipeline on one server, half on the
-other, and cannot reproduce either.
 
 --
 
@@ -1619,8 +1629,6 @@ https://code.visualstudio.com
 You may already have a setup you like, RStudio, Jupyter, PyCharm, Emacs. Keep it for
 your own work if you want.
 
-But when you are stuck in office hours and I am looking at your screen, I want us
-looking at the same thing.
 
 ---
 
@@ -1662,10 +1670,6 @@ In VS Code, open Extensions (`Cmd/Ctrl+Shift+X`) and install:
 
 --
 
-&lt;br&gt;
-
-We will do this together at the end of class. Bring your laptop.
-
 ---
 
 # Remote-SSH is the one to learn
@@ -1703,7 +1707,7 @@ track of which copy is current.
 
 **2. A coding agent.** Claude Code, Codex, or Cursor, all run inside VS Code.
 
-I am not neutral: I use Claude Code for most of my own work. Use what you like, but it
+I use Claude Code for most of my own work. Use what you like, but it
 must be an agent that reads your **whole repo**, not a chat window you paste into.
 
 --
@@ -1714,7 +1718,7 @@ must be an agent that reads your **whole repo**, not a chat window you paste int
 
 &lt;br&gt;
 
-That third one catches people out. A ChatGPT Plus or Claude Pro subscription does
+A ChatGPT Plus or Claude Pro subscription does
 **not** give you an API key. They are separate products, billed separately.
 
 ---
@@ -1742,7 +1746,7 @@ caching, and rate limiting in Week 3.
 
 --
 
-Talk to me if cost is a constraint. There is departmental funding.
+In this class, we will spend a 10s of dollars and you can use your own budget. But let me know if you are concerned about cost, and we will cover it.
 
 ---
 
@@ -1813,8 +1817,8 @@ Find them.
 
 &lt;br&gt;
 
-Office hours: TBD. Come early in the semester rather than late, a project that is
-badly scoped in Week 2 cannot be rescued in Week 6.
+Office hours: Right after class or by appointment. Come early in the semester rather than late, a project that is
+badly scoped in Week 2 cannot be fixed in Week 6.
 
 ---
 class: inverse, center, middle
