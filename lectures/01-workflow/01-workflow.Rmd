@@ -1819,5 +1819,3 @@ badly scoped in Week 2 cannot be fixed in Week 6.
 class: inverse, center, middle
 
 # Questions?
-
-### Let's set up API keys.
