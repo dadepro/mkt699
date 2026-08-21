@@ -285,9 +285,6 @@ Material lives at https://github.com/dadepro/mkt699
 | Paper presentation | 10% |
 | Class participation | 10% |
 
---
-
-
 ---
 
 # Logistics
@@ -465,10 +462,6 @@ It rewrites the cleaning step. Your sample changes. Your original number is no l
 reproducible, and **you do not notice**, because you never had a fixed pipeline in the
 first place.
 
---
-
-
-
 ---
 
 # Structure your project like this
@@ -586,9 +579,6 @@ one you are talking about.
 `git add` moves working directory → staging.
 
 `git commit` moves staging → repository.
-
---
-
 
 ---
 
@@ -1406,9 +1396,6 @@ ssh you@mkt699a
 tmux attach -t annotate     # still going
 ```
 
---
-
-
 ---
 
 # Two servers, one warning
@@ -1640,7 +1627,6 @@ https://code.visualstudio.com
 You may already have a setup you like, RStudio, Jupyter, PyCharm, Emacs. Keep it for
 your own work if you want.
 
-
 ---
 
 # Why VS Code specifically
@@ -1678,8 +1664,6 @@ In VS Code, open Extensions (`Cmd/Ctrl+Shift+X`) and install:
 | **Quarto** | Reproducible documents for assignments |
 | **Claude Code** *(or your agent)* | The coding agent, in the editor |
 ]
-
---
 
 ---
 
