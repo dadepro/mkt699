@@ -279,10 +279,9 @@ Material lives at https://github.com/dadepro/mkt699
 
 | | % |
 |:--|--:|
-| Semester project, presentation and report | 45% |
+| Semester project, presentation and report | 55% |
 | Project milestones | 15% |
 | 2 programming assignments | 20% |
-| Paper presentation | 10% |
 | Class participation | 10% |
 
 ---
