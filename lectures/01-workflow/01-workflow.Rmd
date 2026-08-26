@@ -957,7 +957,7 @@ name: shell
 # Why the shell still matters
 
 Some of you have never opened a terminal. That is fine, most PhD programs never
-teach it, and then assume you know it.
+teach it, or consider it unnecessary.
 
 --
 
@@ -1331,8 +1331,7 @@ ssh mkt699a
 
 <br>
 
-You must be on a **USC network or the USC VPN** to reach them. These are internal
-addresses; they do not resolve from a coffee shop.
+You must be on a **USC network or the USC VPN** to reach them.
 
 ---
 
