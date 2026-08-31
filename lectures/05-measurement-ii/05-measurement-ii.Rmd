@@ -1108,8 +1108,6 @@ Documentation: naokiegami.com/dsl/
 
 --
 
-<br>
-
 ```r
 # not on CRAN
 devtools::install_github("naoki-egami/dsl")
@@ -1125,8 +1123,6 @@ out <- dsl(
 ```
 
 --
-
-<br>
 
 The `sample_prob` argument is the whole lecture in one line of code.
 

@@ -66,6 +66,33 @@ class: center, middle, inverse, title-slide
 
 
 
+# The project: where you should be
+
+.small90[
+| Week | Milestone |
+|:--|:--|
+| 1 | Repository initialized |
+| **2 (today)** | **One-paragraph question and data source identified** |
+| 3 | Data acquired; pipeline reproducible; **identification memo** |
+| 4 | Measurement approach specified; validation sample designed |
+| 5 | Validation complete; naive estimates reported |
+| 6 | Corrected estimates; revised identification memo; robustness plan |
+| 7 | 20-minute presentation + short written report |
+]
+
+--
+
+**Due today:** one paragraph in your repository README stating the question, and the
+data source you will use to answer it.
+
+--
+
+Next week is the heavy one: data acquired, pipeline reproducible, and the
+identification memo. If your data source is still hypothetical today, that is the
+problem to solve this week.
+
+---
+
 # Where we left off
 
 Last week: the cost of *producing* analysis collapsed. The cost of knowing whether it is
@@ -345,9 +372,9 @@ dim(zip_market)   # [1]  11398      5
 200,000 US Airbnb listings, 26 columns, about 35MB. A real scrape, with all the
 problems a real scrape has.
 
---
+---
 
-&lt;br&gt;
+# The two tables
 
 `zip_market` is a zip-level lookup, listing counts and mean prices, one row per zip.
 Note that its key is stored as a **number**. That will matter shortly.
@@ -450,9 +477,9 @@ panel &lt;- merge(listings, hosts, by = "host_id", all.x = TRUE)
 `data.table` caught this one. It refuses joins that blow past
 `nrow(x) + nrow(i)` unless you pass `allow.cartesian = TRUE`.
 
---
+---
 
-&lt;br&gt;
+# Many-to-many
 
 .large2[Now read that error message again. It offers you a flag that makes it go away.]
 
@@ -1531,7 +1558,14 @@ stopifnot(!any(duplicated(panel$listing_id)))
 # ranges
 stopifnot(all(panel$price &gt; 0))
 stopifnot(all(panel$instant_bookable %in% c(0, 1, NA)))   # NAs are real
+```
 
+---
+
+# More assertions worth writing
+
+
+``` r
 # is instant_bookable really a host-level choice, as you assumed?
 panel[!is.na(instant_bookable),
       .(k = uniqueN(instant_bookable)), by = host_id][, .N, by = k][order(k)]
@@ -1574,8 +1608,6 @@ right.
 .large2[97.8% right is exactly the kind of wrong that survives.]
 
 --
-
-&lt;br&gt;
 
 And the check found something I was not looking for: **16,806 listings** have no value
 at all. Drop the `!is.na()` and `uniqueN()` counts `NA` as a level, inventing a third

@@ -414,15 +414,11 @@ They break it out by method.
 
 --
 
-<br>
-
 Read this alongside the published Comment: **Kranz & Pütz (2022)**, *AER* 112(9):3124-3136,
 find that after correcting for rounding, the evidence of p-hacking **vanishes for DiD**
 while remaining for IV. Reply at 112(9):3137-3139.
 
 --
-
-<br>
 
 This is not a statement about which methods are *valid*. It is a statement about how
 much **latitude** each one gives you.
@@ -2031,14 +2027,10 @@ So conditional on significance in an underpowered design:
 
 --
 
-<br>
-
 Gelman and Carlin's framing. Their worked examples report exaggeration factors of
 **9.7, 25, and 77**.
 
 --
-
-<br>
 
 That last one means a published, statistically significant estimate was **77 times** the
 plausible true effect.

@@ -1092,7 +1092,13 @@ schema <- list(
   ),
   required = list("label", "confidence", "evidence_span", "reasoning")
 )
+```
 
+---
+
+# An annotation call in R
+
+```{r eval=FALSE}
 annotate <- function(text, prompt, model = "claude-sonnet-4-5-20250929") {
   request("https://api.anthropic.com/v1/messages") |>
     req_headers(`x-api-key` = Sys.getenv("ANTHROPIC_API_KEY"),
@@ -1130,7 +1136,13 @@ SCHEMA = {
     },
     "required": ["label","confidence","evidence_span","reasoning"],
 }
+```
 
+---
+
+# The same thing in Python
+
+```{r eval=FALSE, engine='python'}
 def annotate(text, prompt, model="claude-sonnet-4-5-20250929"):
     r = client.messages.create(
         model=model,
@@ -1353,9 +1365,9 @@ writeLines(toJSON(list(
 ), auto_unbox = TRUE), con = out_con)
 ```
 
---
+---
 
-<br>
+# The handling I want
 
 Then, separately, report:
 
@@ -2074,9 +2086,9 @@ val <- corpus |>
 write_parquet(val, "data/clean/validation-sample.parquet")   # includes pi
 ```
 
---
+---
 
-<br>
+# Drawing it, in code
 
 The `pi` column is the single most important column in your project. It is also the one
 that takes four lines of code to create.
@@ -2159,8 +2171,6 @@ TP = true positives, FP = false positives, FN = false negatives.
 confusion matrix anyway.
 
 --
-
-<br>
 
 .large2[Always report the 2×2. Always.]
 

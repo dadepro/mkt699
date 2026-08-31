@@ -410,9 +410,9 @@ Every join has a question attached to it: **what did not match?**
 Almost nobody asks. They run the join, check that the row count is plausible, and move
 on.
 
---
+---
 
-<br>
+# Why I am making a fuss about this
 
 Run it and the unmatched rows will show you one of three things: a **formatting** problem
 (stripped leading zeros, whitespace, case), a **coverage** problem (your crosswalk ends in
@@ -542,9 +542,9 @@ dbGetQuery(con, "
 # 3    NY  Private room     17973       102.5
 ```
 
---
+---
 
-<br>
+# What it looks like
 
 There is no `CREATE TABLE`. There is no `LOAD DATA INFILE`. It reads the parquet files
 where they sit.
@@ -847,9 +847,9 @@ aggressively and you get banned.
 req %>% req_throttle(capacity = 10, fill_time_s = 60)   # 10 req/min
 ```
 
---
+---
 
-<br>
+# Rate limits and backoff
 
 And when a request fails transiently, do not retry immediately in a tight loop. That is
 how you get banned instead of throttled.
@@ -898,9 +898,9 @@ save_raw <- function(id, resp) {
 }
 ```
 
---
+---
 
-<br>
+# Cache every response to disk
 
 Save-then-parse, never parse-then-save. If you keep only the parsed data frame, you have
 baked your parsing assumptions into the only copy of the data you have.
@@ -1938,8 +1938,6 @@ Maintain one file. One row per variable. Commit it.
 ]
 
 --
-
-<br>
 
 That last row is honest and it is fine at this stage. An empty validation column that
 stays empty is not fine.
