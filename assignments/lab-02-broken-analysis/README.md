@@ -74,9 +74,10 @@ The script pulls from MySQL directly. It takes about a minute.
 
 ---
 
-## What to hand in
+## What to have by the debrief
 
-By the end of class, a short memo (`findings.md`) in your own repository, containing:
+We go through the script together at the end of class. Have notes, in whatever form
+helps you talk through it:
 
 **For each bug you found:**
 - the line number
@@ -89,14 +90,15 @@ That last item is the one that matters. "The join is wrong" is an observation.
 restaurants that are also bars, and those skew expensive. So the price coefficient is
 biased upward" is a finding.
 
-**Then, the part that is actually graded:**
+**Then, the part that matters most:**
 
 Rewrite the script's first thirty lines with assertions that would have caught these
 errors automatically. Not comments describing the problems, but running code that stops
 execution when the data is not what you assumed.
 
-You will be graded more on the assertions than on the bug list. Anyone can find a bug
-once it is pointed out. Writing the check that finds it next time is the skill.
+The assertions matter more than the bug list. Anyone can find a bug once it is pointed
+out. Writing the check that finds it next time is the skill, and it is exactly what
+Assignment 1 grades.
 
 ---
 

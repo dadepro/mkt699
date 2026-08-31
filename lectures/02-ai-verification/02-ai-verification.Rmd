@@ -192,7 +192,7 @@ There is no way to look at `0.043` and tell whether the merge duplicated rows.
 
 <br>
 
-.large2[Agents are good when errors are **loud**. They are dangerous when errors are
+.large2[Agents are good when errors are **loud**. They fail you when errors are
 **silent and cumulative**.]
 
 ---
@@ -401,7 +401,7 @@ Code that runs cleanly, produces a well-formatted table, and is wrong.
 
 ---
 
-# Why this is worse than a bug
+# Why this is not just a bug
 
 A normal bug announces itself. The script fails, you fix it, you move on.
 
@@ -537,7 +537,7 @@ One line. It would have caught an 11× error.
 
 ---
 
-# The inner join that eats your sample
+# The inner join that shrinks your sample
 
 You want quality controls, so you merge in the rating subscores.
 
@@ -564,7 +564,7 @@ You lost 65% of your sample and the script printed nothing.
 
 ---
 
-# Why this one is dangerous
+# Why this one matters
 
 The lost rows are not random. **Only reviewed listings have ratings.**
 
@@ -717,7 +717,7 @@ exactly where the interesting variation is.
 
 ---
 
-# It is worse than leading zeros
+# Not just leading zeros
 
 ```{r, eval=FALSE}
 head(listings[grepl("[^0-9]", zipcode_chr), zipcode_chr])
@@ -755,7 +755,7 @@ uniqueN(listings$state)
 
 <br>
 
-.large2[One hundred and sixteen.]
+.large2[116 values, for a two-letter state code.]
 
 --
 
@@ -1170,7 +1170,7 @@ The year is **2017**, and it is in *Marketing Science*.
 
 ---
 
-# Why that example is the dangerous kind
+# Why that example matters
 
 Everything checkable at a glance was right.
 
@@ -1917,15 +1917,14 @@ Now most of the code in your project was written by something else.
 
 <br>
 
-.large2[You are permanently a **code reviewer** rather than a code author.]
+.large2[Your job shifts from writing code to **reviewing** it.]
 
 --
 
 <br>
 
-That is a genuinely different skill, and nobody taught it to you. It is not in your
-econometrics sequence and it is not in your programming class, because in 2019 it was
-not the job.
+That is a different skill, and it is rarely taught: it is not in your econometrics
+sequence or your programming class, because until recently it was not the job.
 
 ---
 
@@ -2673,8 +2672,9 @@ Every error in that script is drawn from the taxonomy in Section 2.
 
 # Which ones
 
-Five of the seven appear. Not mode 5, a script has no citations, and not mode 7,
-which needs a conversation.
+Five of the seven appear. Mode 5 does not: a script contains no citations to
+hallucinate. Mode 7 does not either: reward hacking shows up over a conversation with
+an agent, not in a static script.
 
 --
 
@@ -2694,29 +2694,29 @@ which needs a conversation.
 
 <br>
 
-I am telling you this because it is not a puzzle. It is a drill.
+You know the bugs are there, which makes this easier than real life. The exercise is
+finding them quickly.
 
 ---
 
-# Deliverable
+# Before we debrief
 
-By Sunday, push to your repo:
+Have in front of you, in whatever form helps you talk through it:
 
-1. A short memo listing each error you found, the **line number**, and what it does to
-   the estimate
-2. A corrected script with `stopifnot()` assertions that would have caught each one
-3. The corrected table, next to the original
+1. Your list: each error, its **line number**, and what it does to the estimate
+2. The `stopifnot()` assertions that would have caught each one
 
 --
 
 <br>
 
-Two pages, maximum.
+We go through them together in the last part of class.
 
 --
 
-Credit for the assertions specifically. Finding the bug is worth less than writing the
-check that catches it next time.
+The assertions matter more than the bug list. Finding a bug someone told you exists is
+easy. Writing the check that finds it next time is the skill, and it is what
+Assignment 1 grades.
 
 ---
 
