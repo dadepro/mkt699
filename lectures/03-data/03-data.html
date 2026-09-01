@@ -543,8 +543,8 @@ dbGetQuery(con, "
          room_type,
          COUNT(*)   AS n,
          AVG(price) AS mean_price
-  FROM 'data/airbnb_parquet/*.parquet'
-  WHERE price BETWEEN 10 AND 5000
+  FROM 'data/airbnb_parquet/listings_0*.parquet'
+  WHERE price &gt; 0
   GROUP BY state, room_type
   ORDER BY n DESC
 ")
@@ -579,7 +579,7 @@ That query works on **40 GB of parquet from a 16 GB laptop**.
 &lt;br&gt;
 
 DuckDB reads only the columns you asked for (`state`, `room_type`, `price`, not the other
-80), only the row groups that can contain matching rows, and aggregates in a streaming
+23), only the row groups that can contain matching rows, and aggregates in a streaming
 fashion.
 
 --
@@ -600,17 +600,17 @@ This is the single most useful practical thing in today's lecture.
 
 
 ``` r
-library(duckdb)
+library(duckdb); library(dplyr); library(dbplyr)
 
-# DuckDB can also query a data.table in memory directly
-result &lt;- dbGetQuery(con, "
-  SELECT state, room_type, COUNT(*) AS n, AVG(price) AS mean_price
-  FROM 'data/airbnb_parquet/*.parquet'
-  WHERE price &gt; 0
-  GROUP BY state, room_type
-")
+con &lt;- dbConnect(duckdb())
+listings &lt;- tbl(con,
+  "read_parquet('data/airbnb_parquet/listings_0*.parquet')")
 
-setDT(result)
+listings |&gt;
+  filter(price &gt; 0) |&gt;
+  group_by(state, room_type) |&gt;
+  summarise(n = n(), mean_price = mean(price, na.rm = TRUE)) |&gt;
+  collect()
 ```
 
 --

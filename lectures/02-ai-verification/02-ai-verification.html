@@ -2499,7 +2499,7 @@ con &lt;- dbConnect(duckdb())
 
 dbGetQuery(con, "
   SELECT state, room_type, COUNT(*) AS n, AVG(price) AS mean_price
-  FROM 'data/raw/listings_*.parquet'
+  FROM 'data/airbnb_parquet/listings_0*.parquet'
   WHERE price &gt; 0
   GROUP BY state, room_type
 ")
