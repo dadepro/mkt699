@@ -15,15 +15,36 @@ suppressPackageStartupMessages({
   library(DBI)
 })
 
-# ---- locate the repo root, so paths work from anywhere ----------------------
-args <- commandArgs(trailingOnly = FALSE)
-script <- sub("^--file=", "", grep("^--file=", args, value = TRUE))
-root <- if (length(script)) {
+# ---- set the working directory to the repo root -----------------------------
+# Works under Rscript, source(), and running line-by-line in RStudio/VS Code.
+find_script <- function() {
+  a <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+  if (length(a)) return(sub("^--file=", "", a))               # Rscript
+  for (f in rev(sys.frames())) {                              # source()
+    if (!is.null(f$ofile)) return(f$ofile)
+  }
+  if (requireNamespace("rstudioapi", quietly = TRUE) &&
+      rstudioapi::isAvailable()) {                            # RStudio editor
+    pth <- tryCatch(rstudioapi::getSourceEditorContext()$path,
+                    error = function(e) "")
+    if (nzchar(pth)) return(pth)
+  }
+  NULL
+}
+script <- find_script()
+root <- if (!is.null(script)) {
   normalizePath(file.path(dirname(script), "..", ".."))
 } else {
-  normalizePath(".")
+  # last resort: walk up from the current directory to the repo root
+  d <- normalizePath(".")
+  while (!dir.exists(file.path(d, "data", "airbnb_parquet")) &&
+         d != dirname(d)) d <- dirname(d)
+  d
 }
-stopifnot(dir.exists(file.path(root, "data", "airbnb_parquet")))
+if (!dir.exists(file.path(root, "data", "airbnb_parquet")))
+  stop("cannot find the repo root -- run this from inside the mkt699 repo")
+setwd(root)
+cat("working directory:", getwd(), "\n")
 
 # ---- Slide: Everything from here runs ---------------------------------------
 use_mysql <- nzchar(Sys.getenv("MKT615_HOST")) && nzchar(Sys.getenv("MKT615_PWD"))
@@ -46,11 +67,10 @@ if (use_mysql) {
 if (!use_mysql) {
   library(duckdb)
   con <- dbConnect(duckdb())
-  pq <- file.path(root, "data", "airbnb_parquet")
-  listings   <- setDT(dbGetQuery(con, sprintf(
-    "SELECT * FROM '%s/listings_0*.parquet'", pq)))
-  zip_market <- setDT(dbGetQuery(con, sprintf(
-    "SELECT * FROM '%s/zip_market.parquet'", pq)))
+  listings   <- setDT(dbGetQuery(con,
+    "SELECT * FROM 'data/airbnb_parquet/listings_0*.parquet'"))
+  zip_market <- setDT(dbGetQuery(con,
+    "SELECT * FROM 'data/airbnb_parquet/zip_market.parquet'"))
   dbDisconnect(con, shutdown = TRUE)
 }
 
@@ -171,13 +191,13 @@ print(panel[, .(k = uniqueN(instant_bookable)), by = host_id][, .N, by = k][orde
 # ---- Slide: duckdb is the one to learn --------------------------------------
 library(duckdb)
 con <- dbConnect(duckdb())
-print(dbGetQuery(con, sprintf("
+print(dbGetQuery(con, "
   SELECT state, room_type, COUNT(*) AS n, AVG(price) AS mean_price
-  FROM '%s/data/airbnb_parquet/listings_0*.parquet'
+  FROM 'data/airbnb_parquet/listings_0*.parquet'
   WHERE price > 0
   GROUP BY state, room_type
   ORDER BY n DESC
-  LIMIT 5", root)))
+  LIMIT 5"))
 dbDisconnect(con, shutdown = TRUE)
 
 cat("\ndone: every example ran.\n")
