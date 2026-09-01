@@ -74,6 +74,9 @@ if (!use_mysql) {
   dbDisconnect(con, shutdown = TRUE)
 }
 
+# Row order differs between the MySQL and parquet loads. Every number below
+# matches either way; only order-dependent displays (head(), ties in sorted
+# tables) may show the same rows in a different order than the slide.
 print(dim(listings))     # slide: [1] 200000     26
 print(dim(zip_market))   # slide: [1]  11398      5
 
