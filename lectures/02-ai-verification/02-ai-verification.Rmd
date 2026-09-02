@@ -343,7 +343,9 @@ name: problem
 # Everything from here runs
 
 The rest of this lecture uses real data. You can run every example on your laptop as we
-go, and I would like you to.
+go, and I would like you to. All of it is in `02-examples.R`, next to this deck in the
+repo: every example in slide order, comments giving the number each slide shows, and a
+parquet fallback so it runs even without the server.
 
 ```{r, eval=FALSE}
 library(DBI); library(RMySQL); library(data.table)
@@ -1271,8 +1273,15 @@ sort(unique(df$date))[1:3]
 
 --
 
-Looks fine. Until the file had `03/04/2016` and you are in the US, so
-`as.Date()` returned `NA` for everything and the model then wrote `filter(!is.na(date))`.
+Looks fine. Until the file is European — `03/04/2016` is April 3 — and plain
+`as.Date()` parses it as `%Y/%m/%d`: year three, month four, day twenty.
+`"0003-04-20"`. No error, no `NA`.
+
+--
+
+So the model added `format = "%m/%d/%Y"`. Now every day past the 12th is `NA`, and it
+"fixed" that with `filter(!is.na(date))` — deleting the 60% of rows that proved the
+format wrong, and keeping only dates parsed to the wrong day.
 
 --
 

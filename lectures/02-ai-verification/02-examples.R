@@ -160,6 +160,15 @@ listings[, state := toupper(trimws(state))]
 # are still in there, and the assertion catches them.
 try(stopifnot(all(nchar(listings$state) == 2)))
 
+# ---- Slide: 6. Silent type coercion -----------------------------------------
+# A European date, parsed three ways. Self-contained -- no data needed.
+x <- c("03/04/2016", "13/04/2016", "28/04/2016")   # April 3, 13, 28
+print(as.Date(x))              # "0003-04-20" ... year THREE. No error, no NA.
+print(as.Date(x, "%m/%d/%Y"))  # US assumption: March 4, then NA, NA
+print(as.Date(x, "%d/%m/%Y"))  # correct: "2016-04-03" "2016-04-13" "2016-04-28"
+# After the US parse, filter(!is.na(date)) deletes the rows that prove the
+# format wrong (every day past the 12th) and keeps only mis-parsed dates.
+
 # ---- Slide: Where to put them -----------------------------------------------
 stopifnot(!any(duplicated(zip_market$zip)))
 stopifnot(!any(is.na(zip_market$zip)))
