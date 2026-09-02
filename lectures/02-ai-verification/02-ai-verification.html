@@ -2049,37 +2049,6 @@ it is one number and it is fixable in an afternoon.
 Read from the most-load-bearing to the least.
 
 ---
-
-# The fifteen-minute review
-
-
-``` r
-# 1. sample: put this after every block
-message(deparse(substitute(df)), ": ", nrow(df), " rows")
-
-# 2. merges: grep for them
-#    grep -n "join\|merge" code/02-clean.R
-#    for each: is it inner? is the right key unique?
-
-# 3. specification: print the model call, read it as a sentence
-#    "price on instant_bookable, absorbing city, ..."
-
-# 4. SEs: how many clusters?
-#    length(unique(df$host_id))
-```
-
---
-
-&lt;br&gt;
-
-Fifteen minutes. Do it on every script an agent produces, before you look at the
-coefficient.
-
---
-
-Before, specifically. Once you have seen the number, you will rationalize it.
-
----
 class: inverse, center, middle
 name: building
 
@@ -2678,8 +2647,8 @@ You have the repo, the raw data, and the script. Not the answers.
 
 &lt;br&gt;
 
-Do the fifteen-minute review yourself first. Then use the model to check specific
-hypotheses.
+Work the four checks in order yourself first — sample, merges, specification,
+standard errors. Then use the model to check specific hypotheses.
 
 --
 
