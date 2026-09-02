@@ -145,12 +145,6 @@ name: agents
 - Explaining unfamiliar code. Someone's replication package written in 2013.
 - Refactoring. Turning 400 lines of copy-paste into a function.
 
---
-
-<br>
-
-This is not a small list. This is most of what you spent your first year doing.
-
 ---
 
 # The common structure
@@ -187,13 +181,6 @@ The output is a coefficient. A single number.
 --
 
 There is no way to look at `0.043` and tell whether the merge duplicated rows.
-
---
-
-<br>
-
-.large2[Agents are good when errors are **loud**. They fail you when errors are
-**silent and cumulative**.]
 
 ---
 
@@ -268,8 +255,10 @@ You will get code. It will run.
 `zip_market$zip` is **character, also zero-padded**. Join on the strings. Do not coerce
 either side to numeric.
 
+Merge the two tables and regress price on `instant_bookable` with city fixed effects.
+Cluster on `host_id`, 138,635 hosts — price is set at the host level.
+
 **Do not drop rows.** Report row counts before and after the merge.
-Cluster on `host_id`, 138,635 hosts, and price is set at the host level.
 
 ---
 
@@ -342,10 +331,8 @@ name: problem
 
 # Everything from here runs
 
-The rest of this lecture uses real data. You can run every example on your laptop as we
-go, and I would like you to. All of it is in `02-examples.R`, next to this deck in the
-repo: every example in slide order, comments giving the number each slide shows, and a
-parquet fallback so it runs even without the server.
+The rest of this lecture uses real data. Run every example as we go — they are all in
+`02-examples.R` next to this deck, in slide order, with the numbers you should see.
 
 ```{r, eval=FALSE}
 library(DBI); library(RMySQL); library(data.table)
