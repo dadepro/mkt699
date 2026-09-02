@@ -5,10 +5,10 @@
 # RA draft. Produced with AI assistance.
 # ---------------------------------------------------------------
 
-library(DBI)
-library(RMySQL)
-library(data.table)
-library(stargazer)
+library(DBI); library(RMySQL); library(data.table); library(stargazer)
+Sys.setenv(MARIADB_TLS_DISABLE_PEER_VERIFICATION = 1)  # course server has a self-signed certificate
+if (!nzchar(Sys.getenv("MKT615_HOST")))
+  stop("MKT615_HOST is empty: fill in .Renviron, then run readRenviron('.Renviron') or restart R")
 
 con <- dbConnect(
   MySQL(),
