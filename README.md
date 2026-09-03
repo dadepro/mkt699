@@ -81,17 +81,18 @@ The project must:
 Null results are acceptable and are graded on the quality of the design and the
 honesty of the reporting, not on whether the effect is significant.
 
-**Milestones**
+**Milestones.** Each milestone is assigned in class and is due, committed to your
+repository, before the class on its due date.
 
-| Week | Date | Milestone |
-|---|---|---|
-| 1 | Aug 26 | Repository initialized |
-| 2 | Sep 2 | One-paragraph question and data source identified |
-| 3 | Sep 9 | Data acquired; pipeline reproducible; **identification memo** |
-| 4 | Sep 16 | Measurement approach specified; prompt and model documented; validation sample designed |
-| 5 | Sep 23 | Validation complete; naive estimates reported |
-| 6 | Sep 30 | Corrected estimates reported; **revised identification memo**; robustness plan |
-| 7 | Oct 7 | 20-minute presentation + short written report |
+| Week | Assigned | Due | Milestone |
+|---|---|---|---|
+| 1 | Aug 26 | Aug 26 (in class) | Repository initialized |
+| 2 | Aug 26 | Sep 2 | One-paragraph question and data source identified |
+| 3 | Sep 9 | Sep 16 | Data acquired; pipeline reproducible; **identification memo** |
+| 4 | Sep 16 | Sep 23 | Measurement approach specified; prompt and model documented; validation sample designed |
+| 5 | Sep 23 | Sep 30 | Validation complete; naive and corrected estimates reported side by side |
+| 6 | Sep 30 | Oct 7 | **Revised identification memo**; robustness plan |
+| 7 | | Oct 7 | 20-minute presentation + short written report |
 
 **The identification memo (Week 3).** Roughly 400–600 words, in your project repository,
 stating: the question; the data; the estimand; the variation that identifies it; what must
@@ -99,9 +100,10 @@ be true for that variation to identify it; and what would break it. The last two
 memo. A memo that describes a dataset and a regression without naming an assumption that
 could fail has not done the assignment.
 
-**The revision (Week 6).** Revisit the Week 3 memo in light of your validation study, due
-with the corrected estimates. The question it answers is whether measurement error changed
-what you are willing to claim. Mark your changes so the revision is legible as a revision.
+**The revision (Week 6).** Revisit the Week 3 memo in light of your validation study and
+the corrected estimates from Week 5. The question it answers is whether measurement error
+changed what you are willing to claim. Mark your changes so the revision is legible as a
+revision.
 
 If validation shows classifier error correlated with your treatment or your covariates,
 expect to rewrite: the estimand may need narrowing, the identifying assumption may need to

@@ -167,21 +167,21 @@ Beginning in Week 1, each student develops an original empirical project that us
 
 The project is a **measurement** project: use an LLM to measure something previously unmeasurable at scale, and use it to answer a substantive marketing question. Examples: positioning language in product descriptions; the emotional content of service interactions; visual attributes of listings; complaint taxonomies in reviews.
 
-**Milestones.**
+**Milestones.** Each milestone is assigned in class and is due, committed to the project repository, before the class on its due date.
 
-| Week | Date | Milestone |
-|---|---|---|
-| 1 | Aug 26 | Repository initialized |
-| 2 | Sep 2 | One-paragraph question and data source identified |
-| 3 | Sep 9 | Data acquired; pipeline reproducible; **identification argument drafted** |
-| 4 | Sep 16 | Measurement approach specified; prompt and model documented; validation sample designed |
-| 5 | Sep 23 | Validation complete; naive estimates reported |
-| 6 | Sep 30 | Corrected estimates reported; identification argument revised; robustness plan |
-| 7 | Oct 7 | 20-minute presentation + short written report |
+| Week | Assigned | Due | Milestone |
+|---|---|---|---|
+| 1 | Aug 26 | Aug 26 (in class) | Repository initialized |
+| 2 | Aug 26 | Sep 2 | One-paragraph question and data source identified |
+| 3 | Sep 9 | Sep 16 | Data acquired; pipeline reproducible; **identification argument drafted** |
+| 4 | Sep 16 | Sep 23 | Measurement approach specified; prompt and model documented; validation sample designed |
+| 5 | Sep 23 | Sep 30 | Validation complete; naive and corrected estimates reported side by side |
+| 6 | Sep 30 | Oct 7 | Identification argument revised; robustness plan |
+| 7 | | Oct 7 | 20-minute presentation + short written report |
 
 **The identification memo.** The Week 3 deliverable is a memo of roughly 400–600 words, in the project repository, stating: the question; the data; the estimand; the variation that identifies it; what must be true for that variation to identify it; and what would break it. The last two are the memo. A memo that describes a dataset and a regression without naming an assumption that could fail has not done the assignment.
 
-**The revision.** The Week 6 deliverable revisits the Week 3 memo in light of the validation study, and is due with the corrected estimates. The question it answers is whether measurement error changed what you are willing to claim. Mark changes from the Week 3 version so the revision is legible as a revision.
+**The revision.** The Week 6 deliverable revisits the Week 3 memo in light of the validation study and the corrected estimates from Week 5. The question it answers is whether measurement error changed what you are willing to claim. Mark changes from the Week 3 version so the revision is legible as a revision.
 
 Often it will change a great deal. If validation shows classifier error is correlated with your treatment or your covariates, the estimand may need narrowing, the identifying assumption may need to be restated conditional on the error structure, and the naive and corrected estimates may support different conclusions. That case is the point of Weeks 4 and 5, and the revision should be a rewrite.
 
