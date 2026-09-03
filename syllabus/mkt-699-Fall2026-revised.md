@@ -177,7 +177,7 @@ The project is a **measurement** project: use an LLM to measure something previo
 | 4 | Sep 16 | Sep 23 | Measurement approach specified; prompt and model documented; validation sample designed |
 | 5 | Sep 23 | Sep 30 | Validation complete; naive and corrected estimates reported side by side |
 | 6 | Sep 30 | Oct 7 | Identification argument revised; robustness plan |
-| 7 | | Oct 7 | 20-minute presentation + short written report |
+| 7 | | Oct 7 | 20-minute presentation; written report due Oct 14 |
 
 **The identification memo.** The Week 3 deliverable is a memo of roughly 400–600 words, in the project repository, stating: the question; the data; the estimand; the variation that identifies it; what must be true for that variation to identify it; and what would break it. The last two are the memo. A memo that describes a dataset and a regression without naming an assumption that could fail has not done the assignment.
 

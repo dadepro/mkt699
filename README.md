@@ -82,28 +82,111 @@ Null results are acceptable and are graded on the quality of the design and the
 honesty of the reporting, not on whether the effect is significant.
 
 **Milestones.** Each milestone is assigned in class and is due, committed to your
-repository, before the class on its due date.
+repository, before the class on its due date. I clone your repository to grade it, so if
+`dadepro` is not a collaborator, the milestone has not been submitted.
 
 | Week | Assigned | Due | Milestone |
 |---|---|---|---|
 | 1 | Aug 26 | Aug 26 (in class) | Repository initialized |
 | 2 | Aug 26 | Sep 2 | One-paragraph question and data source identified |
-| 3 | Sep 9 | Sep 16 | Data acquired; pipeline reproducible; **identification memo** |
+| 3 | Sep 9 | Sep 16 | Data acquired; cleaning pipeline reproducible; **identification memo** |
 | 4 | Sep 16 | Sep 23 | Measurement approach specified; prompt and model documented; validation sample designed |
 | 5 | Sep 23 | Sep 30 | Validation complete; naive and corrected estimates reported side by side |
 | 6 | Sep 30 | Oct 7 | **Revised identification memo**; robustness plan |
-| 7 | | Oct 7 | 20-minute presentation + short written report |
+| 7 | | Oct 7 | 20-minute presentation; written report due Oct 14 |
 
-**The identification memo (Week 3).** Roughly 400–600 words, in your project repository,
-stating: the question; the data; the estimand; the variation that identifies it; what must
-be true for that variation to identify it; and what would break it. The last two are the
-memo. A memo that describes a dataset and a regression without naming an assumption that
-could fail has not done the assignment.
+#### Milestones in detail
 
-**The revision (Week 6).** Revisit the Week 3 memo in light of your validation study and
-the corrected estimates from Week 5. The question it answers is whether measurement error
-changed what you are willing to claim. Mark your changes so the revision is legible as a
-revision.
+**Week 1, repository initialized (Aug 26, in class).** A repository on your own GitHub
+account with the Week 1 structure: `data/raw/`, `data/clean/`, `code/`, `output/`,
+`prompts/`, `ai-log.md`. Add `dadepro` as a collaborator and send me the URL. Private is
+fine.
+
+**Week 2, question and data source (due Sep 2).** One paragraph at the top of your
+repository's README, under a heading `Question`. It contains four things:
+
+- the question, in one or two sentences
+- the unit of observation
+- the variable you intend to measure with an LLM, and from which documents
+- where the data comes from, and whether you can actually get it
+
+The last item is where most paragraphs fail. "Twitter data" is not a data source in 2026.
+Name the table, the API, or the site, and say what access you already have. "I have not
+yet confirmed I can get X" is an acceptable sentence; skipping the question is not.
+
+Example:
+
+> Do Airbnb hosts whose listing descriptions read as written by a property manager,
+> rather than an individual, charge more than comparable listings, and is the premium
+> smaller in neighborhoods where such listings are common? The unit of observation is the
+> listing. I will use an LLM to score each listing's `description` and `summary` fields on
+> a 0 to 1 "professional voice" scale against a written rubric. The data is the
+> `airbnb_rooms` table on the course server, 2.9M listings with description text, price,
+> capacity, host ID, and zip code, which I can already query with the class account; I will
+> start with one metro area. I still need to check whether the scrape has more than one
+> snapshot per listing. If it does not, the design is cross-sectional with zip fixed
+> effects, and the memo will say so.
+
+**Week 3, data acquired, cleaning pipeline reproducible, identification memo (assigned
+Sep 9, due Sep 16).** Three things, none of which needs Week 4 material:
+
+1. *Raw data on disk.* The documents you will later feed to the LLM, in `data/raw/`, never
+   edited by hand. Raw data is not committed (it is in `.gitignore`), so `code/01-collect.R`
+   must be able to fetch it again, whether that is a query against the course server, an
+   API pull, or a scrape, and must log what it fetched: source, date, row count.
+2. *A cleaning script.* `code/02-clean.R` reads `data/raw/` and writes `data/clean/`: one
+   row per unit of observation, with identifiers and the covariates your design needs, and
+   assertions on row counts and key uniqueness after every step. No LLM calls and no
+   estimates yet; those are Weeks 4 and 5.
+3. *The identification memo.* `memo/identification.md`, roughly 400–600 words, stating:
+   the question; the data; the estimand; the variation that identifies it; what must be
+   true for that variation to identify it; and what would break it. The last two are the
+   memo. A memo that describes a dataset and a regression without naming an assumption
+   that could fail has not done the assignment.
+
+Your README says what to run and in what order. I will clone the repository and run it. If
+it does not run from a clean clone, it does not run. If your data source turns out to be
+infeasible, tell me the week of Sep 9, not in Week 6. Changing the project then is
+routine; later it is not.
+
+**Week 4, measurement approach, prompt and model, validation sample designed (assigned
+Sep 16, due Sep 23).**
+
+1. *Measurement approach.* What construct, from which documents, and why an LLM rather
+   than a dictionary or a fine-tuned classifier.
+2. *Prompt and model.* The prompt file committed to `prompts/`, the exact model string, the
+   temperature, and the output schema.
+3. *Validation sample, designed, not collected.* One page in `memo/validation-design.md`:
+   the sample size *m* and why, the sampling scheme, the strata if any, the sampling
+   probability of every unit, who labels, and how they stay blind to the model's output.
+   Draw the sample, save the seed and the indices, and commit both.
+
+The sample is designed before you run the model on the full corpus and before you see any
+downstream result. Fixing a sampling design on paper takes ten minutes. Fixing it after
+two weeks of labeling is often impossible.
+
+**Week 5, validation complete, naive and corrected estimates (assigned Sep 23, due
+Sep 30).**
+
+1. Gold labels drawn under the scheme you committed in Week 4, and the LLM run on the same
+   units.
+2. The confusion matrix, and human–human agreement if more than one person labeled.
+3. The naive and the corrected estimates, side by side.
+
+The third item is the deliverable. A milestone with only the naive estimate is incomplete
+and is graded as such.
+
+**Week 6, revised identification memo and robustness plan (assigned Sep 30, due Oct 7).**
+
+1. *The revision.* Revisit the Week 3 memo in light of the validation study and the
+   corrected estimates. Mark your changes so the revision is legible as a revision. It
+   answers four questions explicitly: what is the estimand; what is the identifying
+   assumption; what would break it; and what is the most damaging alternative explanation,
+   stated in its strongest form.
+2. *Robustness plan.* `memo/robustness-plan.md`: the checks you will run, each with the
+   concern it addresses and the result that would make you abandon the claim.
+
+Commit both before you look at any further results. The commit timestamp is the point.
 
 If validation shows classifier error correlated with your treatment or your covariates,
 expect to rewrite: the estimand may need narrowing, the identifying assumption may need to
@@ -117,6 +200,15 @@ stands. Report the validation result, show both estimates, state that the identi
 assumption is unchanged, and explain why. A paragraph or two is enough. Do not pad it. A
 short memo that documents a stable design is worth more than a long one that manufactures
 a revision the evidence does not support.
+
+**Week 7, presentation (Oct 7) and written report (Oct 14).** Twenty minutes presenting
+and ten of questions, 12 to 15 slides. Seven slides are required: the question in one
+sentence; the data and what is new about it; the identification argument and what would
+break it; the measurement approach, prompt strategy, and model; the validation, with
+confusion matrix, human–human agreement, and sampling scheme; the naive estimate; the
+corrected estimate. The written report is 8–10 pages plus an appendix with exact prompts,
+model strings, and dates accessed, follows the structure in the presentation slides, and
+is due one week after the presentation.
 
 **Read this early:
 [Presenting the project](https://raw.githack.com/dadepro/mkt699/main/lectures/07-presentations/07-presentations.html)**
