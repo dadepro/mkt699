@@ -1302,17 +1302,6 @@ hammering a small business's website is not.
 
 --
 
-```{r, eval=FALSE}
-req_headers(req,
-  `User-Agent` = "USC-Marshall-research (proserpi@marshall.usc.edu)")
-```
-
---
-
-A real contact address means someone emails you before they block you.
-
---
-
 **Read `robots.txt`.** Not legally binding, but a clear statement of the operator's
 wishes. And disregarding it looks bad in exactly the situation where you need it to look
 good.
