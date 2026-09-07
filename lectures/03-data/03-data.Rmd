@@ -62,6 +62,225 @@ opts_chunk$set(
   )
 ```
 
+class: inverse, center, middle
+name: project
+
+# Before anything else: the project
+
+---
+
+# Why this comes first
+
+Some of the Week 2 paragraphs told me the project README had not been read.
+
+--
+
+<br>
+
+Some named no data source. One proposed measuring what a reader *feels* about a document.
+One proposed a variable that no single document determines.
+
+--
+
+<br>
+
+None of that is fatal in Week 2. All of it is fatal in Week 5, and Week 5 is where the
+grade is.
+
+--
+
+<br>
+
+.large2[So: ten minutes on what the project needs, and why.]
+
+---
+
+# What every project needs
+
+.small90[
+| | Needs | Week |
+|:--|:--|:--|
+| 1 | A question that structured data cannot answer | 2 |
+| 2 | Data you can actually get: named, on disk, rebuilt by a script | 3 |
+| 3 | An identification argument: estimand, variation, what must be true, what breaks it | 3, revised 6 |
+| 4 | **A variable the LLM measures from a document** | 4 |
+| 5 | **A validation study**: human labels on a sample you designed | 4, run in 5 |
+| 6 | Naive and corrected estimates, side by side | 5 |
+]
+
+--
+
+<br>
+
+Items 4 and 5 are the ones the Week 2 paragraphs got wrong. So, a preview of Weeks 4 and 5.
+
+---
+
+# Sneak peek, Week 4: the one test your variable must pass
+
+.large2[Could a person, shown the **same document** the model saw, produce the **same
+label**?]
+
+--
+
+<br>
+
+If yes, you have a measurement instrument, and a way to check it.
+
+--
+
+If no, you have a number the model made up, and nothing to check it against.
+
+---
+
+# The test, applied
+
+.small90[
+| Passes | Fails |
+|:--|:--|
+| Does this review contain concrete fit information? | How informative did the reader find this review? |
+| Is this listing photo staged as a lifestyle shot? | How appealing is this listing? |
+| Does this pitch disclose failed prototypes? | How trustworthy does the creator seem? |
+| Given these six descriptions, is the new app a copy of one of the others? | How much variety is there in this category? |
+]
+
+--
+
+<br>
+
+Left column: a property of a document. A coder with a codebook can reproduce it.
+
+Right column: a state of a person, or a property of a whole set. No document determines it.
+
+--
+
+<br>
+
+.large2[Perceptions are measured with surveys. Sets are summarized from per-unit labels.
+The model labels documents.]
+
+---
+
+# Sneak peek, Week 5: why the test matters
+
+Your model agrees with human coders **87% of the time**. Good number.
+
+--
+
+<br>
+
+It does **not** give you a regression that is 87% right. The 13% of errors are not random.
+The model is wrong more often on exactly the documents where your treatment lives: the
+long ones, the recent ones, the expensive ones.
+
+--
+
+<br>
+
+So you correct. Every correction we will cover does the same thing:
+
+$$\underbrace{\text{estimate from all machine labels}}_{\text{cheap, biased}} \;-\;
+\underbrace{\text{bias estimated from the gold labels}}_{\text{expensive, unbiased}}$$
+
+---
+
+# What the correction demands of you
+
+1. A **per-unit** label from the model, on every document
+2. The **same** label from humans, on a random sample drawn with a probability **you set
+   and recorded**
+3. A downstream estimate that is an **average or a regression coefficient** of that label
+
+--
+
+<br>
+
+Item 1 is why your variable must be a property of a document.
+
+Item 2 is why the validation sample is **designed** in Week 4, before you see any result.
+
+Item 3 is why "number of distinct types in the category" fails and "share of new apps that
+are copies" works.
+
+--
+
+<br>
+
+.large2[Get the variable wrong now and there is nothing to correct in Week 5.]
+
+---
+
+# The Week 2 paragraph, fixed
+
+What it must contain. Not optional, not roughly:
+
+1. The question, in one or two sentences
+2. The unit of observation
+3. The variable the model measures, **and from which documents**
+4. The data source, **by name**, and whether you can get it
+
+--
+
+<br>
+
+"Product pages" is not a source. "Review data" is not a source. A table on the course
+server, a named public dataset, or a site you have already scraped is.
+
+--
+
+<br>
+
+If your paragraph is missing any of the four, fix it in your README **this week**. It is
+the first thing I read when I grade Week 3.
+
+---
+
+# Week 3 milestone, due before class on Sep 16
+
+1. **Raw data on disk**, in `data/raw/`, never edited. It is not committed, so
+   `code/01-collect.R` must fetch it again and log what it got: source, date, row count.
+2. **A cleaning script**, `code/02-clean.R`: raw in, one row per unit of observation out,
+   assertions after every step. No LLM calls, no regressions. Those are Weeks 4 and 5.
+3. **The identification memo**, `memo/identification.md`, 400 to 600 words: question, data,
+   estimand, identifying variation, what must be true, what would break it.
+
+--
+
+<br>
+
+I will clone your repository and run it. If it does not run from a clean clone, it does
+not run.
+
+--
+
+<br>
+
+.large2[Full specification: course README, "Milestones in detail." Read it today.]
+
+---
+
+# Where you should be
+
+.small90[
+| Week | Assigned | Due | Milestone |
+|:--|:--|:--|:--|
+| 1 | Aug 26 | in class | Repository initialized |
+| 2 | Aug 26 | Sep 2 | One-paragraph question and data source |
+| **3 (today)** | **Sep 9** | **Sep 16** | **Data acquired; cleaning script; identification memo** |
+| 4 | Sep 16 | Sep 23 | Measurement approach; prompt and model; validation sample designed |
+| 5 | Sep 23 | Sep 30 | Validation complete; naive and corrected estimates |
+| 6 | Sep 30 | Oct 7 | Revised identification memo; robustness plan |
+| 7 | | Oct 7 | Presentation; written report Oct 14 |
+]
+
+--
+
+<br>
+
+Every milestone from here on: assigned in class, due before the next one, committed.
+
+---
+
 # Where we left off
 
 Last week was about verifying **code**. The model wrote something, it ran, and the
@@ -84,19 +303,21 @@ can you prove it in eighteen months.
 
 # Table of contents
 
-1. [When your data outgrows memory](#memory)
+1. [Before anything else: the project](#project)
 
-2. [SQL and relational databases](#sql)
+2. [When your data outgrows memory](#memory)
 
-3. [Collecting data: APIs](#apis)
+3. [SQL and relational databases](#sql)
 
-4. [Scraping, honestly](#scraping)
+4. [Collecting data: APIs](#apis)
 
-5. [How LLMs changed data collection](#llm)
+5. [Scraping, honestly](#scraping)
 
-6. [Provenance and documentation](#provenance)
+6. [How LLMs changed data collection](#llm)
 
-7. [Sharing data and code](#sharing)
+7. [Provenance and documentation](#provenance)
+
+8. [Sharing data and code](#sharing)
 
 ---
 class: inverse, center, middle
