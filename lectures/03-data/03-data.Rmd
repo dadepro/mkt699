@@ -98,86 +98,68 @@ The model reads one document and returns one label: a number, a category, a yes 
 
 --
 
-<br>
-
-.large2[The test: give the **same document** and written instructions to a **person**. Can
-they return the **same label**?]
+.large2[Give the **same document** and written instructions to a **person**. Can they
+return the **same label**?]
 
 --
 
-<br>
-
-**Passes.** Document: one Yelp review. Label: *does the review mention a wait time, yes or
-no?* A person reads it and answers. You can check the model against them.
+**Passes.** One Yelp review. Label: *does it mention a wait time?* A person reads it and
+answers, so you can check the model against them.
 
 --
 
-**Fails.** Same review. Label: *would this review stop a customer from going?* The person
-reading it cannot know. Only the customers can, and they are not in the document.
+**Fails.** Same review. Label: *would it stop a customer from going?* The reader cannot
+know. Only the customers can, and they are not in the document.
 
 --
 
-<br>
-
-If the test passes, you can collect human labels on a sample and measure how often the
-model is wrong. That is the validation study. If it fails, you will never know how wrong
-the model is, and there is nothing to correct in Week 5.
+Pass, and you can measure how often the model is wrong: that is the validation study.
+Fail, and you never know how wrong it is, and there is nothing to correct in Week 5.
 
 ---
 
 # The test, applied
 
-.small90[
+.small75[
 | Passes | Fails | Why it fails |
 |:--|:--|:--|
-| Does this review contain concrete fit information? | How informative did the reader find this review? | The reader is not in the document |
-| Is this listing photo staged as a lifestyle shot? | How appealing is this listing? | Appeal lives in the viewer, not the photo |
-| Does this pitch disclose failed prototypes? | How trustworthy does the creator seem? | Trust lives in the backer, not the pitch |
-| Given these six descriptions, is the new app a copy of one of the others? | How much variety is there in this category? | Variety is a property of the whole set, not of one app |
+| Does this review contain concrete fit information? | How informative did the reader find it? | The reader is not in the document |
+| Is this listing photo staged as a lifestyle shot? | How appealing is the listing? | Appeal lives in the viewer |
+| Does this pitch disclose failed prototypes? | How trustworthy does the creator seem? | Trust lives in the backer |
+| Given these six descriptions, is the new app a copy of one of the others? | How much variety is there in the category? | Variety belongs to the set, not to one app |
 ]
 
 --
 
-<br>
-
-Left column: a property of a document. A coder with a codebook can reproduce it.
-
-Right column: a state of a person, or a property of a whole set. No document determines it,
-so no coder can label it, so you can never learn how often the model is wrong.
+Left: a property of a document. A coder with a codebook can reproduce it.
+Right: a state of a person, or a property of a set. No document determines it, so no
+coder can label it, so you never learn how often the model is wrong.
 
 --
 
-<br>
-
-.large2[Perceptions are measured with surveys. Sets are summarized from per-unit labels.
-The model labels documents.]
+**Perceptions are measured with surveys. Sets are summarized from per-unit labels. The
+model labels documents.**
 
 ---
 
 # Sneak peek, Week 5: why the test matters
 
-The right column fails for one reason. Everything in Week 5 starts from a sample of
-documents where you know the truth. For a perception, or a property of a set, no such
-sample can exist. The model's error is unknowable, so it cannot be corrected.
+The right column fails for one reason: every correction in Week 5 starts from a sample
+of documents where you know the truth. For a perception or a set property, no such sample
+exists, so the model's error is unknowable and cannot be corrected.
 
 --
-
-<br>
 
 Now the left column, where the truth is collectable. Your model agrees with human coders
 **87% of the time**. Good number.
 
 --
 
-<br>
-
-It does **not** give you a regression that is 87% right. The 13% of errors are not random.
-The model is wrong more often on exactly the documents where your treatment lives: the
-long ones, the recent ones, the expensive ones.
+It does **not** give you a regression that is 87% right. The errors are not random. The
+model is wrong more often on exactly the documents where your treatment lives: the long
+ones, the recent ones, the expensive ones.
 
 --
-
-<br>
 
 So you correct. Every correction we will cover does the same thing:
 
@@ -194,8 +176,6 @@ $$\underbrace{\text{estimate from all machine labels}}_{\text{cheap, biased}} \;
 3. A downstream estimate that is an **average or a regression coefficient** of that label
 
 --
-
-<br>
 
 Item 1 is why your variable must be a property of a document.
 
@@ -2514,12 +2494,10 @@ I will clone it and run it. If it does not run from a clean clone, it does not r
 
 # Week 3 milestone
 
-Due before next class, Sep 16. Every milestone from here on works this way: assigned in
-class, due before the following one. The syllabus table lists both dates.
+Due before next class, Sep 16. Full specification at the start of this deck and in the
+course README.
 
 --
-
-<br>
 
 **Data acquired, pipeline reproducible.**
 
