@@ -248,9 +248,10 @@ example passages, and an **unknown** category.
 
 *Unknown* means the document does not contain enough to decide. It is not the same as
 "no." A review that describes a visit and never mentions a wait is a 0. An empty review,
-or one in a language the labeler cannot read, is unknown. Without this category the model
-picks 0 or 1 anyway, and you get a column with no missing values whose gaps the model
-filled in.
+or one in a language the labeler cannot read, is unknown. This holds because the label is
+about what the review says; if it were about whether the customer actually waited, the
+same review would be unknown. Without this category the model picks 0 or 1 anyway, and
+you get a column with no missing values whose gaps the model filled in.
 
 --
 
