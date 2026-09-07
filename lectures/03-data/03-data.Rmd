@@ -1181,13 +1181,6 @@ exists. Not so you can make a legal determination yourself.
 
 --
 
-<br>
-
-**For anything sensitive, or anything you plan to publish: talk to me first, and if it
-involves personal data, talk to USC's IRB and to the general counsel's office.**
-
---
-
 Those conversations take a week. Doing them after collection takes a year.
 
 ---
