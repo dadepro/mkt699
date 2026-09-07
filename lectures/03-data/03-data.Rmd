@@ -235,34 +235,32 @@ The full specification is in the course README, under "Milestones in detail."
 
 # If you want to start measurement early: the instrument
 
-Nothing stops you. Weeks 4 and 5 explain each step; the order matters more than the
-details.
+Nothing stops you; Weeks 4 and 5 explain each step. Running example: a Yelp review, and
+the label `mentions_wait`, whether the reviewer says they waited for a table, food, or service.
 
 --
 
-**1. Write the codebook.** It defines the label the way a questionnaire defines a
-variable: the name and the question it answers, each category with a definition and two
-example passages, and an **unknown** category.
+**1. Write the codebook.** The label's name and the question it answers, each category
+with a definition and two example passages, and an **unknown** category.
 
 --
 
-*Unknown* means the document cannot answer the codebook's question. Take the question
-"does the review say the reviewer waited?" A normal review that says nothing about waiting
-answers it: no, so 0. A review that cannot answer it at all, because it is empty, is not
-about a meal, or is in a language the labeler cannot read, is unknown. The question is
-about what the review says, not about whether the customer waited; if it were the latter,
-a silent review would be unknown. Without this category the model picks 0 or 1 anyway,
-and the missing values get filled in silently.
+*Unknown* means the document cannot answer the codebook's question. A normal review that
+says nothing about waiting answers it: no, so `mentions_wait` is 0. A review that cannot
+answer it at all, because it is empty, is not about a meal, or is in a language the
+labeler cannot read, is unknown. The label is about what the review says, not whether the
+customer waited; if it were the latter, a silent review would be unknown. Without this
+category the model picks 0 or 1 anyway, and the missing values get filled in silently.
 
 --
 
-**2. Write the prompt** with a structured-output schema, where "unknown" is one of the
-allowed values. Commit both to `prompts/`, with the model string and settings.
+**2. Write the prompt** with a structured-output schema that includes "unknown". Commit
+both to `prompts/` with the model string and settings.
 
 --
 
-**3. Pilot on 20 to 50 documents.** Read every output. Fix the codebook and the prompt.
-Keep the list of these documents; they are your development set.
+**3. Pilot on 20 to 50 documents.** Read every output, fix the codebook and the prompt,
+and keep the list of documents: it is your development set.
 
 ---
 
