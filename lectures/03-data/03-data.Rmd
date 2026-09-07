@@ -233,6 +233,59 @@ The full specification is in the course README, under "Milestones in detail."
 
 ---
 
+# If you want to start measurement early
+
+Nothing stops you. Weeks 4 and 5 explain each step, but the order matters more than the
+details, so here it is.
+
+--
+
+.small90[
+1. **Write the codebook.** What the label means, the categories, two examples of each, and
+   an "unknown" option. A person must be able to apply it from the document alone.
+2. **Write the prompt** with a structured-output schema. Commit both to `prompts/`, with the
+   model string and settings.
+3. **Pilot on 20 to 50 documents.** Read every output. Fix the codebook and the prompt.
+   Keep the list of these documents; they are your development set.
+4. **Design the validation sample.** How many, drawn how, with each document's sampling
+   probability written down. Save the seed and the indices, and commit them. If you start
+   before Week 4: a simple random sample of a few hundred, and a note saying so.
+5. **Label the sample by hand**, from the document and the codebook only. Two labelers if
+   you can find a second person.
+6. **Run the model on the full corpus**, the validation documents included, and keep its
+   predictions on those documents.
+7. **Then the naive estimate.** Not before.
+]
+
+---
+
+# Three things to avoid if you start early
+
+--
+
+**Running the model on everything first, then choosing a validation sample from the
+results.** The sample has to be designed before the run, with its probabilities recorded.
+A sample chosen afterwards has no known probabilities and the correction cannot use it.
+
+--
+
+**Tuning the prompt on the validation sample.** Whatever documents you use to improve
+the prompt are the development set. The validation sample is labeled once and otherwise
+untouched, or its error rate no longer describes the rest of the corpus.
+
+--
+
+**Labeling with the model's output visible.** Labelers see the document and the
+codebook, nothing else. A label made while looking at the model's answer measures
+agreement with the model, not the truth.
+
+--
+
+If you have already done one of these, say so on Sep 16. Sometimes a valid sample can
+still be drawn.
+
+---
+
 # Where you should be
 
 .small90[
