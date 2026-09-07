@@ -1179,10 +1179,6 @@ name: scraping
 I am going to describe the landscape as I understand it, because you need to know it
 exists. Not so you can make a legal determination yourself.
 
---
-
-Those conversations take a week. Doing them after collection takes a year.
-
 ---
 
 # The four things that create exposure
