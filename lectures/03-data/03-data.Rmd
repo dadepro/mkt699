@@ -1376,7 +1376,10 @@ Last resort. Some data only exists in a mobile app.
 <br>
 
 You can proxy the phone's traffic through your machine and inspect the API calls the app
-makes. `mitmproxy` is the usual tool.
+makes. The usual tools:
+
+- [`mitmproxy`](https://mitmproxy.org/), free, command line and a web view
+- [Charles Proxy](https://www.charlesproxy.com/), paid, with a desktop interface
 
 --
 
