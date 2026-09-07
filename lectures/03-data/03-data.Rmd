@@ -229,13 +229,6 @@ If your paragraph is missing any of the four, add it to your README this week.
 
 <br>
 
-I will clone your repository and run it. If it does not run from a clean clone, it does
-not run.
-
---
-
-<br>
-
 The full specification is in the course README, under "Milestones in detail."
 
 ---
