@@ -1714,7 +1714,32 @@ The line is blurrier than that, and I will come back to it.
 
 # Structured output
 
-The mechanism that makes this work: you specify a schema, and you get typed fields back.
+Normally you send the model text and get text back, and then you have to parse the
+reply. Structured output changes the second half.
+
+--
+
+You send the document **and a schema**: the list of fields you want, each with a type.
+The API constrains the reply to a JSON object with exactly those fields and types.
+
+--
+
+```
+Input:   "Sunny 2BR, $2,450/mo, cats OK, garage parking, 12-month lease."
+
+Output:  {"price": 2450, "bedrooms": 2, "pets_allowed": true,
+          "parking": "garage", "lease_months": 12}
+```
+
+--
+
+One call per document, one JSON object back, one row in your table, with the columns
+already typed. Every major provider supports this, and the R and Python client libraries
+take the schema as an argument next to the prompt.
+
+---
+
+# The schema
 
 
 ``` r
@@ -1734,7 +1759,10 @@ schema &lt;- list(
 
 --
 
-Not free text you regex afterwards. A JSON object with the types you asked for.
+- **`type`** says what kind of value each field holds: number, integer, boolean, string
+- **`enum`** restricts a string field to a fixed set of values
+- **`required`** lists the fields that must be present in every reply; `lease_months` is
+  left optional, so it can be omitted when the listing does not say
 
 ---
 
