@@ -1560,8 +1560,6 @@ cannot rebuild it.
 
 --
 
-&lt;br&gt;
-
 
 ``` r
 fetch_and_archive &lt;- function(url, id, date_stamp) {
@@ -1569,7 +1567,7 @@ fetch_and_archive &lt;- function(url, id, date_stamp) {
     httr2::req_perform() %&gt;%
     httr2::resp_body_string()
 
-  path &lt;- sprintf("data/raw/html/%s", date_stamp)
+  path &lt;- file.path("data/raw/html", date_stamp, substr(id, 1, 2), substr(id, 1, 4))
   dir.create(path, recursive = TRUE, showWarnings = FALSE)
 
   # gzip: HTML compresses ~10x
@@ -1617,6 +1615,31 @@ anyone, including you.]
 --
 
 I will ask about this when I grade your milestone.
+
+---
+
+# Storing what you scraped
+
+Three rules.
+
+--
+
+**1. Always save the raw response.** HTML, JSON, whatever came back, compressed, before you
+parse anything. Parsing can be repeated. Fetching cannot.
+
+--
+
+**2. Do not put thousands of files in one folder.** Listing, globbing, syncing, and backups
+slow to a crawl past a few tens of thousands of entries, and some tools stop working. Nest
+by ID: `123456` goes to `12/1234/123456.html.gz`. With numeric IDs, neighbors land in the
+same folder. For string IDs, use the first characters of a hash the same way.
+
+--
+
+**3. Parsed data go into one table, not into more files.** A DuckDB file or a partitioned
+parquet folder, with a schema and a unique key such as (id, date). Each day's parse
+appends, and re-running the parser must not duplicate rows. If the data live on a shared
+server, a database there.
 
 ---
 class: inverse, center, middle
