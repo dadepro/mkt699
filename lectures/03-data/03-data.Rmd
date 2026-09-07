@@ -1399,7 +1399,7 @@ prevent this.
 --
 
 Legally: this is further from "reading a public web page" than anything else on this
-list. **Do not do this without talking to me first.**
+list.
 
 ---
 
