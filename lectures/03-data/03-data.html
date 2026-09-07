@@ -680,22 +680,26 @@ Seconds instead of minutes.
 
 ---
 
-# But here is the thing
+# A local alternative: DuckDB
 
-Most of you do not need MySQL or Postgres.
-
---
-
-&lt;br&gt;
-
-Setting up a server, managing users, loading data through an ETL step. That is real
-overhead, and for a single-researcher project it buys you very little.
+The course server is a database server: a machine that runs MySQL all the time, holds the
+data, and answers queries over the network. You connect to it; someone else runs it.
 
 --
 
 &lt;br&gt;
 
-.large2[Use **DuckDB**.]
+For your own project you rarely need that. Running one yourself means installing it,
+creating users, defining the tables, and converting and loading the data before the first
+query.
+
+--
+
+&lt;br&gt;
+
+**DuckDB** is a database you run locally, as a package inside R or Python. It reads the
+files you already have and answers the same SQL you learned this morning, with nothing to
+install beyond the package and nothing to load.
 
 ---
 
