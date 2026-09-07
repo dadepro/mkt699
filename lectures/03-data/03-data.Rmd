@@ -804,12 +804,6 @@ is lazy.
 - A production system, or a long-lived research infrastructure
 - Your data provider hands you a Postgres connection string and that is that
 
---
-
-<br>
-
-For an individual dissertation chapter, DuckDB over parquet is almost always right.
-
 ---
 
 # Parquet vs CSV
