@@ -251,8 +251,9 @@ question it answers, each category with a definition and two example passages, a
 --
 
 **2. Write the prompt.** The codebook restated as instructions to the model, plus the
-document and a structured-output schema that includes "unknown". Commit it to `prompts/`
-with the model string and settings.
+document and a **schema**: the list of fields you want back and their allowed values, so
+the reply is `mentions_wait` as one of 1, 0, unknown rather than free text. More on this
+in the extraction section today. Commit it to `prompts/` with the model string and settings.
 
 --
 
@@ -262,8 +263,8 @@ once labeling starts. The prompt is one way of measuring it; it will change, so 
 --
 
 **3. Pilot on 20 to 50 documents.** Read every output, fix the prompt, and keep the list
-of documents: it is your development set. If the codebook changes here, it changes for
-the labelers too.
+of documents: it is your development set, and it stays out of the validation sample. If
+the codebook changes here, it changes for the labelers too.
 
 ---
 
@@ -293,11 +294,31 @@ silently. A column with no missing values from an unstructured source deserves a
 
 ---
 
+# If you want to start measurement early: three sets of documents
+
+They do not overlap.
+
+| Set | How chosen | Labeled by hand | Labeled by the model |
+|:--|:--|:--|:--|
+| Development set | any way, 20 to 50 documents | as you like | yes, while tuning the prompt |
+| Validation sample | at random, with a known probability, from the corpus minus the development set | yes, blind | yes, final prompt |
+| Everything else | the rest of the corpus | no | yes, final prompt |
+
+--
+
+&lt;br&gt;
+
+The development set is where the prompt gets fixed. The validation sample is where the
+model's error gets measured, so nothing about the prompt may be decided on it. Everything
+else is what the project is about.
+
+---
+
 # If you want to start measurement early: the validation sample
 
-**4. Design the validation sample.** How many documents, drawn how, and each document's
-probability of being drawn, written down. Save the seed and the indices, and commit them.
-If you start before Week 4: a simple random sample of a few hundred, and a note saying so.
+**4. Design the validation sample.** How many, drawn how, and each document's probability
+of being drawn, written down. Save the seed and the indices, and commit them. Before
+Week 4: a simple random sample of a few hundred, and a note saying so.
 
 --
 
@@ -306,8 +327,9 @@ you can find a second person, so you can report how often they agree.
 
 --
 
-**6. Run the model on the full corpus**, the validation documents included, and keep its
-predictions on those documents.
+**6. Run the final prompt once over the validation sample and everything else**, and keep
+the model's answers for the validation documents. The correction compares the two labels
+there and uses the model's labels on the rest.
 
 --
 
@@ -331,12 +353,12 @@ Schema     mentions_wait: one of 1 / 0 / unknown
 Pilot      30 reviews. Two disagreements led to adding "for service" to
            the question. Prompt v2 committed.
 
-Sample     300 reviews, simple random from the 40,000 in the project,
-           seed 20260909, indices in validation/sample.csv,
-           probability 300 / 40,000 for every review
+Sample     300 reviews, simple random from the 40,000 in the project
+           minus the 30 pilot reviews, seed 20260909, indices in
+           validation/sample.csv, probability 300 / 39,970 for each
 
 Labels     two of you, from the review and the codebook only
-Run        the model on all 40,000; keep its answers for the 300
+Run        prompt v2 on all 39,970; keep its answers for the 300
 ```
 
 ---
