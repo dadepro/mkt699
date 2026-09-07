@@ -1302,8 +1302,6 @@ hammering a small business's website is not.
 
 --
 
-**Identify your scraper.**
-
 ```{r, eval=FALSE}
 req_headers(req,
   `User-Agent` = "USC-Marshall-research (proserpi@marshall.usc.edu)")
