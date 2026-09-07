@@ -1725,6 +1725,10 @@ The API constrains the reply to a JSON object with exactly those fields and type
 --
 
 ```
+Schema:  price: number        bedrooms: integer      pets_allowed: boolean
+         parking: one of garage / street / none / unknown
+         lease_months: integer, optional
+
 Input:   "Sunny 2BR, $2,450/mo, cats OK, garage parking, 12-month lease."
 
 Output:  {"price": 2450, "bedrooms": 2, "pets_allowed": true,
