@@ -88,22 +88,23 @@ Six things, in the order you will build them:
 
 &lt;br&gt;
 
-Miss any one and it is not a project for this course.
+The project needs all six.
 
 --
 
-Items 4 and 5 are the ones the Week 2 paragraphs got wrong. So, a preview of Weeks 4 and 5.
+Items 4 and 5 are where the Week 2 paragraphs had the most problems, so here is a preview
+of Weeks 4 and 5.
 
 ---
 
-# Sneak peek, Week 4: the one test your variable must pass
+# Preview of Week 4: a test for the measured variable
 
 The model reads one document and returns one label: a number, a category, a yes or no.
 
 --
 
-.large2[Give the **same document** and written instructions to a **person**. Can they
-return the **same label**?]
+**The test:** give the same document and written instructions to a person. Can they
+return the same label?
 
 --
 
@@ -113,12 +114,13 @@ answers, so you can check the model against them.
 --
 
 **Fails.** Same review. Label: *would it stop a customer from going?* The reader cannot
-know. Only the customers can, and they are not in the document.
+know that. It depends on the customers, who are not in the document.
 
 --
 
-Pass, and you can measure how often the model is wrong: that is the validation study.
-Fail, and you never know how wrong it is, and there is nothing to correct in Week 5.
+If the test passes, human labels on a sample tell you how often the model is wrong; that
+is the validation study. If it fails, the model's error cannot be measured, and the Week 5
+correction has nothing to work with.
 
 ---
 
@@ -127,10 +129,10 @@ Fail, and you never know how wrong it is, and there is nothing to correct in Wee
 .small75[
 | Passes | Fails | Why it fails |
 |:--|:--|:--|
-| Does this review contain concrete fit information? | How informative did the reader find it? | The reader is not in the document |
-| Is this listing photo staged as a lifestyle shot? | How appealing is the listing? | Appeal lives in the viewer |
-| Does this pitch disclose failed prototypes? | How trustworthy does the creator seem? | Trust lives in the backer |
-| Given these six descriptions, is the new app a copy of one of the others? | How much variety is there in the category? | Variety belongs to the set, not to one app |
+| Does this review contain concrete fit information? | How informative did the reader find it? | Depends on the reader, not the text |
+| Is this listing photo staged as a lifestyle shot? | How appealing is the listing? | Depends on the viewer, not the photo |
+| Does this pitch disclose failed prototypes? | How trustworthy does the creator seem? | Depends on the backer, not the pitch |
+| Given these six descriptions, is the new app a copy of one of the others? | How much variety is there in the category? | A property of the set, not of one app |
 ]
 
 --
@@ -141,13 +143,9 @@ measure how often the model is wrong.
 **Right:** a state of a person, or a property of a set. No document determines it, no
 coder can label it, and the model's error rate stays unknown.
 
---
-
-**Surveys measure perceptions. Per-unit labels summarize sets. The model labels documents.**
-
 ---
 
-# Sneak peek, Week 5: why the test matters
+# Preview of Week 5: why the test matters
 
 The right column fails for one reason: every correction in Week 5 starts from a sample
 of documents where you know the truth. For a perception or a set property, no such sample
@@ -155,25 +153,25 @@ exists, so the model's error is unknowable and cannot be corrected.
 
 --
 
-Now the left column, where the truth is collectable. Your model agrees with human coders
-**87% of the time**. Good number.
+Now the left column, where the truth is collectable. Suppose your model agrees with human
+coders **87% of the time**, which is a good number.
 
 --
 
-It does **not** give you a regression that is 87% right. The errors are not random. The
-model is wrong more often on exactly the documents where your treatment lives: the long
-ones, the recent ones, the expensive ones.
+That does **not** give you a regression that is 87% right. The errors are not random: the
+model is wrong more often on the documents where your treatment lives, for example long,
+recent, or expensive ones.
 
 --
 
-So you correct. Every correction we will cover does the same thing:
+So the estimate is corrected. Every correction we will cover has the same form:
 
 `$$\underbrace{\text{estimate from all machine labels}}_{\text{cheap, biased}} \;-\;
 \underbrace{\text{bias estimated from the gold labels}}_{\text{expensive, unbiased}}$$`
 
 ---
 
-# What the correction demands of you
+# What the correction needs
 
 1. A **per-unit** label from the model, on every document
 2. The **same** label from humans, on a random sample drawn with a probability **you set
@@ -193,13 +191,14 @@ are copies" works.
 
 &lt;br&gt;
 
-.large2[Get the variable wrong now and there is nothing to correct in Week 5.]
+This is why the variable has to be right now. The correction can only repair a variable
+that has a gold standard.
 
 ---
 
 # The Week 2 paragraph, fixed
 
-What it must contain. Not optional, not roughly:
+It has four parts:
 
 1. The question, in one or two sentences
 2. The unit of observation
@@ -210,15 +209,14 @@ What it must contain. Not optional, not roughly:
 
 &lt;br&gt;
 
-"Product pages" is not a source. "Review data" is not a source. A table on the course
-server, a named public dataset, or a site you have already scraped is.
+A source is a table on the course server, a named public dataset, or a site you have
+already scraped. "Product pages" or "review data" is not specific enough.
 
 --
 
 &lt;br&gt;
 
-If your paragraph is missing any of the four, fix it in your README **this week**. It is
-the first thing I read when I grade Week 3.
+If your paragraph is missing any of the four, add it to your README this week.
 
 ---
 
@@ -242,7 +240,7 @@ not run.
 
 &lt;br&gt;
 
-.large2[Full specification: course README, "Milestones in detail." Read it today.]
+The full specification is in the course README, under "Milestones in detail."
 
 ---
 
