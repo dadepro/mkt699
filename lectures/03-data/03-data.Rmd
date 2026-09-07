@@ -694,7 +694,7 @@ install beyond the package and nothing to load.
 
 # DuckDB
 
-An embedded analytical database. No server. No daemon. It is a library.
+An embedded analytical database. No server. It is a library.
 
 --
 
@@ -704,12 +704,6 @@ An embedded analytical database. No server. No daemon. It is a library.
 - Queries **parquet and CSV files directly**, no import step
 - Columnar and vectorized, built for analytical queries
 - Streams from disk, so "bigger than RAM" is the normal case, not the exception
-
---
-
-<br>
-
-It is SQLite's shape with a column store's engine.
 
 ---
 
