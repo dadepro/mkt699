@@ -30,6 +30,8 @@ class: center, middle, inverse, title-slide
 
 ---
 
+class: inverse, center, middle
+name: project
 
 &lt;style type="text/css"&gt;
 /* base sizing -- bumped up for classroom projection */
@@ -66,9 +68,6 @@ class: center, middle, inverse, title-slide
 
 
 
-class: inverse, center, middle
-name: project
-
 # Before anything else: the project
 
 ---
@@ -99,53 +98,48 @@ grade is.
 
 ---
 
-# What every project needs
-
-.small90[
-| | Needs | Week |
-|:--|:--|:--|
-| 1 | A question that structured data cannot answer | 2 |
-| 2 | Data you can actually get: named, on disk, rebuilt by a script | 3 |
-| 3 | An identification argument: estimand, variation, what must be true, what breaks it | 3, revised 6 |
-| 4 | **A variable the LLM measures from a document** | 4 |
-| 5 | **A validation study**: human labels on a sample you designed | 4, run in 5 |
-| 6 | Naive and corrected estimates, side by side | 5 |
-]
-
---
-
-&lt;br&gt;
-
-Items 4 and 5 are the ones the Week 2 paragraphs got wrong. So, a preview of Weeks 4 and 5.
-
----
-
 # Sneak peek, Week 4: the one test your variable must pass
 
-.large2[Could a person, shown the **same document** the model saw, produce the **same
-label**?]
+The model reads one document and returns one label: a number, a category, a yes or no.
 
 --
 
 &lt;br&gt;
 
-If yes, you have a measurement instrument, and a way to check it.
+.large2[The test: give the **same document** and written instructions to a **person**. Can
+they return the **same label**?]
 
 --
 
-If no, you have a number the model made up, and nothing to check it against.
+&lt;br&gt;
+
+**Passes.** Document: one Yelp review. Label: *does the review mention a wait time, yes or
+no?* A person reads it and answers. You can check the model against them.
+
+--
+
+**Fails.** Same review. Label: *would this review stop a customer from going?* The person
+reading it cannot know. Only the customers can, and they are not in the document.
+
+--
+
+&lt;br&gt;
+
+If the test passes, you can collect human labels on a sample and measure how often the
+model is wrong. That is the validation study. If it fails, you will never know how wrong
+the model is, and there is nothing to correct in Week 5.
 
 ---
 
 # The test, applied
 
 .small90[
-| Passes | Fails |
-|:--|:--|
-| Does this review contain concrete fit information? | How informative did the reader find this review? |
-| Is this listing photo staged as a lifestyle shot? | How appealing is this listing? |
-| Does this pitch disclose failed prototypes? | How trustworthy does the creator seem? |
-| Given these six descriptions, is the new app a copy of one of the others? | How much variety is there in this category? |
+| Passes | Fails | Why it fails |
+|:--|:--|:--|
+| Does this review contain concrete fit information? | How informative did the reader find this review? | The reader is not in the document |
+| Is this listing photo staged as a lifestyle shot? | How appealing is this listing? | Appeal lives in the viewer, not the photo |
+| Does this pitch disclose failed prototypes? | How trustworthy does the creator seem? | Trust lives in the backer, not the pitch |
+| Given these six descriptions, is the new app a copy of one of the others? | How much variety is there in this category? | Variety is a property of the whole set, not of one app |
 ]
 
 --
@@ -154,7 +148,8 @@ If no, you have a number the model made up, and nothing to check it against.
 
 Left column: a property of a document. A coder with a codebook can reproduce it.
 
-Right column: a state of a person, or a property of a whole set. No document determines it.
+Right column: a state of a person, or a property of a whole set. No document determines it,
+so no coder can label it, so you can never learn how often the model is wrong.
 
 --
 
@@ -167,7 +162,16 @@ The model labels documents.]
 
 # Sneak peek, Week 5: why the test matters
 
-Your model agrees with human coders **87% of the time**. Good number.
+The right column fails for one reason. Everything in Week 5 starts from a sample of
+documents where you know the truth. For a perception, or a property of a set, no such
+sample can exist. The model's error is unknowable, so it cannot be corrected.
+
+--
+
+&lt;br&gt;
+
+Now the left column, where the truth is collectable. Your model agrees with human coders
+**87% of the time**. Good number.
 
 --
 
