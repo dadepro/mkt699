@@ -240,27 +240,52 @@ the label `mentions_wait`, whether the reviewer says they waited for a table, fo
 
 --
 
-**1. Write the codebook.** The label's name and the question it answers, each category
-with a definition and two example passages, and an **unknown** category.
+**1. Write the codebook.** The definition of the variable, written for a person: the
+question it answers, each category with a definition and two example passages, and an
+**unknown** category. The labelers work from it, and the model is judged against it.
 
 --
 
-*Unknown* means the document cannot answer the codebook's question. A normal review that
-says nothing about waiting answers it: no, so `mentions_wait` is 0. A review that cannot
-answer it at all, because it is empty, is not about a meal, or is in a language the
-labeler cannot read, is unknown. The label is about what the review says, not whether the
-customer waited; if it were the latter, a silent review would be unknown. Without this
-category the model picks 0 or 1 anyway, and the missing values get filled in silently.
+**2. Write the prompt.** The codebook restated as instructions to the model, plus the
+document and a structured-output schema that includes "unknown". Commit it to `prompts/`
+with the model string and settings.
 
 --
 
-**2. Write the prompt** with a structured-output schema that includes "unknown". Commit
-both to `prompts/` with the model string and settings.
+The two are not the same file. The codebook defines the variable and should not change
+once labeling starts. The prompt is one way of measuring it; it will change, so version it.
 
 --
 
-**3. Pilot on 20 to 50 documents.** Read every output, fix the codebook and the prompt,
-and keep the list of documents: it is your development set.
+**3. Pilot on 20 to 50 documents.** Read every output, fix the prompt, and keep the list
+of documents: it is your development set. If the codebook changes here, it changes for
+the labelers too.
+
+---
+
+# Unknown, in the codebook
+
+*Unknown* means the document cannot answer the codebook's question.
+
+--
+
+A normal review that says nothing about waiting answers it: no, so `mentions_wait` is 0.
+
+--
+
+A review that cannot answer it at all, because it is empty, is not about a meal, or is in
+a language the labeler cannot read, is unknown.
+
+--
+
+The label is about what the review says, not whether the customer waited. If it were the
+latter, a silent review would be unknown as well, because the customer may have waited and
+not written about it.
+
+--
+
+Without this category the model picks 0 or 1 anyway, and the missing values get filled in
+silently. A column with no missing values from an unstructured source deserves a look.
 
 ---
 
