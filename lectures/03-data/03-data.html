@@ -250,12 +250,13 @@ example passages, and an **unknown** category.
 
 --
 
-*Unknown* means the document does not contain enough to decide. It is not the same as
-"no." A review that describes a visit and never mentions a wait is a 0. An empty review,
-or one in a language the labeler cannot read, is unknown. This holds because the label is
-about what the review says; if it were about whether the customer actually waited, the
-same review would be unknown. Without this category the model picks 0 or 1 anyway, and
-you get a column with no missing values whose gaps the model filled in.
+*Unknown* means the document cannot answer the codebook's question. Take the question
+"does the review say the reviewer waited?" A normal review that says nothing about waiting
+answers it: no, so 0. A review that cannot answer it at all, because it is empty, is not
+about a meal, or is in a language the labeler cannot read, is unknown. The question is
+about what the review says, not about whether the customer waited; if it were the latter,
+a silent review would be unknown. Without this category the model picks 0 or 1 anyway,
+and the missing values get filled in silently.
 
 --
 
