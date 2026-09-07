@@ -237,29 +237,82 @@ The full specification is in the course README, under "Milestones in detail."
 
 ---
 
-# If you want to start measurement early
+# If you want to start measurement early: the instrument
 
-Nothing stops you. Weeks 4 and 5 explain each step, but the order matters more than the
-details, so here it is.
+Nothing stops you. Weeks 4 and 5 explain each step; the order matters more than the
+details.
 
 --
 
-.small90[
-1. **Write the codebook.** What the label means, the categories, two examples of each, and
-   an "unknown" option. A person must be able to apply it from the document alone.
-2. **Write the prompt** with a structured-output schema. Commit both to `prompts/`, with the
-   model string and settings.
-3. **Pilot on 20 to 50 documents.** Read every output. Fix the codebook and the prompt.
-   Keep the list of these documents; they are your development set.
-4. **Design the validation sample.** How many, drawn how, with each document's sampling
-   probability written down. Save the seed and the indices, and commit them. If you start
-   before Week 4: a simple random sample of a few hundred, and a note saying so.
-5. **Label the sample by hand**, from the document and the codebook only. Two labelers if
-   you can find a second person.
-6. **Run the model on the full corpus**, the validation documents included, and keep its
-   predictions on those documents.
-7. **Then the naive estimate.** Not before.
-]
+**1. Write the codebook.** It defines the label the way a questionnaire defines a
+variable: the name and the question it answers, each category with a definition and two
+example passages, and an **unknown** category.
+
+--
+
+*Unknown* means the document does not contain enough to decide. It is not the same as
+"no." A review that describes a visit and never mentions a wait is a 0. An empty review,
+or one in a language the labeler cannot read, is unknown. Without this category the model
+picks 0 or 1 anyway, and you get a column with no missing values whose gaps the model
+filled in.
+
+--
+
+**2. Write the prompt** with a structured-output schema, where "unknown" is one of the
+allowed values. Commit both to `prompts/`, with the model string and settings.
+
+--
+
+**3. Pilot on 20 to 50 documents.** Read every output. Fix the codebook and the prompt.
+Keep the list of these documents; they are your development set.
+
+---
+
+# If you want to start measurement early: the validation sample
+
+**4. Design the validation sample.** How many documents, drawn how, and each document's
+probability of being drawn, written down. Save the seed and the indices, and commit them.
+If you start before Week 4: a simple random sample of a few hundred, and a note saying so.
+
+--
+
+**5. Label the sample by hand**, from the document and the codebook only. Two labelers if
+you can find a second person, so you can report how often they agree.
+
+--
+
+**6. Run the model on the full corpus**, the validation documents included, and keep its
+predictions on those documents.
+
+--
+
+**7. Then the naive estimate.** Not before.
+
+---
+
+# Example: does the review mention a wait?
+
+```
+Codebook   mentions_wait. Does the reviewer say they waited: for a table,
+           for food, or for service?
+           1        "waited 45 minutes for a table", "food took forever"
+           0        the visit is described and no wait comes up
+           unknown  nothing about a visit: an empty review, a comment about
+                    the website, a language you cannot read
+
+Schema     mentions_wait: one of 1 / 0 / unknown
+           quote: string, the passage that decided it, empty if none
+
+Pilot      30 reviews. Two disagreements led to adding "for service" to
+           the question. Prompt v2 committed.
+
+Sample     300 reviews, simple random from the 40,000 in the project,
+           seed 20260909, indices in validation/sample.csv,
+           probability 300 / 40,000 for every review
+
+Labels     two of you, from the review and the codebook only
+Run        the model on all 40,000; keep its answers for the 300
+```
 
 ---
 
