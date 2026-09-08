@@ -247,20 +247,20 @@ question it answers, each category with a definition and two example passages, a
 --
 
 **2. Write the prompt.** The codebook restated as instructions to the model, plus the
-document and a **schema**: the list of fields you want back and their allowed values, so
-the reply is `mentions_wait` as one of 1, 0, unknown rather than free text. More on this
-in the extraction section today. Commit it to `prompts/` with the model string and settings.
+document and a **schema**: the fields you want back and their allowed values, so the reply
+is `mentions_wait` as 1, 0, or unknown, not free text (more in the extraction section
+today). Commit it to `prompts/` with the model string and settings.
 
 --
 
-The two are not the same file. The codebook defines the variable and should not change
-once labeling starts. The prompt is one way of measuring it; it will change, so version it.
+They are different files. The codebook defines the variable and does not change once
+labeling starts; the prompt is one way of measuring it, will change, and gets versioned.
 
 --
 
-**3. Pilot on 20 to 50 documents.** Read every output, fix the prompt, and keep the list
-of documents: it is your development set, and it stays out of the validation sample. If
-the codebook changes here, it changes for the labelers too.
+**3. Pilot on 20 to 50 documents.** Read every output, fix the prompt, keep the list: the
+development set. It stays in the analysis, scored by the final prompt like everything
+else, and stays out of the validation sample only, because the prompt was tuned on it.
 
 ---
 
@@ -292,21 +292,26 @@ silently. A column with no missing values from an unstructured source deserves a
 
 # If you want to start measurement early: three sets of documents
 
-They do not overlap.
+With the example's 40,000 reviews:
 
-| Set | How chosen | Labeled by hand | Labeled by the model |
-|:--|:--|:--|:--|
-| Development set | any way, 20 to 50 documents | as you like | yes, while tuning the prompt |
-| Validation sample | at random, with a known probability, from the corpus minus the development set | yes, blind | yes, final prompt |
-| Everything else | the rest of the corpus | no | yes, final prompt |
+.small90[
+| Set | How chosen | Human label | Model label | In the analysis |
+|:--|:--|:--|:--|:--|
+| Development set, 30 | any way | during the pilot | yes, final prompt | yes |
+| Validation sample, 300 | at random from the other 39,970, probability recorded | yes, blind | yes, final prompt | yes |
+| Everything else, 39,670 | the rest | no | yes, final prompt | yes |
+]
 
 --
 
-<br>
+The validation sample is not a holdout. Its 300 reviews are ordinary analysis documents
+that also carry a human label, so they show how often, and where, the model is wrong.
 
-The development set is where the prompt gets fixed. The validation sample is where the
-model's error gets measured, so nothing about the prompt may be decided on it. Everything
-else is what the project is about.
+--
+
+The analysis uses all 40,000: the model's labels on every one, and the human labels on
+the 300 to estimate the model's bias and remove it. Nothing is dropped. The 30 pilot
+reviews are kept out of the validation sample only, because the prompt was tuned on them.
 
 ---
 
@@ -354,7 +359,7 @@ Sample     300 reviews, simple random from the 40,000 in the project
            validation/sample.csv, probability 300 / 39,970 for each
 
 Labels     two of you, from the review and the codebook only
-Run        prompt v2 on all 39,970; keep its answers for the 300
+Run        prompt v2 on all 40,000; keep its answers for the 300
 ```
 
 ---
