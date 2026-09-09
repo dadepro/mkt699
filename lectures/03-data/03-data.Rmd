@@ -2342,13 +2342,6 @@ variable.
 
 **Provenance:** one row per variable, source, date, process, validation status.
 
---
-
-<br>
-
-.large2[If you cannot say where a column came from, you do not have data. You have
-numbers.]
-
 ---
 
 # Assignment 1 — due next week
