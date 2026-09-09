@@ -830,14 +830,6 @@ data, and answers queries over the network. You connect to it; someone else runs
 
 <br>
 
-For your own project you rarely need that. Running one yourself means installing it,
-creating users, defining the tables, and converting and loading the data before the first
-query.
-
---
-
-<br>
-
 **DuckDB** is a database you run locally, as a package inside R or Python. It reads the
 files you already have and answers the same SQL you learned this morning, with nothing to
 install beyond the package and nothing to load.
