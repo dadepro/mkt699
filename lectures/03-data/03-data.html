@@ -2257,33 +2257,6 @@ Journals know this. The standard accommodations:
 
 ---
 
-# The synthetic data trick
-
-Generate a fake dataset with the same column names, types, and rough distributions.
-
-
-``` r
-# code/00-make-synthetic.R
-set.seed(699)
-synth &lt;- data.frame(
-  listing_id = sprintf("L%06d", 1:50000),
-  city_id    = sample(1:40, 50000, replace = TRUE),
-  year       = sample(2015:2019, 50000, replace = TRUE),
-  price      = round(rlnorm(50000, 4.8, 0.6), 2),
-  has_pool   = rbinom(50000, 1, 0.22)
-)
-arrow::write_parquet(synth, "data/synthetic/listings.parquet")
-```
-
---
-
-&lt;br&gt;
-
-A replicator runs your entire pipeline on it. The coefficients are meaningless. **The
-code either runs or it does not**, and that is what they are checking.
-
----
-
 # Where to put it
 
 - **openICPSR**: the AEA's repository. If you are targeting an econ journal, this is
