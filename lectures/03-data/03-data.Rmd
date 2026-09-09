@@ -1451,8 +1451,7 @@ It is faster, more stable, and gives you structured data instead of HTML.
 
 --
 
-Cost: 10--100× slower, far more fragile, and much heavier on the target server, which is
-the citizenship point again.
+Cost: 10--100× slower, far more fragile, and much heavier on the target server.
 
 ---
 
