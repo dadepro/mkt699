@@ -1181,55 +1181,6 @@ This is Week 1's raw-data immutability rule, applied at the moment of collection
 
 ---
 
-# Idempotent collection
-
-.large2[Your collection script must be interruptible and resumable.]
-
---
-
-<br>
-
-It will run for six hours. Your laptop will sleep, the VPN will drop, the API will have
-an outage, or you will hit Ctrl-C by accident.
-
---
-
-<br>
-
-If restarting means starting over, you have a script you are afraid of. And a script you
-are afraid of does not get rerun, which means it does not get fixed.
-
----
-
-# The pattern
-
-```{r, eval=FALSE}
-collect_all <- function(ids, outdir = "data/raw/api/listings") {
-  dir.create(outdir, recursive = TRUE, showWarnings = FALSE)
-
-  # 1. what do I already have?
-  have <- tools::file_path_sans_ext(list.files(outdir, pattern = "\\.json$"))
-
-  # 2. what is still missing?
-  todo <- setdiff(as.character(ids), have)
-  message(sprintf("%d done, %d remaining", length(have), length(todo)))
-
-  # 3. request only that
-  for (id in todo) {
-    resp <- try(fetch_one(id), silent = TRUE)
-    if (inherits(resp, "try-error")) { log_failure(id); next }
-    writeLines(resp, file.path(outdir, paste0(id, ".json")))
-  }
-}
-```
-
---
-
-Run it again and it picks up where it stopped. Run it after it finishes and it does
-nothing.
-
----
-
 # Log the collection itself
 
 ```{r, eval=FALSE}
@@ -1718,34 +1669,6 @@ questions get asked.
 
 ---
 
-# The boundary I want to draw
-
-**This lecture:** extraction. Getting a field out of a source when the field is *there*
-and the problem is that it is formatted badly.
-
---
-
-<br>
-
-**Next week:** measurement. Constructing a research construct that does not exist
-verbatim anywhere, and validating it.
-
---
-
-<br>
-
-Extracting `price = 145` from a listing page is extraction.
-
-Deciding whether a review "expresses frustration with the host" is measurement.
-
---
-
-<br>
-
-The line is blurrier than that, and I will come back to it.
-
----
-
 # Structured output
 
 Normally you send the model text and get text back, and then you have to parse the
@@ -1851,86 +1774,6 @@ will get a complete column with no missingness, and the missingness will have be
 <br>
 
 .large2[A field with no NAs from an unstructured source should worry you.]
-
----
-
-# Example: product attributes
-
-Marketplace listings. Free-text descriptions, no structured attributes.
-
-```{r, eval=FALSE}
-prompt <- "Extract product attributes from this listing description.
-Return only fields explicitly stated. Use null when a field is not mentioned.
-Do not infer from the product category.
-
-Description: {description}"
-```
-
---
-
-<br>
-
-Schema: `material`, `color`, `size_cm`, `warranty_months`, `country_of_origin`.
-
---
-
-<br>
-
-"Do not infer from the product category" is doing real work in that prompt. Without it,
-every leather item gets `country_of_origin = "Italy"`.
-
----
-
-# Example: contracts and filings
-
-SEC filings, franchise agreements, supplier contracts.
-
---
-
-<br>
-
-Extract: effective date, counterparty names, contract value, termination clause presence,
-exclusivity terms, renewal structure.
-
---
-
-<br>
-
-This used to be a law-student-army task. There are published finance and accounting
-papers whose entire contribution was hand-coding a few thousand contracts.
-
---
-
-<br>
-
-That contribution is now cheap. Which means the bar moved: the contribution has to be the
-question, not the coding.
-
----
-
-# Example: charts in old reports
-
-Industry reports from the 1990s. The underlying data is gone. There is a bar chart in a
-PDF.
-
---
-
-<br>
-
-Multimodal models can read values off it.
-
---
-
-<br>
-
-Approximately. With error. **Systematically** with error, possibly.
-
---
-
-<br>
-
-This one needs validation more than any of the others, and "validate against the subset
-where the report also printed a table" is exactly the design you would want.
 
 ---
 
