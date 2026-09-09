@@ -1904,38 +1904,71 @@ clothes.
 
 ---
 
-# Cost control
+# Cost control: never pay twice for the same call
 
-You will run this over hundreds of thousands of documents. Costs compound.
+Each document goes to the model once. Over hundreds of thousands of documents that is a
+real bill, and a crash, a re-run, or a small change should not mean paying it again.
 
 --
 
-**1. Cache by content hash.**
+**A cache** is a folder of saved answers. Before calling the API, look for a saved answer
+to this exact request. If it is there, use it. If not, call, then save the answer.
+
+--
+
+What makes a request "this exact request": the document, the prompt version, and the
+model, together. Change any of them and it is a new request that has to be paid for,
+which is right, because a different prompt or model gives a different answer.
+
+--
+
+**The hash** is how the three become one short filename. `digest()` turns any text into a
+fixed-length fingerprint, so the same request always maps to the same file.
+
+---
+
+# Cost control: the cache, line by line
 
 ```{r, eval=FALSE}
-key <- digest::digest(paste(prompt_version, model, document))
-if (file.exists(cache_path(key))) return(readRDS(cache_path(key)))
+key  <- digest::digest(paste(prompt_version, model, document))  # fingerprint of the request
+path <- file.path("cache", paste0(key, ".rds"))                  # one file per request
+
+if (file.exists(path)) return(readRDS(path))                     # already paid for: reuse it
+
+out <- call_model(prompt, document)                              # otherwise, pay once
+saveRDS(out, path)                                               # and remember the answer
+out
 ```
 
 --
 
-Note `prompt_version` and `model` in the hash. Change the prompt, the cache correctly
-misses. Do not hash only the document.
+Hash the prompt version and the model, not only the document. Otherwise, after you fix
+the prompt, the cache hands back the old answers and you never notice.
 
 --
 
-**2. Batch.** Most providers offer a batch API at a large discount for non-time-sensitive
-jobs. Your annotation run is not time-sensitive.
+Wrap every call in this and re-running the whole pipeline costs nothing the second time.
+
+---
+
+# Cost control: pay less per call
 
 --
 
-**3. Tier your models.** Cheap model for easy fields, expensive model for hard ones.
+**Batch.** Most providers run non-urgent jobs at about half price through a batch API,
+with results back in hours instead of seconds. An annotation run is never urgent.
 
 --
 
-**4. Escalate on disagreement.** Run the cheap model twice at temperature > 0. Where the
-runs agree, keep it; where they disagree, escalate to the expensive model. Disagreement is
-a decent proxy for difficulty, and it concentrates your spend on the hard cases.
+**Tier the models.** A cheap model for easy fields, a price, a date, a yes-or-no with an
+obvious answer. The expensive model only for the fields that take judgment.
+
+--
+
+**Escalate on disagreement.** Run the cheap model twice with some randomness
+(temperature above zero). Where the two runs agree, keep the answer. Where they disagree,
+send that document to the expensive model. Disagreement flags the hard cases, so the
+expensive spend goes only where it is needed.
 
 ---
 
