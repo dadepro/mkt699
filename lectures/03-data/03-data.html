@@ -546,6 +546,12 @@ going to have a bad time.
 
 --
 
+**Before any of these: if it fits, use `data.table`.** `fread` reads a 10 GB CSV in a
+minute or two, `:=` updates in place, and it uses a fraction of dplyr's memory. It is an
+in-memory tool, though; when the data does not fit, it is not a contender.
+
+--
+
 **(a) Put it in a database.** Query what you need, when you need it.
 
 --
