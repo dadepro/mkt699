@@ -2372,7 +2372,7 @@ class: inverse, center, middle
 
 --
 
-**Collection:** APIs before scraping. Idempotent, cached, logged.
+**Collection:** APIs before scraping. Safe to re-run, cached, logged.
 
 --
 
@@ -2404,7 +2404,7 @@ numbers.]
 
 Given a raw source, produce a clean analysis file, with:
 
-- A collection script that is **idempotent** and logs what it got
+- A collection script that is **safe to re-run** and logs what it got
 - Raw data preserved unmodified
 - Anti-join diagnostics after every merge, reported
 - A sample-construction table
