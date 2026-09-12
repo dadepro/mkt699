@@ -250,32 +250,6 @@ Nothing here is deep. But if you have not seen them, the papers are unreadable.
 
 ---
 
-# One warning about a word
-
-I will call your prompt-plus-model a **measurement instrument**. That is the
-psychometrics sense: the procedure that produces a measurement, like a survey
-questionnaire or a scale.
-
---
-
-<br>
-
-.large2[It is **not** an instrumental variable.]
-
---
-
-<br>
-
-In Week 6 "instrument" will mean something entirely different, a variable that shifts
-your treatment but not your outcome. Same word, unrelated idea.
-
---
-
-When I mean the column of numbers your prompt produced, I will say **generated
-variable**.
-
----
-
 # What we did instead
 
 **(a) Hand-code a small sample.**
