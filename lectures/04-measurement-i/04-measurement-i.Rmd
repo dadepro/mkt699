@@ -146,26 +146,6 @@ And for most of the history of the field, we could not measure them at scale.
 
 ---
 
-# A phrase I will use all day
-
-.large2[**Coding instructions.**]
-
---
-
-<br>
-
-The written instrument you hand a coder. It states the construct, what counts, what does
-not, how to resolve the hard cases, and the exact format for recording an answer.
-
---
-
-<br>
-
-It is what makes two people reading the same document produce the same label. And it is
-the thing a reliability statistic is computed *against*.
-
----
-
 # It is not new
 
 In the content-analysis literature this is called a **codebook**. Worth knowing, because
