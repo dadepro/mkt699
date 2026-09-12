@@ -146,70 +146,11 @@ And for most of the history of the field, we could not measure them at scale.
 
 ---
 
-# It is not new
-
-In the content-analysis literature this is called a **codebook**. Worth knowing, because
-that is the word you will see in the papers.
-
---
-
-<br>
-
-The practice is old. Berelson wrote the book on it in **1952**.
-
---
-
-.small90[Berelson, B. (1952). *Content Analysis in Communication Research*. Free Press.]
-
---
-
-<br>
-
-Communication research, political science, and marketing have all used them for decades.
-There is a literature on how to write one and what makes one good.
-
---
-
-<br>
-
-.large2[Nothing about this was invented for LLMs.]
-
---
-
-That matters, because it means there is an existing standard to meet. And a referee who
-knows it.
-
----
-
-# Vocabulary for today
-
-Four words I will use constantly. Say so if I use one I have not defined.
-
---
-
-.small90[
-| term | what it means |
-|:--|:--|
-| **corpus** | the body of documents you are measuring. Your 200k reviews. |
-| **annotation** | assigning a label to a document. Coding, by another name. |
-| **gold standard** | the labels you trust, normally human, always small. |
-| **zero-shot** | asking a model to do a task with no worked examples. |
-| **downstream** | whatever you do with the variable afterwards, the regression. |
-]
-
---
-
-<br>
-
-Nothing here is deep. But if you have not seen them, the papers are unreadable.
-
----
-
 # What we did instead
 
 **(a) Hand-code a small sample.**
 
-Hire two RAs. Write coding instructions. Have them label 800 documents. Check that they agree
+Hire two RAs. Write a codebook. Have them label 800 documents. Check that they agree
 with each other. Six weeks and $4,000 later you have 800 observations.
 
 --
@@ -324,7 +265,7 @@ prices?"
 
 <br>
 
-In 2015: you need coding instructions, four RAs, and a year. Nobody does it.
+In 2015: you need a codebook, four RAs, and a year. Nobody does it.
 
 --
 
@@ -363,6 +304,30 @@ the structure matters.
 .large2[This lecture: how to build one and check it.]
 
 .large2[Next lecture: why checking it is not enough.]
+
+---
+
+# Vocabulary for today
+
+Four words I will use constantly. Say so if I use one I have not defined.
+
+--
+
+.small90[
+| term | what it means |
+|:--|:--|
+| **corpus** | the body of documents you are measuring. Your 200k reviews. |
+| **annotation** | assigning a label to a document. Coding, by another name. |
+| **gold standard** | the labels you trust, normally human, always small. |
+| **zero-shot** | asking a model to do a task with no worked examples. |
+| **downstream** | whatever you do with the variable afterwards, the regression. |
+]
+
+--
+
+<br>
+
+Nothing here is deep. But if you have not seen them, the papers are unreadable.
 
 ---
 class: inverse, center, middle
@@ -534,7 +499,7 @@ retrieval, "which of these 50,000 products are close substitutes."
 --
 
 **Use a generative LLM for:** applying a construct definition, extraction, classification
-against coding instructions, anything requiring judgment.
+against a codebook, anything requiring judgment.
 
 ---
 
@@ -862,7 +827,7 @@ say what the variable means.
 
 # The right mental model
 
-.large2[Your prompt is a set of **coding instructions**, not a vibe.]
+.large2[Your prompt is a **codebook**, not a vibe.]
 
 --
 
@@ -875,12 +840,45 @@ same specificity.
 
 <br>
 
-Everything from the coding instructions slide at the start applies here, unchanged. The coder is a
+Everything that applies to a codebook applies here, unchanged. The coder is a
 model; the instructions are the same instructions.
 
 ---
 
-# What coding instructions contain
+# It is not new
+
+The written instructions a coder follows, what counts, what does not, how to record an
+answer, are a **codebook**: the word we used last week, and the word in the papers.
+
+--
+
+<br>
+
+The practice is old. Berelson wrote the book on it in **1952**.
+
+--
+
+.small90[Berelson, B. (1952). *Content Analysis in Communication Research*. Free Press.]
+
+--
+
+<br>
+
+Communication research, political science, and marketing have all used them for decades.
+There is a literature on how to write one and what makes one good.
+
+--
+
+.large2[Nothing about this was invented for LLMs.]
+
+--
+
+That matters, because it means there is an existing standard to meet. And a referee who
+knows it.
+
+---
+
+# What a codebook contains
 
 **1. The construct definition.** One or two sentences. Precise.
 
@@ -1632,7 +1630,7 @@ Rough conventions (and they are only conventions):
 | $\kappa$ | Reading |
 |:--|:--|
 | < 0.40 | your construct is not defined |
-| 0.40–0.60 | weak; revise the coding instructions |
+| 0.40–0.60 | weak; revise the codebook |
 | 0.60–0.80 | acceptable for most published work |
 | > 0.80 | strong |
 ]
@@ -1692,7 +1690,7 @@ It means one of:
 
 <br>
 
-This is why you iterate the coding instructions on human labels *before* you touch the model.
+This is why you iterate the codebook on human labels *before* you touch the model.
 
 ---
 
@@ -2719,7 +2717,7 @@ You can take a construct that has no column in any dataset and build a variable 
 
 <br>
 
-You can write coding instructions, encode it as a prompt, enforce a schema, run it on a corpus, and
+You can write a codebook, encode it as a prompt, enforce a schema, run it on a corpus, and
 control the cost.
 
 --
