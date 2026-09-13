@@ -2332,8 +2332,8 @@ Driven purely by model and prompt choice, not by the data, and not by the hypoth
 
 <br>
 
-Not error in the labels. Error in the *conclusions*: whether the published hypothesis is
-supported.
+The error is not in the labels but in the *conclusions*: whether the published hypothesis
+is supported.
 
 --
 
@@ -2346,8 +2346,8 @@ what the paper concluded.
 
 # What the number means
 
-These are published studies. Peer-reviewed. Each with a measurement section that presumably
-reported an accuracy figure someone found acceptable.
+These are published, peer-reviewed studies, each with a measurement section that reported
+an accuracy figure someone found acceptable.
 
 --
 
@@ -2382,13 +2382,13 @@ unreported.
 
 <br>
 
-We spent twenty years building norms against the left column.
+The field spent twenty years building norms against the left column.
 
 --
 
 <br>
 
-The right column has no norms at all, and it is where measurement now happens.
+The right column has no norms yet, and it is where measurement now happens.
 
 ---
 
@@ -2401,8 +2401,7 @@ In the regression case, you are searching over specifications while looking at y
 
 <br>
 
-In the prompt case, you are searching while looking at *accuracy*, which feels innocent.
-Improving accuracy is obviously good. Nobody would call it p-hacking.
+In the prompt case, you are searching while looking at *accuracy*, which looks harmless.
 
 --
 
@@ -2437,7 +2436,7 @@ development, and it is what your gold standard is for.
 <br>
 
 Iterating the prompt against your *regression coefficient* is not. That is specification
-search with extra steps.
+search.
 
 --
 
@@ -2445,7 +2444,7 @@ search with extra steps.
 
 <br>
 
-The wall between those two activities has to be real, and it has to be in your timeline.
+Keep the two activities separate in time: prompt first, results after.
 
 ---
 
@@ -2502,8 +2501,7 @@ If the finding survives, report the curve. If it does not, you found out before 
 
 <br>
 
-.small90[Cheap, too, this is the one robustness check in your career that costs $40 and
-runs overnight.]
+.small90[It is cheap: a few dollars and an overnight run.]
 
 ---
 
@@ -2534,14 +2532,14 @@ Plot $\hat\beta$ across variants. Put it in the appendix.
 
 <br>
 
-If the estimates cluster, say so in the main text. That is an argument for your paper, not
-a hoop.
+If the estimates cluster, say so in the main text. That is evidence for the paper, not a
+formality.
 
 ---
 
 # Defense 4: version-control the prompts
 
-Callback to Lecture 1. This is what the `prompts/` directory was for.
+This is what the `prompts/` directory from Lecture 1 was for.
 
 --
 
@@ -2616,8 +2614,7 @@ Not "we used Claude."
 
 <br>
 
-.small90[And note the training cutoff. There is a reason for that one, and it is a
-next-week reason.]
+.small90[Note the training cutoff too. The reason is next week's topic.]
 
 ---
 
@@ -2707,10 +2704,9 @@ You ran it on all 200,000 documents. You have your variable.
 
 ---
 
-# You are pleased
+# Then the regression
 
-And you should be. That is a better validation study than most of what is currently in
-print.
+That is a better validation study than most of what is in print.
 
 --
 
@@ -2736,8 +2732,8 @@ $\alpha$ the intercept, not Krippendorff's
 
 --
 
-The hat on $\widehat{D}$ is doing a lot of work. It says this is an **estimate**, not
-something you observed.
+The hat on $\widehat{D}$ matters. It says this is an **estimate**, not something you
+observed.
 
 --
 
@@ -2775,7 +2771,7 @@ And the size of the problem is not 12%.
 
 # What next week needs from this week
 
-You now know how to build an instrument and check it honestly.
+You now know how to build an instrument and check it.
 
 --
 
@@ -2783,7 +2779,7 @@ You now know how to build an instrument and check it honestly.
 
 Next week is about what happens when you *use* it, why classification error here is not
 the measurement error your econometrics sequence taught you, why "my estimates are
-conservative" is a sentence you will not be allowed to write, and what to do instead.
+conservative" does not follow, and what to do instead.
 
 --
 
@@ -2811,14 +2807,15 @@ model string. Temperature. Output schema.
 
 --
 
-**3. Validation sample DESIGNED.** Not collected, designed.
+**3. Validation sample designed**, not collected.
 
 --
 
 <br>
 
 .small90[$m$, the sampling scheme, the strata if any, the probabilities $\pi_i$, who is
-labeling, and how you will keep them blind. One page. Committed.]
+labeling, and how you will keep them blind. One page, in `memo/validation-design.md`,
+committed.]
 
 ---
 
@@ -2845,7 +2842,7 @@ Fixing it after you have labeled 500 documents takes another 500 documents.
 
 <br>
 
-Bring me the design. This is the cheapest office-hours visit you will ever make.
+Bring the design to office hours.
 
 ---
 
@@ -2878,4 +2875,4 @@ class: inverse, center, middle
 
 # Questions?
 
-### Bring your validation designs to office hours. Before you label anything.
+### Bring your validation design to office hours before you label anything.
