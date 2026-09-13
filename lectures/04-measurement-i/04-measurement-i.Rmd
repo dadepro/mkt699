@@ -810,7 +810,7 @@ Five pieces:
 
 <br>
 
-None of this is intellectually deep. All of it will cost you a week if you get it wrong.
+None of this is deep, but each piece costs time if you get it wrong.
 
 ---
 
@@ -828,8 +828,8 @@ Most people write annotation prompts like they are chatting.
 
 <br>
 
-This will produce output. The output will be inconsistent, and you will not be able to
-say what the variable means.
+It will produce output, but inconsistent output, and you will not be able to say what the
+variable means.
 
 ---
 
@@ -853,38 +853,6 @@ model; the instructions are the same instructions.
 
 ---
 
-# It is not new
-
-The written instructions a coder follows, what counts, what does not, how to record an
-answer, are a **codebook**: the word we used last week, and the word in the papers.
-
---
-
-<br>
-
-The practice is old. Berelson wrote the book on it in **1952**.
-
---
-
-.small90[Berelson, B. (1952). *Content Analysis in Communication Research*. Free Press.]
-
---
-
-<br>
-
-Communication research, political science, and marketing have all used them for decades.
-There is a literature on how to write one and what makes one good.
-
---
-
-Nothing about this was invented for LLMs.
-
---
-
-That matters, because it means there is an existing standard to meet. And a referee who
-knows it.
-
----
 
 # What a codebook contains
 
@@ -976,8 +944,8 @@ Modern APIs will enforce a JSON schema. Use it.
 
 <br>
 
-Do not parse prose with regex. You will spend an evening on it, it will work on 99.4% of
-cases, and the 0.6% will be non-random.
+Do not parse prose with regex. It will work on most cases, and the failures will not be
+random.
 
 ---
 
@@ -1099,7 +1067,7 @@ def annotate(text, prompt, model="claude-sonnet-4-5-20250929"):
 
 # Temperature = 0
 
-Set it. Every time. For annotation there is no argument on the other side.
+Set it to zero for annotation.
 
 --
 
@@ -1188,8 +1156,7 @@ Warning: your few-shot examples must not come from your validation sample.
 
 --
 
-That is training on your test set. It is the oldest mistake in the book and you will be
-tempted.
+That is training on the test set.
 
 ---
 
@@ -1202,7 +1169,7 @@ roughly half.
 
 <br>
 
-You are not running an interactive product. You are annotating a corpus overnight.
+An annotation run is not interactive. It can run overnight.
 
 --
 
@@ -1235,7 +1202,7 @@ makes caching possible.
 
 # Rate limits
 
-You will hit them. Plan for it before you start, not at 2am.
+You will hit them. Plan for it before you start.
 
 --
 
@@ -1250,8 +1217,7 @@ You will hit them. Plan for it before you start, not at 2am.
 
 <br>
 
-.small90[Callback to Lecture 1: run this on one of our servers inside `tmux`. Your laptop will
-sleep.]
+.small90[Run this on one of the course servers inside `tmux`. A laptop will sleep.]
 
 ---
 
@@ -1264,7 +1230,7 @@ timeouts.
 
 <br>
 
-The lazy handling is `tryCatch` returning `NA` and moving on.
+The easy handling is `tryCatch` returning `NA` and moving on.
 
 --
 
@@ -1282,7 +1248,7 @@ documents your estimate is sensitive to.
 
 ---
 
-# The handling I want
+# Handling failures
 
 ```{r eval=FALSE}
 result <- tryCatch(
@@ -1302,7 +1268,7 @@ writeLines(toJSON(list(
 
 ---
 
-# The handling I want
+# Handling failures
 
 Then, separately, report:
 
@@ -1318,7 +1284,7 @@ That last bullet goes in your paper.
 
 # Store the raw output
 
-Callback to Lecture 1, and I am going to keep making it.
+Same rule as Lecture 1.
 
 --
 
@@ -1335,7 +1301,7 @@ Three reasons:
 
 --
 
-- You will want to recode the construct. Everyone does, usually in month four.
+- You will want to recode the construct. Most projects do.
 - A referee will ask for a different threshold or a subgroup breakdown.
 - The model will be deprecated, and the raw outputs will be all that survives.
 
@@ -1379,11 +1345,9 @@ name: validation
 
 # Designing a validation study
 
-### This is the core of the lecture
-
 ---
 
-# This is not an AI thing
+# Not specific to AI
 
 Before the rules: validation is not something LLMs invented a need for.
 
@@ -1416,12 +1380,6 @@ You must have human-labeled gold-standard data.
 
 <br>
 
-There is no version of this where you skip it.
-
---
-
-<br>
-
 Next week you will see the arithmetic reason why: without it, none of the corrections
 apply, and your estimates are uninterpretable.
 
@@ -1429,15 +1387,14 @@ apply, and your estimates are uninterpretable.
 
 <br>
 
-Not "the model is obviously right." Not "I read fifty and they looked fine." Not "the
-Gilardi paper validated it."
+"The model is obviously right," "I read fifty and they looked fine," and "the Gilardi
+paper validated it" do not count.
 
 --
 
 <br>
 
-A designed, documented, human-labeled sample. Or you do not have a measurement, you have
-an assertion.
+What counts is a designed, documented, human-labeled sample.
 
 ---
 
@@ -1447,7 +1404,7 @@ Three separate reasons, each sufficient.
 
 --
 
-**1. You read them non-randomly.** You scrolled. Scrolling is not sampling.
+**1. You read them non-randomly.** You scrolled, and scrolling is not sampling.
 
 --
 
@@ -1472,7 +1429,7 @@ saw five positives.
 --
 
 **Crowdworkers.** Fast and cheap at scale. Quality varies enormously and requires
-attention checks. Note the irony: the thing the LLM is beating.
+attention checks.
 
 --
 
@@ -1482,12 +1439,6 @@ legal text, technical specifications. Expensive and slow.
 ---
 
 # You should personally label some
-
-This is the part students skip.
-
---
-
-<br>
 
 Label 100 documents yourself. By hand. Before you write the final prompt.
 
@@ -1501,9 +1452,9 @@ It is how you find out your construct is ambiguous.
 
 <br>
 
-You will hit document 23 and realize you do not actually know whether it counts. That
-moment is worth more than any amount of prompt engineering, because it means your
-*definition* is broken and no prompt was going to fix it.
+You will hit document 23 and realize you do not know whether it counts. That moment
+matters more than any prompt engineering: it means the *definition* is incomplete, and no
+prompt fixes a definition.
 
 ---
 
@@ -1587,7 +1538,7 @@ $\kappa$: **0.68**.
 
 <br>
 
-Same labels. The two numbers are not close, and $\kappa$ is the honest one.
+Same labels, two numbers far apart. $\kappa$ is the one to report.
 
 --
 
@@ -1658,7 +1609,7 @@ Now your LLM matches the gold standard at 0.60.
 
 <br>
 
-The LLM is at ceiling. It is doing as well as a human does.
+The LLM is at the ceiling: it agrees with the gold standard as well as another human does.
 
 --
 
@@ -1669,7 +1620,7 @@ instrument look bad when it is at the limit of the construct.
 
 --
 
-Reporting it *with* the benchmark is a much stronger paper.
+Reporting it *with* the benchmark shows the instrument is at the limit of the construct.
 
 ---
 
@@ -1703,7 +1654,7 @@ This is why you iterate the codebook on human labels *before* you touch the mode
 
 # How many to label
 
-The honest answer: it depends on what you plan to do downstream.
+It depends on what you plan to do downstream.
 
 --
 
@@ -1717,8 +1668,7 @@ And what you plan to do downstream is **next week's topic**.
 
 <br>
 
-I am going to give you working guidance now, and next week you will learn the actual
-argument behind the number.
+Working guidance now. The argument behind the number is next week.
 
 ---
 
@@ -1739,7 +1689,7 @@ Hundreds, not dozens.
 
 <br>
 
-The rare-class point is the one people miss.
+The rare-class point is the one most often missed.
 
 ---
 
@@ -1758,8 +1708,7 @@ You draw a simple random sample of 500. You get **10 positives**.
 <br>
 
 Your estimate of how many positives the model *catches* rests on 10 cases. Its standard
-error is enormous. You cannot
-distinguish recall of 0.5 from recall of 0.9.
+error is large: you cannot distinguish recall of 0.5 from recall of 0.9.
 
 --
 
@@ -1776,8 +1725,8 @@ The fix is stratification, which is the next topic.
 ---
 # What cannot be fixed later
 
-Everything else in this lecture is recoverable. Bad prompt? Rewrite it. Wrong metric?
-Recompute it. Too few labels? Label more.
+Most mistakes in this lecture can be fixed later. A bad prompt can be rewritten, a wrong
+metric recomputed, too few labels topped up.
 
 --
 
@@ -1863,7 +1812,7 @@ You just have to know the probabilities and record them.
 
 --
 
-Nobody thinks survey weights are cheating.
+Survey weights work the same way.
 
 ---
 
@@ -1939,8 +1888,8 @@ corpus, before you see any downstream result.
 
 <br>
 
-Same logic as a pre-analysis plan. Same logic as not picking your instrument after seeing
-the first stage.
+The same logic as a pre-analysis plan, or as not choosing an instrument after seeing the
+first stage.
 
 --
 
@@ -1952,7 +1901,7 @@ This is a **design** decision, not an **analysis** decision.
 
 <br>
 
-It is a Week 4 milestone precisely because there is no Week 6 version of it.
+It is a Week 4 milestone because it cannot be done in Week 6.
 
 ---
 
@@ -1985,8 +1934,8 @@ It is a Week 4 milestone precisely because there is no Week 6 version of it.
 
 <br>
 
-.small90[Step 6 gets skipped constantly. You need both the truth and the prediction on the
-same units.]
+.small90[Step 6 is often skipped. You need both the truth and the prediction on the same
+units.]
 
 ---
 
@@ -2018,14 +1967,14 @@ write_parquet(val, "data/clean/validation-sample.parquet")   # includes pi
 
 # Drawing it, in code
 
-The `pi` column is the single most important column in your project. It is also the one
-that takes four lines of code to create.
+The `pi` column is the one the correction depends on, and it takes four lines of code to
+create.
 
 ---
 
 # Metrics: accuracy is not enough
 
-You will be tempted to report one number. Do not.
+One number is not enough.
 
 --
 
@@ -2037,7 +1986,7 @@ Accuracy = fraction of documents where the model and the gold standard agree.
 
 <br>
 
-Accuracy alone is nearly useless under class imbalance.
+Under class imbalance, accuracy alone says little.
 
 ---
 
@@ -2066,7 +2015,7 @@ Accuracy: 99%.
 
 <br>
 
-It has never once identified the thing you are studying.
+It has not identified a single case of the thing you are studying.
 
 ---
 
@@ -2159,7 +2108,7 @@ Choose it before you see the downstream result, and say what you chose.
 
 --
 
-We'll come back to *why* in twenty minutes.
+The reason comes later in the lecture.
 
 ---
 
@@ -2229,7 +2178,7 @@ sample the same way, which means keeping the identifiers.
 
 # Report accuracy by subgroup
 
-One overall number hides everything that matters.
+One overall number hides the variation that matters.
 
 --
 
@@ -2338,14 +2287,13 @@ arXiv:2509.08825.
 
 <br>
 
-**Working paper.** Flagging that explicitly. It is not peer-reviewed and you
-should read it that way.
+A working paper, not yet peer-reviewed. Read it as such.
 
 --
 
 <br>
 
-But the scale of the exercise is hard to dismiss.
+The scale of the exercise is large.
 
 ---
 
