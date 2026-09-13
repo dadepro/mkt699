@@ -591,6 +591,13 @@ zero-shot API call.
 
 <br>
 
+The generalization that followed: a zero-shot LLM is the best available text classifier,
+for any task, so human labels and fine-tuned models can be skipped.
+
+--
+
+<br>
+
 <br>
 
 The result is real. The generalization people drew from it is not.
@@ -638,26 +645,42 @@ Two findings, opposite directions, same paper.
 
 # The point
 
-"LLMs are good at annotation" is not a fact about LLMs.
+"LLMs are good at annotation" is not a fact about LLMs. It is a claim about a **task**,
+true for some tasks and false for others.
+
+--
+
+.small90[
+| Fine-tune a small model when | Use an LLM when |
+|:--|:--|
+| thousands of labeled examples exist and the target is fixed | no labels exist and the label takes judgment |
+| spam or not, from 50,000 flagged emails | does this pitch disclose failed prototypes? |
+| product category from the description, with the catalog as labels | is this listing written in a professional voice? |
+| sorting support tickets into twelve known categories | is this new app a copy of one of these five? |
+| sentiment of reviews, with the star ratings as labels | is the complaint about the product or the shipping? |
+]
+
+---
+
+# Why the split
+
+**Left column.** The labels teach the model the exact target, so a fine-tuned small model
+is cheaper, faster, and usually more accurate than a prompt.
 
 --
 
 <br>
 
-It is a claim about a **task**, and it is true for some tasks and false for
-others.
+**Right column.** No labels exist, so the LLM is the only instrument there is. That is
+what makes it usable, and it is also why it has to be validated: nothing else has checked
+it.
 
 --
 
 <br>
 
-If you have 10,000 labeled examples and a well-defined classification target, fine-tuning
-a smaller model is very likely better and cheaper.
-
---
-
-If you have zero labeled examples and a construct that requires judgment, the LLM is the
-only thing that works at all.
+If you have a few hundred labels, they are worth more as a validation sample than as
+training data. That is the design we build in the second half of today.
 
 ---
 
