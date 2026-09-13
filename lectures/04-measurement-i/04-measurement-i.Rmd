@@ -575,28 +575,29 @@ At about **1/30** the cost.
 
 ---
 
-# Why the result spread
+# Why the result spread, and what got generalized
 
-Crowd annotation was the standard scaling technology for text-based social science. It
-was how you got past 800 documents.
-
---
-
-<br>
-
-This paper said: the standard technology is dominated, on both accuracy and cost, by a
-zero-shot API call.
+**What the paper showed.** On four annotation tasks on tweets, relevance, stance, topic,
+and frame, a zero-shot prompt was more accurate than crowd workers, agreed with itself
+more than they did, and cost about a thirtieth as much.
 
 --
 
 <br>
 
-The generalization that followed: a zero-shot LLM is the best available text classifier,
-for any task, so human labels and fine-tuned models can be skipped.
+**What got generalized.** Crowd annotation was the standard way to scale text coding past
+a few hundred documents, so the reading became: a zero-shot LLM is the best available
+text classifier, for any task, and human labels and fine-tuned models can be skipped.
 
 --
 
 <br>
+
+**Why that does not follow.** The comparison was against crowd workers, a low bar, on a
+handful of judgment tasks. No fine-tuned classifier was in the race, and no task with a
+fixed target and plenty of labels was tested.
+
+--
 
 <br>
 
