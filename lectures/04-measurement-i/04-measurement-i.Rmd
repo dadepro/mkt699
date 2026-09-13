@@ -65,19 +65,13 @@ opts_chunk$set(
 
 # Where we are
 
-Three weeks of infrastructure. Repositories, verification, data provenance.
+Three weeks of infrastructure: repositories, verification, data provenance.
 
 --
 
 <br>
 
-All of that was preparation.
-
---
-
-<br>
-
-Today we start the methodological core of the course.
+Today we start on measurement, which is what the project is built around.
 
 ---
 
@@ -162,16 +156,15 @@ count for effort.
 
 --
 
-**(c) Don't study it.**
+**(c) Do not study it.**
 
-The most common option, and the least visible one.
+The most common option.
 
 ---
 
 # Option (c) is the expensive one
 
-You do not see it in the literature, because papers that were never written do not appear
-in the literature.
+It leaves no trace, because papers that were never written are not in the literature.
 
 --
 
@@ -191,7 +184,7 @@ The set of questions a field asks is determined by what it can measure.
 # What changed
 
 LLMs give you a fourth option: measure the construct directly, on the full corpus, at a
-cost that rounds to nothing relative to RAs.
+small fraction of what RAs cost.
 
 --
 
@@ -204,8 +197,8 @@ paper in a moment.
 
 <br>
 
-Take that seriously for a second. A pipeline that used to cost $4,000 and six weeks now
-costs $130 and an afternoon. And runs on 200,000 documents instead of 800.
+A pipeline that used to cost $4,000 and six weeks now costs about $130 and an afternoon,
+and runs on 200,000 documents instead of 800.
 
 ---
 
@@ -218,41 +211,32 @@ scale.
 
 <br>
 
-That is not a tooling improvement. That is an expansion of the set of **answerable
-questions**.
+That is an expansion of the set of **answerable questions**, not only a cheaper way to
+answer old ones.
 
 --
 
 <br>
 
-And an expansion of the set of answerable questions is exactly where dissertation topics
-come from.
+Which is where dissertation topics come from.
 
 ---
 
 # How to think about this for your project
 
-The right question is not "what can I do with an LLM?"
+Do not start from "what can I do with an LLM?"
 
 --
 
 <br>
 
-The right question is:
+Start from: what did I want to know, and stop pursuing, because I could not measure it?
 
 --
 
 <br>
 
-What did I want to know, and stop wanting to know, because I could not measure
-it?
-
---
-
-<br>
-
-Go back to an idea you abandoned. Ask whether the measurement constraint that killed it
-still binds.
+Go back to an idea you abandoned and ask whether the measurement constraint still binds.
 
 ---
 
@@ -269,8 +253,8 @@ In 2015: you need a codebook, four RAs, and a year. Almost nobody did.
 
 --
 
-In 2020: you build a dictionary of aspirational words. A referee correctly says your
-dictionary is arbitrary. You lose.
+In 2020: you build a dictionary of aspirational words. A referee points out, correctly,
+that the dictionary is arbitrary.
 
 --
 
@@ -288,7 +272,7 @@ The paper is now feasible. Whether it is *credible* is the rest of this course.
 
 # The catch
 
-Everything I just said is true and also dangerous.
+All of that is true, and it comes with a cost.
 
 --
 
@@ -328,7 +312,7 @@ Six words I will use constantly. Say so if I use one I have not defined.
 
 <br>
 
-Nothing here is deep. But if you have not seen them, the papers are unreadable.
+None of this is deep, but the papers assume it.
 
 ---
 class: inverse, center, middle
@@ -340,14 +324,14 @@ name: history
 
 # Twenty years in five slides
 
-I am not going to teach you deep learning. You do not need it to do this well.
+This is not a deep learning lecture. You do not need one to do this well.
 
 --
 
 <br>
 
 You need enough of the history to know **which tool fits which task**, because using the
-expensive tool where a cheap one works is the most common mistake I see.
+expensive tool where a cheap one works is a common mistake.
 
 --
 
@@ -378,7 +362,7 @@ training data.
 
 <br>
 
-"Not good" and "good" are nearly identical documents. That is the problem in one
+"Not good" and "good" are nearly identical documents. That is the limitation in one
 example.
 
 ---
@@ -398,8 +382,7 @@ measure.
 
 <br>
 
-.small90[Cheap, interpretable, and still a reasonable baseline for document retrieval. Do
-not sneer at it.]
+.small90[Cheap, interpretable, and still a reasonable baseline for document retrieval.]
 
 ---
 
@@ -481,12 +464,12 @@ The instrument is now a paragraph of prose instead of 5,000 labeled examples.
 
 <br>
 
-That is why this is a marketing-methods topic and not a computer-science topic. The
-barrier that fell was the *labeling* barrier.
+The barrier that fell was the *labeling* barrier, which is why this is a methods topic
+rather than a computer-science one.
 
 ---
 
-# The practical point I want you to keep
+# Embeddings still have a job
 
 Embeddings did not go away. They are still the right tool for a large class of problems.
 
@@ -521,7 +504,7 @@ dollars to do worse than a cosine similarity that costs eight.
 
 <br>
 
-Don't use a generative LLM where an embedding would do.
+Do not use a generative model where an embedding would do.
 
 ---
 class: inverse, center, middle
@@ -622,26 +605,26 @@ handful of tasks.
 
 <br>
 
-This is the paper to read if you only read one from this section.
+If you read one paper from this section, read this one.
 
 ---
 
 # What they find
 
-LLMs **fail** to beat fine-tuned models on classification.
+LLMs do **not** beat fine-tuned models on classification.
 
 --
 
 <br>
 
-LLMs **excel** at free-form generation, explanation, open coding, summarizing
+LLMs do **well** at free-form generation, explanation, open coding, and summarizing
 the reasoning behind a label.
 
 --
 
 <br>
 
-Two findings, opposite directions, same paper.
+Two findings in opposite directions, in the same paper.
 
 ---
 
@@ -688,7 +671,7 @@ training data. That is the design we build in the second half of today.
 
 # Which case are you in?
 
-Most of you are in the second case. That is why you are here.
+Most of your projects are in the second case.
 
 --
 
@@ -708,7 +691,7 @@ category."
 
 <br>
 
-That sentence, or an honest version of it, belongs in your measurement section.
+A sentence like that belongs in your measurement section.
 
 ---
 
@@ -741,7 +724,7 @@ Above **75% agreement** between human-generated and LLM-generated perceptual map
 
 <br>
 
-Read the qualifier. It is doing all the work.
+The qualifier carries the result.
 
 --
 
@@ -761,14 +744,14 @@ tell which from the model's confidence.
 
 <br>
 
-This is the pattern you will see over and over.
+This pattern recurs.
 
 --
 
 <br>
 
-Not "the LLM works" or "the LLM doesn't work." Rather: it works on the part of the world
-it has seen a lot of, and degrades on the rest, silently, and with unchanged fluency.
+The question is not whether the LLM works but where. It works on the part of the world
+it has seen a lot of, and degrades on the rest with no change in fluency.
 
 ---
 
@@ -786,7 +769,7 @@ it has seen a lot of, and degrades on the rest, silently, and with unchanged flu
 
 <br>
 
-These are not contradictory. They are three coordinates on the same surface.
+They are not contradictory. Each describes a different task and domain.
 
 --
 
@@ -797,7 +780,7 @@ your setting**.
 
 --
 
-Nobody else's validation transfers to your problem.
+Another paper's validation does not transfer to your setting.
 
 ---
 class: inverse, center, middle
