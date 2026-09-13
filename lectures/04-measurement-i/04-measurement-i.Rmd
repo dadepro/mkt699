@@ -1343,6 +1343,29 @@ different failure modes.
 If they are the same script, every parsing bug costs you another $400 of API calls.
 
 ---
+
+# Parsing the raw output, in code
+
+`03b-parse.R`, which never touches the network:
+
+```{r eval=FALSE}
+library(data.table); library(jsonlite)
+
+lines <- readLines("data/raw/llm/quality-v3-2026-03-14.jsonl")
+raw <- rbindlist(lapply(lines, function(l) {
+  x <- fromJSON(l)
+  data.table(doc_id = x$doc_id, model = x$model, prompt_sha = x$prompt_sha,
+             status = x$raw$status,
+             label      = x$raw$label      %||% NA_integer_,   # NA when refused or errored
+             confidence = x$raw$confidence %||% NA_character_)
+}))
+
+stopifnot(!anyDuplicated(raw$doc_id))      # one call per document
+raw[, .N, by = status]                     # ok / refused / error: these counts go in the paper
+arrow::write_parquet(raw[status == "ok"], "data/clean/labels.parquet")
+```
+
+---
 class: inverse, center, middle
 name: validation
 
@@ -1819,6 +1842,28 @@ Survey weights work the same way.
 
 ---
 
+# Simple random sample, in code
+
+```{r eval=FALSE}
+library(data.table)
+set.seed(20260314)                                   # commit this number
+m <- 500
+
+val <- corpus[sample(.N, m)]                         # every document has the same chance
+val[, pi := m / nrow(corpus)]                        # and the chance is written down
+
+fwrite(val[, .(doc_id, pi)], "validation/sample.csv")   # the indices, committed
+```
+
+--
+
+<br>
+
+Six lines. The stratified version, two slides on, is not much longer. The point of both
+is the `pi` column and the committed file of indices.
+
+---
+
 # Sampling schemes that do not work
 
 - The first 500 rows of the file
@@ -2050,6 +2095,26 @@ Always report the 2×2.
 
 ---
 
+# The confusion matrix, in code
+
+```{r eval=FALSE}
+library(data.table)
+val <- merge(gold, labels, by = "doc_id")            # human_label and llm_label side by side
+stopifnot(nrow(val) == nrow(gold))                   # the model labelled every gold document
+
+val[, table(model = llm_label, gold = human_label)]  # the 2x2: rows model, columns gold
+
+metrics <- function(model, gold) list(
+  n         = length(gold),
+  accuracy  = mean(model == gold),
+  precision = sum(model == 1 & gold == 1) / sum(model == 1),
+  recall    = sum(model == 1 & gold == 1) / sum(gold == 1))
+
+val[, metrics(llm_label, human_label)]
+```
+
+---
+
 # Why the 2×2 and not the summary
 
 Precision and recall summarize the matrix. The matrix contains information they discard.
@@ -2194,6 +2259,29 @@ Report the confusion matrix **within** the dimensions that structure your design
 
 If accuracy differs across your treatment groups, you have a problem, and it is
 the problem next week is about.
+
+---
+
+# By subgroup, in code
+
+The same function, with a `by`:
+
+```{r eval=FALSE}
+val[, metrics(llm_label, human_label), by = treated]     # or by = period, by = category
+```
+
+```
+   treated   n accuracy precision recall
+1:       0 260    0.912      0.84   0.91
+2:       1 240    0.846      0.77   0.72
+```
+
+--
+
+<br>
+
+Overall accuracy would read 0.88. Within the treated group the model misses more than a
+quarter of the positives. That difference is what next week is about.
 
 ---
 
