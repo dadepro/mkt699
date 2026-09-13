@@ -2506,20 +2506,19 @@ If the finding survives, report the curve. If it does not, you found out before 
 
 ```{r eval=FALSE}
 library(data.table)
-variants <- data.table(
-  prompt_file = c("prompts/quality-v1.md", "prompts/quality-v2-terse.md",
-                  "prompts/quality-v3-fewshot.md", "prompts/quality-v1.md",
-                  "prompts/quality-v1.md"),
-  model       = c(rep("claude-sonnet-4-5-20250929", 3), "claude-opus-4-8", "gpt-4o-2024-11-20")
-)
+variants <- fread("
+prompt_file,                    model
+prompts/quality-v1.md,          claude-sonnet-4-5-20250929
+prompts/quality-v2-terse.md,    claude-sonnet-4-5-20250929
+prompts/quality-v3-fewshot.md,  claude-sonnet-4-5-20250929
+prompts/quality-v1.md,          claude-opus-4-8
+prompts/quality-v1.md,          gpt-4o-2024-11-20")
 
-# run_full_pipeline() returns a list: accuracy, kappa, beta_hat, se, one row per variant
+# run_full_pipeline() returns a list: accuracy, kappa, beta_hat, se
 results <- variants[, run_full_pipeline(prompt_file, model), by = .(prompt_file, model)]
 ```
 
 --
-
-<br>
 
 Plot $\hat\beta$ across variants. Put it in the appendix.
 
