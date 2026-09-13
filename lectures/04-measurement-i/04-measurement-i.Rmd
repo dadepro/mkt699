@@ -1945,25 +1945,19 @@ units.]
 # Drawing it, in code
 
 ```{r eval=FALSE}
+library(data.table)
 set.seed(20260314)          # commit this number
 
 # stratified: oversample the rare positive class as flagged by a cheap pre-screen
-corpus <- corpus |>
-  mutate(stratum = case_when(
-    prescreen_flag == 1 ~ "likely_positive",
-    TRUE                ~ "likely_negative"
-  ))
+corpus[, stratum := fifelse(prescreen_flag == 1, "likely_positive", "likely_negative")]
 
 # YOU choose these. Write them in the paper.
 target <- c(likely_positive = 300, likely_negative = 300)
 
-val <- corpus |>
-  group_by(stratum) |>
-  mutate(N_s = n(), pi = target[stratum] / N_s) |>   # known sampling probability
-  slice_sample(n = target[cur_group()$stratum]) |>
-  ungroup()
+corpus[, pi := target[stratum] / .N, by = stratum]            # known sampling probability
+val <- corpus[, .SD[sample(.N, target[.BY$stratum])], by = stratum]
 
-write_parquet(val, "data/clean/validation-sample.parquet")   # includes pi
+arrow::write_parquet(val, "data/clean/validation-sample.parquet")   # includes pi
 ```
 
 ---
@@ -2511,18 +2505,16 @@ If the finding survives, report the curve. If it does not, you found out before 
 # What a prompt curve looks like
 
 ```{r eval=FALSE}
-variants <- tibble::tribble(
-  ~prompt_file,                   ~model,
-  "prompts/quality-v1.md",        "claude-sonnet-4-5-20250929",
-  "prompts/quality-v2-terse.md",  "claude-sonnet-4-5-20250929",
-  "prompts/quality-v3-fewshot.md","claude-sonnet-4-5-20250929",
-  "prompts/quality-v1.md",        "claude-opus-4-8",
-  "prompts/quality-v1.md",        "gpt-4o-2024-11-20"
+library(data.table)
+variants <- data.table(
+  prompt_file = c("prompts/quality-v1.md", "prompts/quality-v2-terse.md",
+                  "prompts/quality-v3-fewshot.md", "prompts/quality-v1.md",
+                  "prompts/quality-v1.md"),
+  model       = c(rep("claude-sonnet-4-5-20250929", 3), "claude-opus-4-8", "gpt-4o-2024-11-20")
 )
 
-results <- variants |>
-  mutate(out = purrr::map2(prompt_file, model, run_full_pipeline)) |>
-  tidyr::unnest_wider(out)   # accuracy, kappa, beta_hat, se
+# run_full_pipeline() returns a list: accuracy, kappa, beta_hat, se, one row per variant
+results <- variants[, run_full_pipeline(prompt_file, model), by = .(prompt_file, model)]
 ```
 
 --
