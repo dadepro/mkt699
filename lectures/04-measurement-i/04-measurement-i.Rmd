@@ -1236,7 +1236,9 @@ The easy handling is `tryCatch` returning `NA` and moving on.
 
 <br>
 
-Do not drop them silently.
+Retry first. Timeouts, rate limits, and malformed output are usually transient, and three
+attempts with a pause between them clear most of them. What is still failing after that is
+a real failure. Do not drop it silently.
 
 --
 
@@ -1251,19 +1253,20 @@ documents your estimate is sensitive to.
 # Handling failures
 
 ```{r eval=FALSE}
-result <- tryCatch(
-  annotate(doc$text, prompt),
-  error = function(e) list(status = "error", message = conditionMessage(e))
-)
-
-# write EVERY outcome to disk, keyed by doc id
-writeLines(toJSON(list(
-  doc_id     = doc$id,
-  model      = model_string,
-  prompt_sha = prompt_hash,
-  run_date   = Sys.time(),
-  raw        = result
-), auto_unbox = TRUE), con = out_con)
+annotate_with_retry <- function(doc, prompt, tries = 3) {
+  for (i in seq_len(tries)) {
+    result <- tryCatch(annotate(doc$text, prompt),   # status "ok" or "refused"
+                       error = function(e) list(status = "error", message = conditionMessage(e)))
+    result$attempts <- i
+    if (result$status != "error") return(result)     # ok or refused: stop here
+    Sys.sleep(2^i)                                   # transient error: wait, retry
+  }
+  result                                             # still an error after all tries
+}
+result <- annotate_with_retry(doc, prompt)
+# write EVERY outcome to disk, keyed by doc id: ok, refused, and error alike
+writeLines(toJSON(list(doc_id = doc$id, model = model_string, prompt_sha = prompt_hash,
+                       run_date = Sys.time(), raw = result), auto_unbox = TRUE), con = out_con)
 ```
 
 ---
@@ -1272,7 +1275,7 @@ writeLines(toJSON(list(
 
 Then, separately, report:
 
-- how many calls failed
+- how many calls failed after the retries, and how many were refusals
 - what fraction of documents ended with no label
 - whether failures are correlated with anything you care about
 
