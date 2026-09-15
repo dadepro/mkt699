@@ -1174,7 +1174,7 @@ able to prove whether it was you or them.
 
 ---
 
-# Zero-shot, few-shot, fine-tuning
+# Zero-shot, few-shot
 
 **Zero-shot.** Definition only, no examples. Start here. It is the default and it is often
 enough.
@@ -1183,12 +1183,6 @@ enough.
 
 **Few-shot.** Include 5–20 labeled examples in the prompt. Use when the construct is hard
 to define but easy to demonstrate, or when zero-shot output is inconsistent on edge cases.
-
---
-
-**Fine-tuning.** A different instrument, not a way of prompting the LLM: train a small
-model, BERT-class, on hundreds or thousands of labels. Use when you have that many labels
-already, the task is a stable classification, and you are running millions of documents.
 
 ---
 
@@ -1199,7 +1193,6 @@ already, the task is a stable classification, and you are running millions of do
 |:--|:--|:--|:--|
 | Zero-shot | 0 | high | default; construct is definable |
 | Few-shot | 10–50 | high | edge cases need demonstrating |
-| Fine-tune a small model | 1,000+ | low | huge corpus, stable target |
 ]
 
 --
