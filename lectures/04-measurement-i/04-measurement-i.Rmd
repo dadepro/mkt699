@@ -740,23 +740,17 @@ crowd work is a low bar.
 
 --
 
-<br>
-
 **Ziems et al.** Against a model trained on labels for the exact target, the LLM loses
 on classification and wins on open-ended tasks. The conclusion is about the **task**:
 when labels exist, fine-tune; when they do not, the LLM is the instrument.
 
 --
 
-<br>
-
 **Li et al.** Against human perceptual maps, agreement is high where the model has seen
 a lot and low where it has not, with no change in fluency. The conclusion is about the
 **domain**: validity is conditional on the category.
 
 --
-
-<br>
 
 None of the three is a conclusion about LLMs in general. Validity is task-conditional
 and domain-conditional, and another paper's validation does not transfer to your
