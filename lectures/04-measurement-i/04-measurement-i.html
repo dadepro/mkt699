@@ -1114,9 +1114,9 @@ to define but easy to demonstrate, or when zero-shot output is inconsistent on e
 
 --
 
-**Fine-tuning.** Train on hundreds or thousands of labels. Use when you have that many
-labels already, the task is a stable classification, and you are running millions of
-documents.
+**Fine-tuning.** A different instrument, not a way of prompting the LLM: train a small
+model, BERT-class, on hundreds or thousands of labels. Use when you have that many labels
+already, the task is a stable classification, and you are running millions of documents.
 
 ---
 
@@ -1127,7 +1127,7 @@ documents.
 |:--|:--|:--|:--|
 | Zero-shot | 0 | high | default; construct is definable |
 | Few-shot | 10–50 | high | edge cases need demonstrating |
-| Fine-tune | 1,000+ | low | huge corpus, stable target |
+| Fine-tune a small model | 1,000+ | low | huge corpus, stable target |
 ]
 
 --
