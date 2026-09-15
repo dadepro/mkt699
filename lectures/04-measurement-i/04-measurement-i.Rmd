@@ -216,33 +216,21 @@ answer old ones.
 
 ---
 
-# A worked instance
+# How to think about this for your project
 
-"Do firms that describe their products in more *aspirational* language charge higher
-prices?"
-
---
-
-<br>
-
-In 2015: you need a codebook, four RAs, and a year. Almost nobody did.
-
---
-
-In 2020: you build a dictionary of aspirational words. A referee points out, correctly,
-that the dictionary is arbitrary.
+Do not start from "what can I do with an LLM?"
 
 --
 
 <br>
 
-In 2026: you write a prompt, run it on 300,000 product descriptions, and validate it.
+Start from: what did I want to know, and stop pursuing, because I could not measure it?
 
 --
 
 <br>
 
-The paper is now feasible. Whether it is *credible* is the rest of this course.
+Go back to an idea you abandoned and ask whether the measurement constraint still binds.
 
 ---
 
