@@ -758,7 +758,9 @@ a lot and low where it has not, with no change in fluency. The conclusion is abo
 
 <br>
 
-None of the three is a conclusion about LLMs in general.
+None of the three is a conclusion about LLMs in general. Validity is task-conditional
+and domain-conditional, and another paper's validation does not transfer to your
+setting. You measure it in yours.
 
 ---
 class: inverse, center, middle
