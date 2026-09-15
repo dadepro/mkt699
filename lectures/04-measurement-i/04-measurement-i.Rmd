@@ -1556,10 +1556,10 @@ $\kappa = 0$ means "no better than guessing." $\kappa = 1$ is perfect.
 ```r
 library(irr)
 
-val <- merge(gold, llm_out, by = "doc_id")
-stopifnot(nrow(val) == nrow(gold))    # the model labelled every gold doc
+gold <- merge(labels_a, labels_b, by = "doc_id")   # one row per gold document,
+stopifnot(nrow(gold) == nrow(labels_a))            # both labelers did all of them
 
-kappa2(val[, c("human_label", "llm_label")])
+kappa2(gold[, c("label_a", "label_b")])            # the two humans, before adjudication
 ```
 
 --
@@ -1575,7 +1575,7 @@ kappa2(val[, c("human_label", "llm_label")])
 
 <br>
 
-.small90[`DescTools::CohenKappa(table(val$human_label, val$llm_label), conf.level = 0.95)`
+.small90[`DescTools::CohenKappa(table(gold$label_a, gold$label_b), conf.level = 0.95)`
 gives you a confidence interval, which you should report.]
 
 ---
@@ -1703,6 +1703,35 @@ All three are fixed upstream, in the definition, not downstream in the prompt.
 <br>
 
 This is why you iterate the codebook on human labels *before* you touch the model.
+
+---
+
+# What to do with a disagreement
+
+Two of you labeled the same 500 documents, independently, from the codebook. You disagree
+on 40 of them.
+
+--
+
+**First, report $\kappa$ on the independent labels.** That is the human agreement number
+for the paper, and it is computed before anything is resolved.
+
+--
+
+**Then adjudicate every one of the 40.** Sit down with the codebook and settle each case.
+The settled label is the gold label. Keep both original labels in the file, so the
+adjudication is visible.
+
+--
+
+**If the 40 cluster on one kind of document, the codebook is the problem.** Fix the
+definition, record the change and its date, and relabel the affected cases.
+
+--
+
+.small90[Not: take one labeler's answer by default; drop the 40, which removes the hard
+cases, inflates the model's accuracy, and breaks the sampling probabilities; let the model
+break the tie, which makes the gold standard agree with the model by construction.]
 
 ---
 
