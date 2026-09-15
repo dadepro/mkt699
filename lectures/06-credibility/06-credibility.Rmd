@@ -61,6 +61,22 @@ opts_chunk$set(
   )
 ```
 
+# The milestones
+
+.small75[
+| Week | Due | Milestone | What is inside |
+|:--|:--|:--|:--|
+| 1 | Aug 26 | Repository initialized | folders, `dadepro` added as collaborator |
+| 2 | Sep 2 | Question and data source | one paragraph in the README |
+| 3 | Sep 16 | Data acquired; pipeline reproducible; identification memo | fetch script, cleaning script, memo |
+| 4 | Sep 23 | Measurement approach; prompt and model; validation sample designed, drawn, labeled | codebook, prompt and schema, pilot, sample design and draw, hand labeling |
+| 5 | Sep 30 | Validation complete; naive and corrected estimates side by side | LLM run on the full corpus, confusion matrix overall and by subgroup, naive and corrected estimate |
+| **6** | **Oct 7** | **Revised identification memo; robustness plan** | **revision of the Week 3 memo, robustness memo** |
+| 7 | Oct 7, Oct 14 | Presentation; written report |  |
+]
+
+---
+
 # Where we are
 
 Weeks 4 and 5 were about whether your **variable** means what you think it means.

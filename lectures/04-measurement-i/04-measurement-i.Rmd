@@ -120,8 +120,26 @@ deck and in the course README, under "Milestones in detail."
 <br>
 
 The third item is the deliverable. A milestone with only the naive estimate is incomplete.
-Next week's lecture is about how to compute the corrected one; everything else on this
-list you can do with today's material.
+Next week's lecture is about how to compute the corrected one. Everything else on this
+list you can do with today's material, and once your validation design is committed,
+nothing stops you from running the full corpus and computing the naive estimate before
+Sep 23.
+
+---
+
+# The milestones
+
+.small75[
+| Week | Due | Milestone | What is inside |
+|:--|:--|:--|:--|
+| 1 | Aug 26 | Repository initialized | folders, `dadepro` added as collaborator |
+| 2 | Sep 2 | Question and data source | one paragraph in the README |
+| 3 | Sep 16 | Data acquired; pipeline reproducible; identification memo | fetch script, cleaning script, memo |
+| **4** | **Sep 23** | **Measurement approach; prompt and model; validation sample designed, drawn, labeled** | **codebook, prompt and schema, pilot, sample design and draw, hand labeling** |
+| 5 | Sep 30 | Validation complete; naive and corrected estimates side by side | LLM run on the full corpus, confusion matrix overall and by subgroup, naive and corrected estimate |
+| 6 | Oct 7 | Revised identification memo; robustness plan | revision of the Week 3 memo, robustness memo |
+| 7 | Oct 7, Oct 14 | Presentation; written report |  |
+]
 
 ---
 
