@@ -1184,38 +1184,13 @@ enough.
 **Few-shot.** Include 5–20 labeled examples in the prompt. Use when the construct is hard
 to define but easy to demonstrate, or when zero-shot output is inconsistent on edge cases.
 
----
-
-# Choosing among them
-
-.small90[
-| | Labels needed | Cost per doc | When |
-|:--|:--|:--|:--|
-| Zero-shot | 0 | high | default; construct is definable |
-| Few-shot | 10–50 | high | edge cases need demonstrating |
-]
-
 --
 
 &lt;br&gt;
 
 For a seven-week project: zero-shot, with few-shot as the fix if validation disappoints.
-
---
-
-&lt;br&gt;
-
-.small90[Reminder: the **validation sample** is the subset of your corpus you label by
-hand, against which you measure the instrument's error. Designing it is the second half
-of today.]
-
---
-
-Warning: your few-shot examples must not come from your validation sample.
-
---
-
-That is training on the test set.
+The few-shot examples must not come from your validation sample; that is training on the
+test set.
 
 ---
 
