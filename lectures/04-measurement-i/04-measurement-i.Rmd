@@ -688,12 +688,6 @@ Above **75% agreement** between human-generated and LLM-generated perceptual map
 
 <br>
 
-The qualifier carries the result.
-
---
-
-<br>
-
 Performance depends on the category: how much the model has seen about it, how
 well-established the brands are, how conventional the attribute space is.
 
