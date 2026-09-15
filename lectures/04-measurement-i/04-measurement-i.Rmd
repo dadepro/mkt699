@@ -713,32 +713,52 @@ it has seen a lot of, and degrades on the rest with no change in fluency.
 
 ---
 
-# Assembling the three papers
+# The three papers, side by side
 
-.small90[
-| Paper | Claim |
-|:--|:--|
-| Gilardi et al. (2023) | Beats crowd workers, 1/30 cost |
-| Ziems et al. (2024) | Loses to fine-tuned models on classification |
-| Li et al. (2024) | Valid for some categories, not others |
+.small75[
+| | Gilardi et al. (2023) | Ziems et al. (2024) | Li et al. (2024) |
+|:--|:--|:--|:--|
+| **Field** | Political science, *PNAS* | NLP, *Computational Linguistics* | Marketing, *Marketing Science* |
+| **Data** | 6,183 tweets and news articles | 25 benchmark tasks, 13 models | Brand perceptions across product categories |
+| **Task** | Relevance, stance, topic, frame | Classification and generation | Perceptual maps in attribute space |
+| **LLM compared against** | Crowd workers on MTurk | Fine-tuned supervised models | Human survey-based maps |
+| **Labels available?** | Yes, from trained annotators | Yes, thousands per task | Yes, from consumer surveys |
+| **Finding** | LLM wins by about 25 points at 1/30 the cost | LLM loses on classification, wins on generation | Above 75% agreement in some categories, lower in others |
 ]
 
 --
 
-<br>
+Same instrument, three baselines, three answers.
 
-They are not contradictory. Each describes a different task and domain.
+---
+
+# What each one concludes
+
+**Gilardi et al.** Against the cheap human alternative, a zero-shot prompt is more
+accurate, more consistent, and far cheaper. The conclusion is about the **baseline**:
+crowd work is a low bar.
 
 --
 
 <br>
 
-Validity is task-conditional, domain-conditional, and it must be **measured in
-your setting**.
+**Ziems et al.** Against a model trained on labels for the exact target, the LLM loses
+on classification and wins on open-ended tasks. The conclusion is about the **task**:
+when labels exist, fine-tune; when they do not, the LLM is the instrument.
 
 --
 
-Another paper's validation does not transfer to your setting.
+<br>
+
+**Li et al.** Against human perceptual maps, agreement is high where the model has seen
+a lot and low where it has not, with no change in fluency. The conclusion is about the
+**domain**: validity is conditional on the category.
+
+--
+
+<br>
+
+None of the three is a conclusion about LLMs in general.
 
 ---
 class: inverse, center, middle
