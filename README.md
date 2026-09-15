@@ -85,15 +85,15 @@ honesty of the reporting, not on whether the effect is significant.
 repository, before the class on its due date. I clone your repository to grade it, so if
 `dadepro` is not a collaborator, the milestone has not been submitted.
 
-| Week | Assigned | Due | Milestone |
-|---|---|---|---|
-| 1 | Aug 26 | Aug 26 (in class) | Repository initialized |
-| 2 | Aug 26 | Sep 2 | One-paragraph question and data source identified |
-| 3 | Sep 9 | Sep 16 | Data acquired; cleaning pipeline reproducible; **identification memo** |
-| 4 | Sep 16 | Sep 23 | Measurement approach specified; prompt and model documented; validation sample designed, drawn, and labeled |
-| 5 | Sep 23 | Sep 30 | Validation complete; naive and corrected estimates reported side by side |
-| 6 | Sep 30 | Oct 7 | **Revised identification memo**; robustness plan |
-| 7 | | Oct 7 | 20-minute presentation; written report due Oct 14 |
+| Week | Assigned | Due | Milestone | What is inside |
+|---|---|---|---|---|
+| 1 | Aug 26 | Aug 26 (in class) | Repository initialized | folders, `dadepro` added as collaborator |
+| 2 | Aug 26 | Sep 2 | One-paragraph question and data source identified | one paragraph in the README |
+| 3 | Sep 9 | Sep 16 | Data acquired; cleaning pipeline reproducible; **identification memo** | fetch script, cleaning script, memo |
+| 4 | Sep 16 | Sep 23 | Measurement approach specified; prompt and model documented; validation sample designed, drawn, and labeled | codebook, prompt and schema, pilot, sample design and draw, hand labeling |
+| 5 | Sep 23 | Sep 30 | Validation complete; naive and corrected estimates reported side by side | LLM run on the full corpus, confusion matrix overall and by subgroup, naive and corrected estimate |
+| 6 | Sep 30 | Oct 7 | **Revised identification memo**; robustness plan | revision of the Week 3 memo, robustness memo |
+| 7 | | Oct 7 | 20-minute presentation; written report due Oct 14 | |
 
 #### Milestones in detail
 
@@ -166,7 +166,9 @@ Sep 16, due Sep 23).**
 
 The design is committed before you run the model on the full corpus, before you label, and
 before you see any downstream result; the commit timestamp shows the order. A sample chosen
-after any of those has no known probabilities, and the correction cannot use it.
+after any of those has no known probabilities, and the correction cannot use it. Once the
+design is committed, nothing stops you from running the LLM on the full corpus and
+computing the naive estimate before Sep 23; how to correct it is the Week 5 lecture.
 
 **Week 5, validation complete, naive and corrected estimates (assigned Sep 23, due
 Sep 30).**
