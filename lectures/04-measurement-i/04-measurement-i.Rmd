@@ -1659,21 +1659,29 @@ This is why you iterate the codebook on human labels *before* you touch the mode
 
 # How many to label
 
-It depends on what you plan to do downstream.
+It depends on what the labels have to do downstream. And you decide now: the number goes
+into the validation design you submit this week.
 
 --
 
 <br>
 
-And what you plan to do downstream is **next week's topic**.
+**Job 1: report accuracy.** A confusion matrix for the measurement section. A few hundred
+labels pin down an accuracy rate to within a couple of points.
 
 --
 
 <br>
 
+**Job 2: correct the regression.** Next week's estimators use the gold labels to remove
+the bias the instrument's errors put into $\hat\beta$. The gold sample then does the
+identifying work, and its size sets the standard error of the corrected coefficient.
+
+--
+
 <br>
 
-Working guidance now. The argument behind the number is next week.
+Plan for job 2. Working guidance on the next slide; the estimators are next week.
 
 ---
 
