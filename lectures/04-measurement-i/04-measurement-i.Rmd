@@ -1749,15 +1749,17 @@ precision 0.86, recall 0.90. That 2×2 goes in the measurement section of the pa
 
 <br>
 
-Then the LLM's label goes into the regression **as it is**, on all 200,000. The 500 gold
-labels are not used again. They exist so the reader can judge the instrument.
+Then the LLM's label goes into the regression **as it is**, on all 200,000 documents, the
+500 included. The human labels do no further work: they exist so the reader can judge the
+instrument.
 
 --
 
 <br>
 
-A few hundred labels are enough for this. With 500 labels and accuracy near 0.9, the
-accuracy figure itself has a standard error of about 1.3 points.
+A few hundred labels are enough for this. Accuracy is a proportion estimated from 500
+draws, so its standard error is $\sqrt{0.88 \times 0.12 / 500} \approx 0.015$: the 88% is
+known to within about $\pm 3$ points, and 2,000 labels would only halve that.
 
 ---
 
