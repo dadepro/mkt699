@@ -174,7 +174,7 @@ The project is a **measurement** project: use an LLM to measure something previo
 | 1 | Aug 26 | Aug 26 (in class) | Repository initialized |
 | 2 | Aug 26 | Sep 2 | One-paragraph question and data source identified |
 | 3 | Sep 9 | Sep 16 | Data acquired; pipeline reproducible; **identification argument drafted** |
-| 4 | Sep 16 | Sep 23 | Measurement approach specified; prompt and model documented; validation sample designed |
+| 4 | Sep 16 | Sep 23 | Measurement approach specified; prompt and model documented; validation sample designed, drawn, and labeled |
 | 5 | Sep 23 | Sep 30 | Validation complete; naive and corrected estimates reported side by side |
 | 6 | Sep 30 | Oct 7 | Identification argument revised; robustness plan |
 | 7 | | Oct 7 | 20-minute presentation; written report due Oct 14 |

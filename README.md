@@ -90,7 +90,7 @@ repository, before the class on its due date. I clone your repository to grade i
 | 1 | Aug 26 | Aug 26 (in class) | Repository initialized |
 | 2 | Aug 26 | Sep 2 | One-paragraph question and data source identified |
 | 3 | Sep 9 | Sep 16 | Data acquired; cleaning pipeline reproducible; **identification memo** |
-| 4 | Sep 16 | Sep 23 | Measurement approach specified; prompt and model documented; validation sample designed |
+| 4 | Sep 16 | Sep 23 | Measurement approach specified; prompt and model documented; validation sample designed, drawn, and labeled |
 | 5 | Sep 23 | Sep 30 | Validation complete; naive and corrected estimates reported side by side |
 | 6 | Sep 30 | Oct 7 | **Revised identification memo**; robustness plan |
 | 7 | | Oct 7 | 20-minute presentation; written report due Oct 14 |
@@ -156,20 +156,23 @@ Sep 16, due Sep 23).**
    than a dictionary or a fine-tuned classifier.
 2. *Prompt and model.* The prompt file committed to `prompts/`, the exact model string, the
    temperature, and the output schema.
-3. *Validation sample, designed, not collected.* One page in `memo/validation-design.md`:
-   the sample size *m* and why, the sampling scheme, the strata if any, the sampling
-   probability of every unit, who labels, and how they stay blind to the model's output.
-   Draw the sample, save the seed and the indices, and commit both.
+3. *Validation sample, designed and drawn.* One page in `memo/validation-design.md`: the
+   sample size *m* and why, the sampling scheme, the strata if any, and the sampling
+   probability of every unit. Draw the sample, save the seed and the indices, and commit
+   both before anyone labels.
+4. *Validation sample labeled.* By hand, from the document and the codebook only, blind to
+   the model's output. Two labelers if you can find a second person, so you can report how
+   often they agree.
 
-The sample is designed before you run the model on the full corpus and before you see any
-downstream result. Fixing a sampling design on paper takes ten minutes. Fixing it after
-two weeks of labeling is often impossible.
+The design is committed before you run the model on the full corpus, before you label, and
+before you see any downstream result; the commit timestamp shows the order. A sample chosen
+after any of those has no known probabilities, and the correction cannot use it.
 
 **Week 5, validation complete, naive and corrected estimates (assigned Sep 23, due
 Sep 30).**
 
-1. Gold labels drawn under the scheme you committed in Week 4, and the LLM run on the same
-   units.
+1. The LLM run on the full corpus, validation units included, with its answers on those
+   units kept.
 2. The confusion matrix, and human–human agreement if more than one person labeled.
 3. The naive and the corrected estimates, side by side.
 

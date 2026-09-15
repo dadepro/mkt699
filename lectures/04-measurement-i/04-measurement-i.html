@@ -97,9 +97,10 @@ If `dadepro` is not a collaborator on the repository, it has not been submitted.
    LLM rather than a dictionary or a fine-tuned classifier.
 2. **Prompt and model documented.** The prompt file in `prompts/`, the exact model string,
    the temperature, the output schema.
-3. **Validation sample designed, not collected.** One page in `memo/validation-design.md`:
-   how many, drawn how, with what probabilities, who labels, how they stay blind. Draw the
-   sample and commit the seed and the indices.
+3. **Validation sample designed and drawn.** One page in `memo/validation-design.md`: how
+   many, drawn how, with what probabilities. The seed and the indices committed.
+4. **Validation sample labeled.** By hand, from the document and the codebook only, blind
+   to the model's output. Two labelers if you can find a second person.
 
 --
 
@@ -107,6 +108,24 @@ If `dadepro` is not a collaborator on the repository, it has not been submitted.
 
 Everything on this list is built today. The specification is repeated at the end of the
 deck and in the course README, under "Milestones in detail."
+
+---
+
+# Week 5 milestone, due before class on Sep 30
+
+1. **The LLM run on the full corpus**, validation documents included, with its answers on
+   those documents kept.
+2. **The confusion matrix**, overall and by treatment group, and human–human agreement if
+   more than one person labeled.
+3. **The naive and the corrected estimate, side by side.**
+
+--
+
+&lt;br&gt;
+
+The third item is the deliverable. A milestone with only the naive estimate is incomplete.
+Next week's lecture is about how to compute the corrected one; everything else on this
+list you can do with today's material.
 
 ---
 
@@ -1801,15 +1820,14 @@ Both, and they are the next two milestones.
 --
 
 **Week 4, due Sep 23.** Design the validation sample, sized for Job 2: how many, drawn
-how, with what probabilities, who labels. Job 2 is the binding constraint, so it sets the
-number. Nothing is labeled yet.
+how, with what probabilities. Job 2 is the binding constraint, so it sets the number.
+Draw it, commit the design, then label it by hand.
 
 --
 
 **Week 5, due Sep 30.** Both jobs delivered:
 
-1. Gold labels drawn under the scheme you committed in Week 4, and the LLM run on the same
-   units
+1. The LLM run on the full corpus, validation documents included, with its answers kept
 2. The confusion matrix, and human–human agreement if more than one person labeled (Job 1)
 3. The naive and the corrected estimate, side by side (Job 2)
 
@@ -2102,11 +2120,11 @@ It is a Week 4 milestone because it cannot be done in Week 6.
 
 --
 
-5. Plan to label blind to model output.
+5. Label the sample by hand, from the document and the codebook only, blind to model output.
 
 --
 
-6. Plan to run the LLM on the validation documents too, and keep those predictions.
+6. When you run the LLM, run it on the validation documents too, and keep those predictions.
 
 --
 
@@ -3032,42 +3050,35 @@ model string. Temperature. Output schema.
 
 --
 
-**3. Validation sample designed**, not collected.
+**3. Validation sample designed and drawn.** `\(m\)`, the scheme, the strata if any, the
+probabilities `\(\pi_i\)`, in one page in `memo/validation-design.md`. Seed and indices
+committed.
 
 --
 
-&lt;br&gt;
-
-.small90[$m$, the sampling scheme, the strata if any, the probabilities `\(\pi_i\)`, who is
-labeling, and how you will keep them blind. One page, in `memo/validation-design.md`,
-committed.]
+**4. Validation sample labeled.** By hand, from the document and the codebook only, blind
+to the model's output. Two labelers if you can find a second person.
 
 ---
 
-# Why "designed, not collected"
+# Commit the design before you label
 
-Because I want to look at your sampling scheme **before** you spend two weeks labeling
-under a bad one.
-
---
-
-&lt;br&gt;
-
-Fixing a sampling design on paper takes ten minutes.
+The order matters more than the calendar.
 
 --
 
 &lt;br&gt;
 
-Fixing it after you have labeled 500 documents takes another 500 documents.
+A sample chosen after you have seen the model's output, or a result, has no known
+probabilities, and the correction cannot use it. The commit timestamp on the design is
+what shows the order was right.
 
 --
 
 &lt;br&gt;
 
-&lt;br&gt;
-
-Bring the design to office hours.
+A wrong scheme is cheap to fix in the memo and expensive to fix after 500 labels. If you
+are unsure of yours, bring it to office hours early in the week, before you label.
 
 ---
 
