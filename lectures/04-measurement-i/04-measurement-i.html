@@ -1712,29 +1712,106 @@ This is why you iterate the codebook on human labels *before* you touch the mode
 
 # How many to label
 
-It depends on what the labels have to do downstream. And you decide now: the number goes
-into the validation design you submit this week.
+The gold labels do two different jobs. Which job you plan for sets the number, and the
+number goes into the validation design you submit this week.
 
 --
 
 &lt;br&gt;
 
-**Job 1: report accuracy.** A confusion matrix for the measurement section. A few hundred
-labels pin down an accuracy rate to within a couple of points.
+**Job 1: describe the instrument.** Tell the reader how often the LLM's label is wrong,
+and in which direction.
 
 --
 
 &lt;br&gt;
 
-**Job 2: correct the regression.** Next week's estimators use the gold labels to remove
-the bias the instrument's errors put into `\(\hat\beta\)`. The gold sample then does the
-identifying work, and its size sets the standard error of the corrected coefficient.
+**Job 2: correct the regression.** Use the gold labels inside the estimator to remove the
+bias that those errors put into `\(\hat\beta\)`.
 
 --
 
 &lt;br&gt;
 
-Plan for job 2. Working guidance on the next slide; the estimators are next week.
+Same 500 documents, same human labels. Different use, different size requirement.
+
+---
+
+# Job 1: describe the instrument
+
+You have 200,000 reviews. The LLM says, for each one, whether it contains a quality
+complaint. You hand-label 500 of them.
+
+--
+
+&lt;br&gt;
+
+You compare the two columns on those 500. The LLM agrees with you 88% of the time,
+precision 0.86, recall 0.90. That 2×2 goes in the measurement section of the paper.
+
+--
+
+&lt;br&gt;
+
+Then the LLM's label goes into the regression **as it is**, on all 200,000. The 500 gold
+labels are not used again. They exist so the reader can judge the instrument.
+
+--
+
+&lt;br&gt;
+
+A few hundred labels are enough for this. With 500 labels and accuracy near 0.9, the
+accuracy figure itself has a standard error of about 1.3 points.
+
+---
+
+# Job 2: correct the regression
+
+Same 500 documents, different use. Next week's estimators put the gold labels **inside
+the regression**.
+
+--
+
+On 500 documents you know the truth; on the other 199,500 you have a guess. The estimator
+uses the 500 to learn how the LLM's mistakes relate to `\(y\)` and `\(X\)`, and removes the bias
+that pattern puts into `\(\hat\beta\)`.
+
+--
+
+Now the gold labels do the identifying work. The corrected `\(\hat\beta\)` behaves like a
+regression on the 500, sharpened by how well the LLM predicts on the rest. Its standard
+error depends mostly on 500, not on 200,000.
+
+--
+
+So Job 2 needs more labels than Job 1, and more again if you need the correction within
+subgroups or the positive class is rare.
+
+---
+
+# Which job is yours
+
+Both, and they are the next two milestones.
+
+--
+
+**Week 4, due Sep 23.** Design the validation sample, sized for Job 2: how many, drawn
+how, with what probabilities, who labels. Job 2 is the binding constraint, so it sets the
+number. Nothing is labeled yet.
+
+--
+
+**Week 5, due Sep 30.** Both jobs delivered:
+
+1. Gold labels drawn under the scheme you committed in Week 4, and the LLM run on the same
+   units
+2. The confusion matrix, and human–human agreement if more than one person labeled (Job 1)
+3. The naive and the corrected estimate, side by side (Job 2)
+
+--
+
+The third item is the deliverable. A milestone with only the naive estimate is
+incomplete. Working guidance on the number follows; the estimators are next week.
 
 ---
 
