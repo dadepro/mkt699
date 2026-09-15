@@ -214,30 +214,6 @@ scale.
 That is an expansion of the set of **answerable questions**, not only a cheaper way to
 answer old ones.
 
---
-
-<br>
-
-Which is where dissertation topics come from.
-
----
-
-# How to think about this for your project
-
-Do not start from "what can I do with an LLM?"
-
---
-
-<br>
-
-Start from: what did I want to know, and stop pursuing, because I could not measure it?
-
---
-
-<br>
-
-Go back to an idea you abandoned and ask whether the measurement constraint still binds.
-
 ---
 
 # A worked instance
