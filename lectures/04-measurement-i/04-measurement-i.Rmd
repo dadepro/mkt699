@@ -1997,7 +1997,9 @@ $\pi_i$.
 
 <br>
 
-DSL, prediction-powered inference, the econometrics versions, all of them.
+**Design-based supervised learning** (DSL, Egami, Hinck, Stewart & Wei 2023),
+**prediction-powered inference** (PPI, Angelopoulos et al. 2023), the econometrics
+versions, all of them. Names only for now; what they do is next week.
 
 --
 
