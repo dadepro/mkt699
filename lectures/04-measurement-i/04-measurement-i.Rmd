@@ -233,8 +233,7 @@ small fraction of what RAs cost.
 
 <br>
 
-Gilardi et al. put the cost ratio at roughly **1/30** of crowd work. We'll get to that
-paper in a moment.
+Gilardi et al. (2023) put the cost ratio at roughly **1/30** of crowd work.
 
 --
 
@@ -671,7 +670,8 @@ it.
 <br>
 
 If you have a few hundred labels, they are worth more as a validation sample than as
-training data. That is the design we build in the second half of today.
+training data. A few hundred examples barely move a fine-tuned model, but they are enough
+to measure how often the LLM is wrong, and on which documents.
 
 ---
 
@@ -1077,7 +1077,10 @@ def annotate(text, prompt, model="claude-sonnet-4-5-20250929"):
 
 --
 
-.small90[Note the comment on the last line. We'll come back to it.]
+.small90[The function returns the whole response, not the label. The response also carries
+the reasoning, the evidence span, the confidence, the model string, and the token counts,
+and on a refusal or a truncated answer there is no label to index into. Extracting the
+label is a separate parsing step, on its own raw file.]
 
 ---
 
@@ -1428,8 +1431,10 @@ You must have human-labeled gold-standard data.
 
 <br>
 
-Next week you will see the arithmetic reason why: without it, none of the corrections
-apply, and your estimates are uninterpretable.
+The reason is arithmetic. The LLM's label is wrong some of the time, and how often, and
+on which documents, can only be learned from documents where you know the truth. Without
+those you cannot say how far your estimates are off, or in which direction, and no
+correction can be computed.
 
 --
 
@@ -1853,7 +1858,8 @@ Ten cases cannot tell you anything about the positive class.
 
 <br>
 
-The fix is stratification, which is the next topic.
+The fix is stratification: sample the documents the model flags as positive at a higher
+rate than the rest, and record both rates.
 
 ---
 # What cannot be fixed later
@@ -1966,8 +1972,8 @@ fwrite(val[, .(doc_id, pi)], "validation/sample.csv")   # the indices, committed
 
 <br>
 
-Six lines. The stratified version, two slides on, is not much longer. The point of both
-is the `pi` column and the committed file of indices.
+Six lines. The stratified version is not much longer. The point of both is the `pi`
+column and the committed file of indices.
 
 ---
 
@@ -1990,8 +1996,7 @@ Every one of these produces a set of human labels. None of them produces a *samp
 
 # Why the probabilities matter
 
-Next week you will learn that every correction method depends on knowing
-$\pi_i$.
+Every correction method depends on knowing $\pi_i$.
 
 --
 
@@ -1999,7 +2004,10 @@ $\pi_i$.
 
 **Design-based supervised learning** (DSL, Egami, Hinck, Stewart & Wei 2023),
 **prediction-powered inference** (PPI, Angelopoulos et al. 2023), the econometrics
-versions, all of them. Names only for now; what they do is next week.
+versions, all of them. They share one mechanism: use the gold sample to learn how the
+LLM's errors are distributed, then reweight the full-corpus estimate to undo them. The
+reweighting needs $\pi_i$: a document sampled with probability 1/10 stands for ten
+documents, one sampled with probability 1/1,000 stands for a thousand.
 
 --
 
@@ -2232,10 +2240,11 @@ Precision and recall summarize the matrix. The matrix contains information they 
 
 --
 
-<br>
-
-And next week you will find out that **false positives and false negatives affect your
-downstream coefficient differently**, asymmetrically, in ways that depend on your design.
+**False positives and false negatives affect your downstream coefficient differently.**
+A false positive puts an untreated document into the treated group; a false negative takes
+a treated one out. Each pulls $\hat\beta$ by a different amount, depending on how common
+the treatment is, and if either error is more frequent in one group, the bias has a
+direction.
 
 --
 
@@ -2260,8 +2269,6 @@ If your model outputs a probability or a confidence, you choose a threshold.
 
 --
 
-<br>
-
 That choice trades precision against recall. It is a substantive decision, not a technical
 one.
 
@@ -2281,7 +2288,9 @@ Choose it before you see the downstream result, and say what you chose.
 
 --
 
-The reason comes later in the lecture.
+If you choose it after seeing the result, the threshold becomes a knob for the
+coefficient. A cutoff that moves precision from 0.80 to 0.90 also moves $\hat\beta$, and
+nothing in the paper will show that you picked the one you liked.
 
 ---
 
@@ -2368,8 +2377,9 @@ Report the confusion matrix **within** the dimensions that structure your design
 
 <br>
 
-If accuracy differs across your treatment groups, you have a problem, and it is
-the problem next week is about.
+If accuracy differs across your treatment groups, the measurement error is correlated
+with the treatment. It is no longer noise that averages out: it moves $\hat\beta$ in a
+direction the overall accuracy figure cannot show you.
 
 ---
 
@@ -2392,7 +2402,9 @@ val[, metrics(llm_label, human_label), by = treated]     # or by = period, by = 
 <br>
 
 Overall accuracy would read 0.88. Within the treated group the model misses more than a
-quarter of the positives. That difference is what next week is about.
+quarter of the positives. The treatment variable is wrong most often exactly where the
+treatment is on, so the error is correlated with the treatment. That is the case the
+corrections exist for.
 
 ---
 
@@ -2605,8 +2617,10 @@ In the prompt case, you are searching while looking at *accuracy*, which looks h
 
 <br>
 
-But accuracy and your coefficient are not independent, and next week you will see
-exactly how they are linked.
+But accuracy and your coefficient are not independent. Which documents the instrument
+gets wrong decides which units are misclassified in the regression, and a prompt change
+that raises accuracy by fixing one kind of error while adding another changes
+$\hat\beta$ with it.
 
 --
 
@@ -2807,7 +2821,9 @@ Not "we used Claude."
 
 <br>
 
-.small90[Note the training cutoff too. The reason is next week's topic.]
+.small90[Note the training cutoff too. A model trained on data ending before your documents
+were written has never seen your period; one trained on data ending after may have seen the
+documents themselves, or the outcomes you are studying, and the label is contaminated.]
 
 ---
 
