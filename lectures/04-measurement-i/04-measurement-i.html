@@ -261,7 +261,7 @@ Next lecture: why checking it is not enough.
 
 # Vocabulary for today
 
-Six words I will use constantly. Say so if I use one I have not defined.
+Seven words I will use constantly. Say so if I use one I have not defined.
 
 --
 
@@ -272,13 +272,12 @@ Six words I will use constantly. Say so if I use one I have not defined.
 | **corpus** | the body of documents you are measuring. Your 200k reviews. |
 | **annotation** | assigning a label to a document. Coding, by another name. |
 | **gold standard** | the labels you trust, normally human, always small. |
+| **validation sample** | the subset of the corpus you label by hand, to measure how often the instrument is wrong. |
 | **zero-shot** | asking a model to do a task with no worked examples. |
 | **downstream** | whatever you do with the variable afterwards, the regression. |
 ]
 
 --
-
-&lt;br&gt;
 
 None of this is deep, but the papers assume it.
 
@@ -1133,6 +1132,12 @@ For a seven-week project: zero-shot, with few-shot as the fix if validation disa
 --
 
 &lt;br&gt;
+
+.small90[Reminder: the **validation sample** is the subset of your corpus you label by
+hand, against which you measure the instrument's error. Designing it is the second half
+of today.]
+
+--
 
 Warning: your few-shot examples must not come from your validation sample.
 
