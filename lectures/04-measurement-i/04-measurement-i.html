@@ -1979,26 +1979,27 @@ Survey weights work the same way.
 
 # What the strata can be
 
-You do not have the gold label when you draw the sample. The strata come from things you
-do have.
+The sample is drawn before anyone labels by hand, so the gold label is never available
+for stratifying. What you do have depends on whether you have run the model yet.
 
 --
 
-**Covariates in the cleaned data.** Treatment group, period, category. Stratifying on
-treatment is what makes accuracy *by treatment group* estimable.
+**Before the model run: covariates and proxies.** Treatment group, period, category, from
+the cleaned data. Or a cheap proxy for the construct: a keyword flag, a star rating. It
+need not be accurate; it needs to put most true positives in one stratum so you can
+oversample it. This is the default order, and the one the milestone assumes.
 
 --
 
-**A cheap proxy for the construct.** A keyword flag ("waited", "minutes"), a star rating,
-a length cutoff. It does not need to be accurate; it needs to put most true positives in
-one stratum so that stratum can be oversampled.
+**After the model run: the model's own output.** Freeze the prompt, run it on the full
+corpus, then stratify on its label or its confidence. Allowed on two conditions: `\(\pi_i\)`
+is a recorded function of that output, and the prompt does not change afterwards.
+Labelers still see only the document and the codebook.
 
 --
 
-**The model's own output.** Its label or its confidence. This means running the frozen
-prompt on the corpus first. Allowed, on two conditions: `\(\pi_i\)` is a recorded function of
-that output, and the prompt does not change afterwards. A sample drawn from one prompt's
-output cannot validate another.
+Either order works. The rule is about the human labels: the sample is drawn, and its
+probabilities recorded, before anyone reads a document in order to label it.
 
 ---
 
