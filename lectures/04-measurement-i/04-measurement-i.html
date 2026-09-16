@@ -2358,21 +2358,26 @@ It fails silently: the number still prints.
 
 # The practical rule
 
-.large2[Draw the validation sample from the **exact frame you will analyze**: the cleaned
-corpus the model ran on, with every filter already applied.]
+.large2[Draw the validation sample from the corpus you will analyze, and from nothing
+else.]
 
 --
 
 &lt;br&gt;
 
-Same corpus. Same filters. Same date range. Same everything.
+The corpus is the cleaned table from Week 3: one row per document, every filter already
+applied, the table the model ran on. That table is the only input to your sampling code.
 
 --
 
-&lt;br&gt;
+Not the raw dump. Not the subset you had loaded. Not one category or one year. If a
+document cannot be in the regression, it cannot be in the validation sample either.
 
-If you later restrict your analysis sample, you must be able to restrict the validation
-sample the same way, which means keeping the identifiers.
+--
+
+Keep the document identifiers in the validation file. If you later restrict the analysis,
+say you drop 2015, you restrict the validation sample the same way and re-weight what is
+left. Without identifiers you cannot, and you are back on the previous slide.
 
 ---
 
