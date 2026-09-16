@@ -2194,12 +2194,7 @@ val &lt;- corpus[, .SD[sample(.N, target[.BY$stratum])], by = stratum]
 arrow::write_parquet(val, "data/clean/validation-sample.parquet")   # includes pi
 ```
 
----
-
-# Drawing it, in code
-
-The `pi` column is the one the correction depends on, and it takes four lines of code to
-create.
+The `pi` column is the one the correction depends on, and it takes four lines to create.
 
 ---
 
@@ -2282,27 +2277,6 @@ confusion matrix anyway.
 --
 
 Always report the 2×2.
-
----
-
-# The confusion matrix, in code
-
-
-``` r
-library(data.table)
-val &lt;- merge(gold, labels, by = "doc_id")            # human_label and llm_label side by side
-stopifnot(nrow(val) == nrow(gold))                   # the model labelled every gold document
-
-val[, table(model = llm_label, gold = human_label)]  # the 2x2: rows model, columns gold
-
-metrics &lt;- function(model, gold) list(
-  n         = length(gold),
-  accuracy  = mean(model == gold),
-  precision = sum(model == 1 &amp; gold == 1) / sum(model == 1),
-  recall    = sum(model == 1 &amp; gold == 1) / sum(gold == 1))
-
-val[, metrics(llm_label, human_label)]
-```
 
 ---
 
@@ -2455,14 +2429,9 @@ direction the overall accuracy figure cannot show you.
 
 ---
 
-# By subgroup, in code
+# By subgroup, an example
 
-The same function, with a `by`:
-
-
-``` r
-val[, metrics(llm_label, human_label), by = treated]     # or by = period, by = category
-```
+The same metrics, computed within treatment group:
 
 ```
    treated   n accuracy precision recall
@@ -2790,22 +2759,20 @@ If the finding survives, report the curve. If it does not, you found out before 
 
 # What a prompt curve looks like
 
-
-``` r
-library(data.table)
-variants &lt;- fread("
-prompt_file,                    model
-prompts/quality-v1.md,          claude-sonnet-4-5-20250929
-prompts/quality-v2-terse.md,    claude-sonnet-4-5-20250929
-prompts/quality-v3-fewshot.md,  claude-sonnet-4-5-20250929
-prompts/quality-v1.md,          claude-opus-4-8
-prompts/quality-v1.md,          gpt-4o-2024-11-20")
-
-# run_full_pipeline() returns a list: accuracy, kappa, beta_hat, se
-results &lt;- variants[, run_full_pipeline(prompt_file, model), by = .(prompt_file, model)]
-```
+Three or four prompt variants that a reasonable colleague could have written: your final
+one, a terser one, a few-shot one. Two or three models.
 
 --
+
+&lt;br&gt;
+
+Run the **whole pipeline** once per variant: annotate the corpus, validate against the same
+gold sample, estimate the regression. One row per variant: accuracy, `\(\kappa\)`,
+`\(\hat\beta\)`, its standard error.
+
+--
+
+&lt;br&gt;
 
 Plot `\(\hat\beta\)` across variants. Put it in the appendix.
 
