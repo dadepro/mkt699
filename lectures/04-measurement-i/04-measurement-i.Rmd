@@ -2298,20 +2298,23 @@ nothing in the paper will show that you picked the one you liked.
 
 # Validate on the population you will analyze
 
-Your corpus is 300,000 Amazon reviews, 2019–2025, across 40 categories.
+Your corpus is 300,000 Amazon reviews, 2019–2025, across 40 categories. Electronics is
+one of them.
 
 --
 
 <br>
 
-You validate on 500 reviews from 2019, electronics only, because that's the subset you had
-loaded.
+You validate on 500 electronics reviews from 2019, because that is the subset you had
+loaded when you started.
 
 --
 
 <br>
 
-Your validation number describes an instrument you are not using.
+Your accuracy figure now describes the instrument on electronics in 2019. The regression
+runs on 40 categories over seven years. On garden tools in 2024 the error rate is whatever
+it is, and you have not measured it.
 
 ---
 
