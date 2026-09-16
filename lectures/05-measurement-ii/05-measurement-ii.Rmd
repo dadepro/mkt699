@@ -1289,6 +1289,35 @@ generation step.
 If you have read the generated-regressors literature (Pagan 1984, Murphy & Topel 1985),
 this will feel familiar. It is that idea, applied to ML-generated variables.
 
+
+---
+
+# The regressor was estimated too
+
+$\hat D_i$ is not data. It is the output of an estimation step: a model, fit on training
+data you did not see, applied to your document. Re-fit the model, or re-run the prompt,
+and $\hat D_i$ changes.
+
+--
+
+Your regression treats $\hat D_i$ as fixed. Its standard error covers sampling in $y$ and
+$X$, not the fact that the regressor itself would come out differently on another draw
+of the first stage.
+
+--
+
+**Pagan (1984), Murphy & Topel (1985).** With an estimated regressor the second-stage
+variance has two parts, the usual one and one inherited from the first stage. Ignore the
+second and the standard error is too small. That literature assumes the first stage is
+consistent, so the fix is to the standard error only.
+
+--
+
+**Battaglia et al.** add the piece the classical result lacks. A classifier is not a
+consistent estimator of $D_i$: it is biased, not merely noisy. So $\hat\beta$ itself needs
+correcting, not only its standard error, and the gold sample is what estimates the
+misclassification pattern that gets removed.
+
 ---
 
 # Which one should you use?
