@@ -160,12 +160,12 @@ Sep 16, due Sep 23).**
 4. *Validation sample, designed and drawn.* One page in `memo/validation-design.md`: the
    sample size *m* and why, the sampling scheme, stratified on the model's label and your
    treatment, and the sampling probability of every unit. Draw the sample, save the seed
-   and the indices, and commit both before anyone labels.
+   and the indices, and commit both before any human labels.
 5. *Validation sample labeled.* By hand, from the document and the codebook only, blind to
    the model's output. Two labelers if you can find a second person, so you can report how
    often they agree.
 
-The order is prompt frozen, corpus run, sample drawn and committed, then labels; the commit
+The order is prompt frozen, corpus run, sample drawn and committed, then hand labels; the commit
 timestamps show it. Stratifying on the model's own output is the default, because the
 model's positives are where a rare construct lives; the conditions are that the
 probabilities are recorded and the prompt does not change afterwards. A sample chosen by

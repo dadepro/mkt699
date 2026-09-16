@@ -2081,8 +2081,8 @@ them in June, after seeing your results, with no recorded $\pi$.
 
 # Why this is a Week 4 milestone
 
-Your validation sample must be **designed** now, before anyone labels a document and
-before you see any downstream result.
+Your validation sample must be **designed** now: after the model has run, before any
+human labels a document, and before you see any downstream result.
 
 --
 
@@ -2409,7 +2409,7 @@ corrections exist for.
 # The validation study, summarized
 
 1. Freeze the prompt and run it on the corpus; keep every raw response
-2. Design and commit the sample **before** anyone labels and before any result
+2. Design and commit the sample **before** any human labels and before any result
 3. Known, recorded $\pi_i$ for every document, stratified on the model's label
 4. Draw from the analysis frame, not a convenient subsample
 5. Humans first: two coders, $\kappa$, blind to the model's output
@@ -3028,7 +3028,7 @@ to the model's output. Two labelers if you can find a second person.
 
 ---
 
-# Commit the design before you label
+# Commit the design before you hand-label
 
 The order matters more than the calendar: prompt frozen, corpus run, sample drawn and
 committed, then labels.
@@ -3047,7 +3047,7 @@ the order was right.
 <br>
 
 A wrong scheme is cheap to fix in the memo and expensive to fix after 500 labels. If you
-are unsure of yours, bring it to office hours early in the week, before you label.
+are unsure of yours, bring it to office hours early in the week, before you hand-label.
 
 ---
 
@@ -3105,4 +3105,4 @@ class: inverse, center, middle
 
 # Questions?
 
-### Bring your validation design to office hours before you label anything.
+### Bring your validation design to office hours before you hand-label anything.
