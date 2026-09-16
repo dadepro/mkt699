@@ -41,6 +41,7 @@ does not mean what you would guess.
 
 ## API costs
 
-Assignment 2 requires paid API access. Budget a few dollars with a mid-tier model if you
-batch sensibly and test your prompt on a handful of reviews first. Talk to me before you
-spend anything if the cost is a constraint, there are departmental funds.
+The project's measurement step requires paid API access. Budget a few dollars with a
+mid-tier model if you batch sensibly and test your prompt on a handful of documents first.
+Talk to me before you spend anything if the cost is a constraint, there are departmental
+funds.
