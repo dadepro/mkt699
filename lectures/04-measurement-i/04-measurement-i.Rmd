@@ -1986,6 +1986,31 @@ Survey weights work the same way.
 
 ---
 
+# What the strata can be
+
+You do not have the gold label when you draw the sample. The strata come from things you
+do have.
+
+--
+
+**Covariates in the cleaned data.** Treatment group, period, category. Stratifying on
+treatment is what makes accuracy *by treatment group* estimable.
+
+--
+
+**A cheap proxy for the construct.** A keyword flag ("waited", "minutes"), a star rating,
+a length cutoff. It does not need to be accurate; it needs to put most true positives in
+one stratum so that stratum can be oversampled.
+
+--
+
+**The model's own output.** Its label or its confidence. This means running the frozen
+prompt on the corpus first. Allowed, on two conditions: $\pi_i$ is a recorded function of
+that output, and the prompt does not change afterwards. A sample drawn from one prompt's
+output cannot validate another.
+
+---
+
 # Simple random sample, in code
 
 ```{r eval=FALSE}
@@ -2143,8 +2168,10 @@ units.]
 library(data.table)
 set.seed(20260314)          # commit this number
 
-# stratified: oversample the rare positive class as flagged by a cheap pre-screen
-corpus[, stratum := fifelse(prescreen_flag == 1, "likely_positive", "likely_negative")]
+# stratified: oversample the rare positive class as flagged by a cheap pre-screen,
+# here a keyword match; a covariate or the model's own label works the same way
+corpus[, prescreen_flag := grepl("wait|minutes", text, ignore.case = TRUE)]
+corpus[, stratum := fifelse(prescreen_flag, "likely_positive", "likely_negative")]
 
 # YOU choose these. Write them in the paper.
 target <- c(likely_positive = 300, likely_negative = 300)
@@ -3066,9 +3093,10 @@ The order matters more than the calendar.
 
 <br>
 
-A sample chosen after you have seen the model's output, or a result, has no known
-probabilities, and the correction cannot use it. The commit timestamp on the design is
-what shows the order was right.
+A sample chosen by hand, or after you have seen a result, has no known probabilities,
+and the correction cannot use it. Stratifying on the model's output is fine if the
+probabilities are recorded and the prompt is frozen. The commit timestamp on the design
+is what shows the order was right.
 
 --
 
