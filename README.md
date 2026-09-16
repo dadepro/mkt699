@@ -90,8 +90,8 @@ repository, before the class on its due date. I clone your repository to grade i
 | 1 | Aug 26 | Aug 26 (in class) | Repository initialized | folders, `dadepro` added as collaborator |
 | 2 | Aug 26 | Sep 2 | One-paragraph question and data source identified | one paragraph in the README |
 | 3 | Sep 9 | Sep 16 | Data acquired; cleaning pipeline reproducible; **identification memo** | fetch script, cleaning script, memo |
-| 4 | Sep 16 | Sep 23 | Measurement approach specified; prompt and model documented; validation sample designed, drawn, and labeled | codebook, prompt and schema, pilot, sample design and draw, hand labeling |
-| 5 | Sep 23 | Sep 30 | Validation complete; naive and corrected estimates reported side by side | LLM run on the full corpus, confusion matrix overall and by subgroup, naive and corrected estimate |
+| 4 | Sep 16 | Sep 23 | Measurement approach specified; prompt and model documented; LLM run on the full corpus; validation sample designed, drawn, and labeled | codebook, prompt and schema, pilot, full-corpus run, sample design and draw, hand labeling |
+| 5 | Sep 23 | Sep 30 | Validation complete; naive and corrected estimates reported side by side | confusion matrix overall and by subgroup, naive and corrected estimate |
 | 6 | Sep 30 | Oct 7 | **Revised identification memo**; robustness plan | revision of the Week 3 memo, robustness memo |
 | 7 | | Oct 7 | 20-minute presentation; written report due Oct 14 | |
 
@@ -155,30 +155,30 @@ Sep 16, due Sep 23).**
 1. *Measurement approach.* What construct, from which documents, and why an LLM rather
    than a dictionary or a fine-tuned classifier.
 2. *Prompt and model.* The prompt file committed to `prompts/`, the exact model string, the
-   temperature, and the output schema.
-3. *Validation sample, designed and drawn.* One page in `memo/validation-design.md`: the
-   sample size *m* and why, the sampling scheme, the strata if any, and the sampling
-   probability of every unit. Draw the sample, save the seed and the indices, and commit
-   both before anyone labels.
-4. *Validation sample labeled.* By hand, from the document and the codebook only, blind to
+   temperature, and the output schema. The prompt is frozen at this point.
+3. *The LLM run on the full corpus.* Every raw response stored, keyed by document.
+4. *Validation sample, designed and drawn.* One page in `memo/validation-design.md`: the
+   sample size *m* and why, the sampling scheme, stratified on the model's label and your
+   treatment, and the sampling probability of every unit. Draw the sample, save the seed
+   and the indices, and commit both before anyone labels.
+5. *Validation sample labeled.* By hand, from the document and the codebook only, blind to
    the model's output. Two labelers if you can find a second person, so you can report how
    often they agree.
 
-The design is committed before anyone labels and before you see any downstream result; the
-commit timestamp shows the order. Strata may use covariates, a cheap proxy such as a keyword
-flag, or the model's own output; in the last case the prompt is frozen from that point, since
-a sample drawn from one prompt's output cannot validate another. A sample chosen by hand, or
-after a result, has no known probabilities, and the correction cannot use it. Once the
-design is committed, nothing stops you from running the LLM on the full corpus and
-computing the naive estimate before Sep 23; how to correct it is the Week 5 lecture.
+The order is prompt frozen, corpus run, sample drawn and committed, then labels; the commit
+timestamps show it. Stratifying on the model's own output is the default, because the
+model's positives are where a rare construct lives; the conditions are that the
+probabilities are recorded and the prompt does not change afterwards. A sample chosen by
+hand, or after a result, has no known probabilities, and the correction cannot use it.
+Labelers see the document and the codebook only.
 
 **Week 5, validation complete, naive and corrected estimates (assigned Sep 23, due
 Sep 30).**
 
-1. The LLM run on the full corpus, validation units included, with its answers on those
-   units kept.
-2. The confusion matrix, and human–human agreement if more than one person labeled.
-3. The naive and the corrected estimates, side by side.
+1. The confusion matrix, overall and by treatment group, and human–human agreement if more
+   than one person labeled.
+2. The naive estimate: the model's label in the regression, as it is.
+3. The corrected estimate, side by side with the naive one.
 
 The third item is the deliverable. A milestone with only the naive estimate is incomplete
 and is graded as such.

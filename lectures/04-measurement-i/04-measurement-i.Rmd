@@ -91,11 +91,13 @@ If `dadepro` is not a collaborator on the repository, it has not been submitted.
 
 1. **Measurement approach specified.** What construct, from which documents, and why an
    LLM rather than a dictionary or a fine-tuned classifier.
-2. **Prompt and model documented.** The prompt file in `prompts/`, the exact model string,
-   the temperature, the output schema.
-3. **Validation sample designed and drawn.** One page in `memo/validation-design.md`: how
-   many, drawn how, with what probabilities. The seed and the indices committed.
-4. **Validation sample labeled.** By hand, from the document and the codebook only, blind
+2. **Prompt and model documented, and frozen.** The prompt file in `prompts/`, the exact
+   model string, the temperature, the output schema. No changes after step 3.
+3. **The LLM run on the full corpus.** Every raw response stored.
+4. **Validation sample designed and drawn**, stratified on the model's label and your
+   treatment. One page in `memo/validation-design.md`: how many, drawn how, with what
+   probabilities. Seed and indices committed.
+5. **Validation sample labeled.** By hand, from the document and the codebook only, blind
    to the model's output. Two labelers if you can find a second person.
 
 --
@@ -109,21 +111,18 @@ deck and in the course README, under "Milestones in detail."
 
 # Week 5 milestone, due before class on Sep 30
 
-1. **The LLM run on the full corpus**, validation documents included, with its answers on
-   those documents kept.
-2. **The confusion matrix**, overall and by treatment group, and human–human agreement if
+1. **The confusion matrix**, overall and by treatment group, and human–human agreement if
    more than one person labeled.
-3. **The naive and the corrected estimate, side by side.**
+2. **The naive estimate.** The model's label in your regression, as it is.
+3. **The corrected estimate**, side by side with the naive one.
 
 --
 
 <br>
 
 The third item is the deliverable. A milestone with only the naive estimate is incomplete.
-Next week's lecture is about how to compute the corrected one. Everything else on this
-list you can do with today's material, and once your validation design is committed,
-nothing stops you from running the full corpus and computing the naive estimate before
-Sep 23.
+Next week's lecture is about how to compute the corrected one. The first two you can do
+with today's material, as soon as the labeling is done.
 
 ---
 
@@ -135,8 +134,8 @@ Sep 23.
 | 1 | Aug 26 | Repository initialized | folders, `dadepro` added as collaborator |
 | 2 | Sep 2 | Question and data source | one paragraph in the README |
 | 3 | Sep 16 | Data acquired; pipeline reproducible; identification memo | fetch script, cleaning script, memo |
-| **4** | **Sep 23** | **Measurement approach; prompt and model; validation sample designed, drawn, labeled** | **codebook, prompt and schema, pilot, sample design and draw, hand labeling** |
-| 5 | Sep 30 | Validation complete; naive and corrected estimates side by side | LLM run on the full corpus, confusion matrix overall and by subgroup, naive and corrected estimate |
+| **4** | **Sep 23** | **Measurement approach; prompt and model; full-corpus run; validation sample designed, drawn, labeled** | **codebook, prompt and schema, pilot, full-corpus run, sample design and draw, hand labeling** |
+| 5 | Sep 30 | Validation complete; naive and corrected estimates side by side | confusion matrix overall and by subgroup, naive and corrected estimate |
 | 6 | Oct 7 | Revised identification memo; robustness plan | revision of the Week 3 memo, robustness memo |
 | 7 | Oct 7, Oct 14 | Presentation; written report |  |
 ]
@@ -1822,21 +1821,20 @@ Both, and they are the next two milestones.
 
 --
 
-**Week 4, due Sep 23.** Design the validation sample, sized for Job 2: how many, drawn
-how, with what probabilities. Job 2 is the binding constraint, so it sets the number.
-Draw it, commit the design, then label it by hand.
+**Week 4, due Sep 23.** Freeze the prompt and run it on the corpus. Then design the
+validation sample, sized for Job 2: how many, drawn how, with what probabilities. Job 2 is
+the binding constraint, so it sets the number. Draw it, commit the design, label it by hand.
 
 --
 
 **Week 5, due Sep 30.** Both jobs delivered:
 
-1. The LLM run on the full corpus, validation documents included, with its answers kept
-2. The confusion matrix, and human–human agreement if more than one person labeled (Job 1)
-3. The naive and the corrected estimate, side by side (Job 2)
+1. The confusion matrix, and human–human agreement if more than one person labeled (Job 1)
+2. The naive and the corrected estimate, side by side (Job 2)
 
 --
 
-The third item is the deliverable. A milestone with only the naive estimate is
+The corrected estimate is the deliverable. A milestone with only the naive estimate is
 incomplete. Working guidance on the number follows; the estimators are next week.
 
 ---
@@ -1970,26 +1968,25 @@ Survey weights work the same way.
 # What the strata can be
 
 The sample is drawn before anyone labels by hand, so the gold label is never available
-for stratifying. What you do have depends on whether you have run the model yet.
+for stratifying. Two things are.
 
 --
 
-**Before the model run: covariates and proxies.** Treatment group, period, category, from
-the cleaned data. Or a cheap proxy for the construct: a keyword flag, a star rating. It
-need not be accurate; it needs to put most true positives in one stratum so you can
-oversample it. This is the default order, and the one the milestone assumes.
+**The model's own output.** This is the order for your project: freeze the prompt, run it
+on the full corpus, then stratify on its label, crossed with your treatment. Oversample the
+model's positives, and low-confidence cases if you want them. Two conditions: $\pi_i$ is a
+recorded function of that output, and the prompt does not change afterwards.
 
 --
 
-**After the model run: the model's own output.** Freeze the prompt, run it on the full
-corpus, then stratify on its label or its confidence. Allowed on two conditions: $\pi_i$
-is a recorded function of that output, and the prompt does not change afterwards.
-Labelers still see only the document and the codebook.
+**Covariates and proxies.** Treatment group, period, category, from the cleaned data; or a
+keyword flag, a star rating. These are what you have if the sample must be drawn before
+the run. A proxy need not be accurate, only good enough to put most true positives in one
+stratum.
 
 --
 
-Either order works. The rule is about the human labels: the sample is drawn, and its
-probabilities recorded, before anyone reads a document in order to label it.
+Labelers see only the document and the codebook, whichever order you used.
 
 ---
 
@@ -2084,8 +2081,8 @@ them in June, after seeing your results, with no recorded $\pi$.
 
 # Why this is a Week 4 milestone
 
-Your validation sample must be **designed** now, before you run the model on the full
-corpus, before you see any downstream result.
+Your validation sample must be **designed** now, before anyone labels a document and
+before you see any downstream result.
 
 --
 
@@ -2110,37 +2107,29 @@ It is a Week 4 milestone because it cannot be done in Week 6.
 
 # Concretely, this week
 
-1. Decide $m$, sized for Job 2, the corrected regression: 300 is the floor, 500 to 1,000
+1. Freeze the prompt. Run it on the full corpus. Store every raw response.
+
+--
+
+2. Decide $m$, sized for Job 2, the corrected regression: 300 is the floor, 500 to 1,000
    is typical, more if you need the correction within subgroups or the positive class is
    rare. Write the number down and justify it in the memo.
 
 --
 
-2. Decide the scheme. Simple random sample or stratified. If stratified, define the strata and the
+3. Decide the scheme. Stratify on the model's label, crossed with treatment. Define the
    within-stratum probabilities.
 
 --
 
-3. Draw the sample. **Save the seed. Save the indices. Commit both.**
+4. Draw the sample. **Save the seed. Save the indices. Commit both.** Record $\pi_i$ as a
+   column in your data.
 
 --
 
-4. Record $\pi_i$ as a column in your data.
-
---
-
-5. Label the sample by hand, from the document and the codebook only, blind to model output.
-
---
-
-6. When you run the LLM, run it on the validation documents too, and keep those predictions.
-
---
-
-<br>
-
-.small90[Step 6 is often skipped. You need both the truth and the prediction on the same
-units.]
+5. Label the sample by hand, from the document and the codebook only, blind to model
+   output. The model's answers on those documents already exist from step 1; keep them
+   next to the human labels.
 
 ---
 
@@ -2150,13 +2139,11 @@ units.]
 library(data.table)
 set.seed(20260314)          # commit this number
 
-# stratified: oversample the rare positive class as flagged by a cheap pre-screen,
-# here a keyword match; a covariate or the model's own label works the same way
-corpus[, prescreen_flag := grepl("wait|minutes", text, ignore.case = TRUE)]
-corpus[, stratum := fifelse(prescreen_flag, "likely_positive", "likely_negative")]
+# stratified: the model's label, crossed with treatment. Oversample model positives.
+corpus[, stratum := paste0("t", treated, "_m", llm_label)]
 
 # YOU choose these. Write them in the paper.
-target <- c(likely_positive = 300, likely_negative = 300)
+target <- c(t0_m0 = 100, t0_m1 = 200, t1_m0 = 100, t1_m1 = 200)
 
 corpus[, pi := target[stratum] / .N, by = stratum]            # known sampling probability
 val <- corpus[, .SD[sample(.N, target[.BY$stratum])], by = stratum]
@@ -2421,12 +2408,12 @@ corrections exist for.
 
 # The validation study, summarized
 
-1. Design and commit the sample **before** anyone labels and before any result
-2. Known, recorded $\pi_i$ for every document
-3. Draw from the analysis frame, not a convenient subsample
-4. Humans first: two coders, $\kappa$ or $\alpha$, blind
-5. Hundreds of labels, stratified if the class is rare
-6. Run the LLM on the same units and keep both
+1. Freeze the prompt and run it on the corpus; keep every raw response
+2. Design and commit the sample **before** anyone labels and before any result
+3. Known, recorded $\pi_i$ for every document, stratified on the model's label
+4. Draw from the analysis frame, not a convenient subsample
+5. Humans first: two coders, $\kappa$, blind to the model's output
+6. Hundreds of labels, more if the class is rare
 7. Confusion matrix, overall and by subgroup
 
 --
@@ -2899,8 +2886,8 @@ Three years ago that was months of infrastructure. Now it is a week.
 
 # Suppose you did all of it
 
-You wrote a careful prompt. You hand-labeled 500 documents, drawn as a stratified sample
-with recorded $\pi_i$, before you ran anything on the full corpus.
+You wrote a careful prompt and ran it on all 200,000 documents. You hand-labeled 500 of
+them, drawn as a stratified sample with recorded $\pi_i$, blind to the model's answers.
 
 --
 
@@ -2919,7 +2906,7 @@ Your classifier agrees with the gold standard **88%** of the time. Precision 0.8
 
 <br>
 
-You ran it on all 200,000 documents. You have your variable.
+You have your variable.
 
 ---
 
@@ -3021,34 +3008,39 @@ rather than a dictionary or a fine-tuned classifier.
 
 --
 
-**2. Prompt and model documented.** The prompt file committed to `prompts/`. The exact
-model string. Temperature. Output schema.
+**2. Prompt and model documented, and frozen.** The prompt file committed to `prompts/`.
+The exact model string. Temperature. Output schema.
 
 --
 
-**3. Validation sample designed and drawn.** $m$, the scheme, the strata if any, the
-probabilities $\pi_i$, in one page in `memo/validation-design.md`. Seed and indices
-committed.
+**3. The LLM run on the full corpus.** Every raw response stored.
 
 --
 
-**4. Validation sample labeled.** By hand, from the document and the codebook only, blind
+**4. Validation sample designed and drawn**, stratified on the model's label and your
+treatment. $m$, the probabilities $\pi_i$, one page in `memo/validation-design.md`. Seed
+and indices committed.
+
+--
+
+**5. Validation sample labeled.** By hand, from the document and the codebook only, blind
 to the model's output. Two labelers if you can find a second person.
 
 ---
 
 # Commit the design before you label
 
-The order matters more than the calendar.
+The order matters more than the calendar: prompt frozen, corpus run, sample drawn and
+committed, then labels.
 
 --
 
 <br>
 
 A sample chosen by hand, or after you have seen a result, has no known probabilities,
-and the correction cannot use it. Stratifying on the model's output is fine if the
-probabilities are recorded and the prompt is frozen. The commit timestamp on the design
-is what shows the order was right.
+and the correction cannot use it. Stratifying on the model's output is fine: the
+probabilities are recorded and the prompt is frozen. The commit timestamps are what show
+the order was right.
 
 --
 

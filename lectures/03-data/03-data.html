@@ -302,7 +302,7 @@ With the example's 40,000 reviews:
 | Set | How chosen | Human label | Model label | In the analysis |
 |:--|:--|:--|:--|:--|
 | Development set, 30 | any way | during the pilot | yes, final prompt | yes |
-| Validation sample, 300 | at random from the other 39,970, probability recorded | yes, blind | yes, final prompt | yes |
+| Validation sample, 300 | stratified on the model's answer, probability recorded | yes, blind | yes, final prompt | yes |
 | Everything else, 39,670 | the rest | no | yes, final prompt | yes |
 ]
 
@@ -321,20 +321,20 @@ reviews are kept out of the validation sample only, because the prompt was tuned
 
 # If you want to start measurement early: the validation sample
 
-**4. Design the validation sample.** How many, drawn how, and each document's probability
-of being drawn, written down. Save the seed and the indices, and commit them. Before
-Week 4: a simple random sample of a few hundred, and a note saying so.
+**4. Run the final prompt once over everything**, and keep every answer. The model's
+answers are what you stratify on next.
 
 --
 
-**5. Label the sample by hand**, from the document and the codebook only. Two labelers if
-you can find a second person, so you can report how often they agree.
+**5. Design and draw the validation sample.** How many, drawn how, and each document's
+probability of being drawn, written down: for example 150 from the reviews the model
+called 1 and 150 from the ones it called 0. Save the seed and the indices, and commit them.
 
 --
 
-**6. Run the final prompt once over the validation sample and everything else**, and keep
-the model's answers for the validation documents. The correction compares the two labels
-there and uses the model's labels on the rest.
+**6. Label the sample by hand**, from the document and the codebook only, without looking
+at the model's answer. Two labelers if you can find a second person, so you can report how
+often they agree.
 
 --
 
@@ -358,12 +358,14 @@ Schema     mentions_wait: one of 1 / 0 / unknown
 Pilot      30 reviews. Two disagreements led to adding "for service" to
            the question. Prompt v2 committed.
 
-Sample     300 reviews, simple random from the 40,000 in the project
-           minus the 30 pilot reviews, seed 20260909, indices in
-           validation/sample.csv, probability 300 / 39,970 for each
+Run        prompt v2 on all 40,000; keep every answer
+
+Sample     300 reviews from the 39,970 outside the pilot: 150 drawn from
+           the ones prompt v2 called 1, 150 from the ones it called 0,
+           seed 20260909, indices in validation/sample.csv, probability
+           recorded per stratum
 
 Labels     two of you, from the review and the codebook only
-Run        prompt v2 on all 40,000; keep its answers for the 300
 ```
 
 ---
@@ -372,9 +374,10 @@ Run        prompt v2 on all 40,000; keep its answers for the 300
 
 --
 
-**Running the model on everything first, then choosing a validation sample from the
-results.** The sample has to be designed before the run, with its probabilities recorded.
-A sample chosen afterwards has no known probabilities and the correction cannot use it.
+**Choosing the validation sample by hand from the model's results.** Stratifying on the
+model's answer is fine, with the probabilities recorded. Picking the documents that look
+interesting, or uncertain, without recorded probabilities, is not: the correction cannot
+use them.
 
 --
 
