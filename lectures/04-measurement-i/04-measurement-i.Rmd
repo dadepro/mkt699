@@ -1788,7 +1788,9 @@ instrument.
 
 A few hundred labels are enough for this. Accuracy is a proportion estimated from 500
 draws, so its standard error is $\sqrt{0.88 \times 0.12 / 500} \approx 0.015$: the 88% is
-known to within about $\pm 3$ points, and 2,000 labels would only halve that.
+known to within about $\pm 3$ points. Four times the labels, 2,000, would get you to
+$\pm 1.5$. For describing the instrument, more labels buy little. The reason to label more
+is Job 2.
 
 ---
 
