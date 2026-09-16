@@ -101,8 +101,8 @@ If `dadepro` is not a collaborator on the repository, it has not been submitted.
 4. **Validation sample designed and drawn**, stratified on the model's label and your
    treatment. One page in `memo/validation-design.md`: how many, drawn how, with what
    probabilities. Seed and indices committed.
-5. **Validation sample labeled.** By hand, from the document and the codebook only, blind
-   to the model's output. Two labelers if you can find a second person.
+5. **Validation sample labeled.** By hand, from a file with the id and the text only, no
+   stratum, no model label. Two labelers if you can find a second person.
 
 --
 
@@ -1996,7 +1996,10 @@ stratum.
 
 --
 
-Labelers see only the document and the codebook, whichever order you used.
+You drew the sample, so you know the model's label for every document in it. Blindness is
+mechanical: the labeling file has the document id and the text, shuffled, nothing else. The
+stratum, the model's label and `\(\pi_i\)` stay in the sample file and are joined back by id
+after labeling.
 
 ---
 
@@ -2138,9 +2141,9 @@ It is a Week 4 milestone because it cannot be done in Week 6.
 
 --
 
-5. Label the sample by hand, from the document and the codebook only, blind to model
-   output. The model's answers on those documents already exist from step 1; keep them
-   next to the human labels.
+5. Export a labeling file: document id and text, shuffled, nothing else. Label it by hand
+   from the codebook. Join the labels back to the sample file by id, next to the model's
+   answers from step 1.
 
 ---
 
@@ -2433,7 +2436,7 @@ corrections exist for.
 2. Design and commit the sample **before** any human labels and before any result
 3. Known, recorded `\(\pi_i\)` for every document, stratified on the model's label
 4. Draw from the analysis frame, not a convenient subsample
-5. Humans first: two coders, `\(\kappa\)`, blind to the model's output
+5. Humans first: two coders, `\(\kappa\)`, labeling a file with id and text only
 6. Hundreds of labels, more if the class is rare
 7. Confusion matrix, overall and by subgroup
 
@@ -3044,8 +3047,8 @@ and indices committed.
 
 --
 
-**5. Validation sample labeled.** By hand, from the document and the codebook only, blind
-to the model's output. Two labelers if you can find a second person.
+**5. Validation sample labeled.** By hand, from a file with the id and the text only, no
+stratum, no model label. Two labelers if you can find a second person.
 
 ---
 

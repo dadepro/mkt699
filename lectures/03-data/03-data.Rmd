@@ -328,8 +328,8 @@ called 1 and 150 from the ones it called 0. Save the seed and the indices, and c
 
 --
 
-**6. Label the sample by hand**, from the document and the codebook only, without looking
-at the model's answer. Two labelers if you can find a second person, so you can report how
+**6. Label the sample by hand**, from a file that holds the id and the text only, shuffled,
+so the model's answer and the stratum are not in front of you. Two labelers if you can find a second person, so you can report how
 often they agree.
 
 --
