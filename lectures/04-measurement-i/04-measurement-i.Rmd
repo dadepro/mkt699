@@ -2510,7 +2510,9 @@ arXiv:2509.08825.
 
 <br>
 
-The scale of the exercise is large.
+What they did: take published studies that used an LLM to annotate text, redo the
+annotation with other models and other reasonable prompts, re-run each paper's statistical
+test, and count how often the paper's conclusion changes.
 
 ---
 
