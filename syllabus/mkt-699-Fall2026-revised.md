@@ -92,7 +92,7 @@ There is no set book for this section of the course. The lecture slides are deta
 - Designing a validation study: what to validate against, how much gold-standard data to collect, and how to sample it
 - **Prompt sensitivity as a researcher degree of freedom**: the direct analogue of specification search
 
-*Assignment 1 due. Assignment 2 released: measurement and validation exercise (due Week 6).*
+*Assignment 1 due. Assignment 2 released: each student presents one of the Week 5 papers, in class on Sep 23.*
 
 *Papers:*
 
@@ -112,6 +112,9 @@ There is no set book for this section of the course. The lecture slides are deta
 - Training-data leakage: when the LLM has already seen your outcome
 - Simulated respondents and "silicon sampling": what it can and cannot deliver
 - Practical guidance: how to write the measurement section of a paper that uses an LLM, and what referees will ask
+
+
+*Assignment 2: paper presentations in class, 15 minutes each.*
 
 *Papers:*
 
@@ -135,8 +138,6 @@ There is no set book for this section of the course. The lecture slides are deta
 - Experiments in industry settings: A/B testing at scale, false discovery, incrementality and ghost ads
 - Null results, publication bias, and what to do when the effect is not there
 - Journal policies, replication, and dealing with reviewers
-
-*Assignment 2 due.*
 
 *Papers:*
 
@@ -240,8 +241,8 @@ These are not required weekly readings. They are background for anyone whose mea
 | 2 | Sep 2 | **AI-assisted analysis and the verification problem**: AI coding assistants for research tasks; failure modes; defensive workflow and testing; data manipulation and visualization | **Assignment 1 out**; project question |
 | 3 | Sep 9 | **Data acquisition, storage, and provenance**: SQL and databases; APIs and scraping; LLM-based extraction from unstructured sources; documentation and sharing | Identification memo |
 | 4 | Sep 16 | **LLMs as measurement instruments I**: annotation and classification; validation design; prompt sensitivity as researcher degrees of freedom | **Assignment 1 due**; **Assignment 2 out**; measurement plan |
-| 5 | Sep 23 | **LLMs as measurement instruments II**: inference with generated variables; DSL, prediction-powered inference, bias correction; silicon sampling and its limits | Validation complete |
-| 6 | Sep 30 | **Credibility**: specification search with cheap analysis; pre-registration; experiments, false discovery, incrementality; null results; journals and reviewers | **Assignment 2 due**; revised identification memo |
+| 5 | Sep 23 | **LLMs as measurement instruments II**: inference with generated variables; DSL, prediction-powered inference, bias correction; silicon sampling and its limits | **Assignment 2: paper presentations**; validation complete |
+| 6 | Sep 30 | **Credibility**: specification search with cheap analysis; pre-registration; experiments, false discovery, incrementality; null results; journals and reviewers | Revised identification memo |
 | 7 | Oct 7 | **Project presentations** | Presentation + report |
 
 ---
@@ -416,7 +417,8 @@ Each half of the course will be evaluated by the respective instructors. The fin
 
 | | Points | % of Grade |
 |---|---|---|
-| 2 Programming assignments | 20 | 20% |
+| Assignment 1, programming | 10 | 10% |
+| Assignment 2, paper presentation | 10 | 10% |
 | Semester project, presentation and report | 55 | 55% |
 | Project milestones | 15 | 15% |
 | Class participation | 10 | 10% |

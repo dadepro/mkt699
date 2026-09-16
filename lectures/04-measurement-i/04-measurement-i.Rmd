@@ -3076,6 +3076,30 @@ and the one written in the language of your econometrics sequence.
 Read Egami et al. carefully, and its section on the sampling design twice: it is today's
 lecture from the other side. The others for the framing.
 
+
+---
+
+# Assignment 2: present one of them
+
+No second programming assignment. Each of you presents one paper next week, Sep 23:
+Egami et al., Angelopoulos et al., Battaglia et al., or Wang, Zhang & Zhang. Who gets
+which, by email today. Ludwig et al. everyone reads; I cover it.
+
+--
+
+**Fifteen minutes, then five of questions.** In this order:
+
+1. The problem: what breaks when the generated variable goes into the regression
+2. The setup: what is observed on the corpus, what on the gold sample, how it was drawn
+3. The estimator: what it computes, what it needs from you, what it assumes
+4. What it delivers: bias, standard errors, when it fails
+5. Your project: how you would apply it, with your actual sample sizes. One slide.
+
+--
+
+Slides committed under `presentations/paper/` before class. Graded on whether a classmate
+could apply the method from your talk. Full specification in `assignments/`.
+
 ---
 class: inverse, center, middle
 

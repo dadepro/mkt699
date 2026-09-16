@@ -4,17 +4,17 @@
 |:--|:--|:--|--:|
 | [Lab 2, Find the bugs](lab-02-broken-analysis/) | | in class, Week 2 (Sep 2) | ungraded, participation |
 | [Assignment 1, Reproducible data pipeline](assignment-01-pipeline.md) | Week 2 (Sep 2) | Week 4 (Sep 16) | 10% |
-| [Assignment 2, Measuring service complaints with an LLM](assignment-02-measurement.md) | Week 4 (Sep 16) | Week 6 (Sep 30) | 10% |
+| [Assignment 2, Present one of the Week 5 papers](assignment-02-paper-presentation.md) | Week 4 (Sep 16) | in class, Week 5 (Sep 23) | 10% |
 
-Each assignment is released after the lecture covering the material it needs, and you get
-two weeks.
+Assignment 1 is released after the lecture covering the material it needs, with two weeks
+to do it. Assignment 2 is a paper presentation the week after it is assigned.
 
 The semester project runs in parallel with its own weekly milestones, see the
 [syllabus](../syllabus/).
 
 ## Data
 
-All assignments use the Yelp LA County data on the course server:
+Assignment 1 and Lab 2 use the Yelp LA County data on the course server:
 
 ```
 host:     <given in class>   (USC network or VPN required)

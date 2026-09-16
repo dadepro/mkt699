@@ -250,7 +250,7 @@ Statistical packages for generated-variable inference:
 
 ```
 lectures/     xaringan slide decks, one directory per week
-assignments/  the two programming assignments and their data
+assignments/  Assignment 1 (programming), Assignment 2 (paper presentation), Lab 2
 project/      semester project instructions, templates, and milestone specs
 syllabus/     the course syllabus
 ```
