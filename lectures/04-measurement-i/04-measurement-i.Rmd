@@ -1769,8 +1769,6 @@ complaint. You hand-label 500 of them.
 
 --
 
-<br>
-
 You compare the two columns on those 500. The LLM agrees with you 88% of the time,
 precision 0.86, recall 0.90. That 2×2 goes in the measurement section of the paper.
 
