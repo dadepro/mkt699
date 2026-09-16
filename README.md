@@ -164,9 +164,11 @@ Sep 16, due Sep 23).**
    the model's output. Two labelers if you can find a second person, so you can report how
    often they agree.
 
-The design is committed before you run the model on the full corpus, before you label, and
-before you see any downstream result; the commit timestamp shows the order. A sample chosen
-after any of those has no known probabilities, and the correction cannot use it. Once the
+The design is committed before anyone labels and before you see any downstream result; the
+commit timestamp shows the order. Strata may use covariates, a cheap proxy such as a keyword
+flag, or the model's own output; in the last case the prompt is frozen from that point, since
+a sample drawn from one prompt's output cannot validate another. A sample chosen by hand, or
+after a result, has no known probabilities, and the correction cannot use it. Once the
 design is committed, nothing stops you from running the LLM on the full corpus and
 computing the naive estimate before Sep 23; how to correct it is the Week 5 lecture.
 
