@@ -2345,8 +2345,8 @@ It fails silently: the number still prints.
 
 # The practical rule
 
-.large2[Draw the validation sample from the **exact frame you will analyze**, at the
-**same time** you draw the analysis sample.]
+.large2[Draw the validation sample from the **exact frame you will analyze**: the cleaned
+corpus the model ran on, with every filter already applied.]
 
 --
 
