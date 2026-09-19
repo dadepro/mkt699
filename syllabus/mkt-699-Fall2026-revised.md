@@ -92,7 +92,7 @@ There is no set book for this section of the course. The lecture slides are deta
 - Designing a validation study: what to validate against, how much gold-standard data to collect, and how to sample it
 - **Prompt sensitivity as a researcher degree of freedom**: the direct analogue of specification search
 
-*Assignment 1 due. Assignment 2 released: each student presents one of the Week 5 papers, in class on Sep 23.*
+*Assignment 1 due. Assignment 2 released: each student presents one of the three Week 5 methods papers, in class on Sep 23.*
 
 *Papers:*
 
