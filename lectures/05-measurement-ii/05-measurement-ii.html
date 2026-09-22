@@ -741,7 +741,7 @@ Moving the generated variable from the right side to the left side does not save
 |:--|:--|:--|
 | `\(E[u] = 0\)` | assumed | fails (binary) |
 | `\(u \perp D\)` | assumed | fails (binary) |
-| `\(u \perp X\)` | assumed | **fails (hardness)** |
+| `\(u \perp X\)` | assumed | **fails: errors cluster on hard cases, and hard is correlated with `\(X\)`** |
 | Bias in `\(\hat\beta\)` (regressor) | toward zero | any direction |
 | Bias in `\(\hat\beta\)` (outcome) | none | any direction |
 | Correct SEs from `lm()` | yes | no |
