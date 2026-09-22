@@ -960,11 +960,6 @@ errors line up with the treatment**.
 .large2[Accuracy is a property of the classifier. Bias is a property of the classifier
 *and* the research design.]
 
---
-
-<br>
-
-You cannot read the second off the first. Ever.
 
 ---
 
