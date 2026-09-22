@@ -988,9 +988,10 @@ proportions on 250 per group has a standard error of about **0.04**, five times 
 
 <br>
 
-So the honest answer is roughly $-0.10 \pm 0.08$. Wider, and it contains the truth. The
-naive answer is $0.00 \pm 0.016$. Tight, and wrong. That is Job 2 from last week: the
-gold sample carries the standard error, which is why its size matters.
+Two 95% intervals. Corrected, using the gold labels: about $-0.10 \pm 0.08$, that is
+$1.96 \times 0.04$; wide, and it contains the truth. Naive: $0.00 \pm 0.016$; tight, and
+wrong. That is Job 2 from last week: the gold sample carries the standard error, which is
+why its size matters.
 
 ---
 
