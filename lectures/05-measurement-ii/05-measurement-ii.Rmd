@@ -758,17 +758,19 @@ name: worked
 
 # The setup
 
-You study whether a platform's **verified purchase badge** changes what people write.
+You study whether **verified purchasers** write negative reviews less often than
+unverified ones.
 
 --
 
-Treatment: $X_i = 1$ if the review is from a verified purchaser.
+Treatment: $X_i = 1$ if the review carries the verified-purchase badge. The platform
+records it; no measurement needed.
 
-Outcome: $D_i = 1$ if the review is **negative**.
+Outcome: $D_i = 1$ if the review is **negative**. Nobody records this. An LLM reads each
+review and returns 1 or 0; that output is the **label**, $\widehat{D}_i$. The generated
+variable is the outcome, not the regressor.
 
 --
-
-<br>
 
 You have no human labels at scale, so you use a classifier. It happens to be an LLM;
 nothing below depends on that.
