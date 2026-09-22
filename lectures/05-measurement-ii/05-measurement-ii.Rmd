@@ -1047,9 +1047,6 @@ Egami, Hinck, Stewart & Wei (2023), "Using Imperfect Surrogates for Downstream I
 
 Design-based supervised learning
 
-<br>
-
-Fifteen minutes, then five of questions.
 
 ---
 
@@ -1148,9 +1145,6 @@ Angelopoulos, Bates, Fannjiang, Jordan & Zrnic (2023), "Prediction-Powered Infer
 
 Prediction-powered inference
 
-<br>
-
-Fifteen minutes, then five of questions.
 
 ---
 
@@ -1278,9 +1272,6 @@ Battaglia, Christensen, Hansen & Sacher, "Inference for Regressions with Variabl
 
 Bias-corrected inference for generated regressors
 
-<br>
-
-Fifteen minutes, then five of questions.
 
 ---
 
