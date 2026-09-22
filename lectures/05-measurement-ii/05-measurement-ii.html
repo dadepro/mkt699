@@ -134,7 +134,8 @@ quality* versus something else.
 
 --
 
-You hand-labeled 500 of them yourself. You checked inter-rater reliability with an RA.
+You ran it on all 50,000, drew 500 of them stratified on the model's label, and
+hand-labeled those yourself. You checked inter-rater reliability with an RA.
 
 --
 
@@ -159,7 +160,7 @@ than the sentiment dictionaries this literature ran on for fifteen years.
 
 &lt;br&gt;
 
-You run the LLM on all 50,000 reviews. You now have a variable.
+You now have a variable on all 50,000 reviews.
 
 --
 
@@ -1452,13 +1453,19 @@ You present in May, and someone asks about measurement error.
 
 --
 
-You go back in June and hand-label 500 documents "to validate."
+You go back in June, pick 500 documents that look representative, and hand-label them
+"to validate."
 
 --
 
 &lt;br&gt;
 
 .large2[Those 500 labels cannot fix your estimates.]
+
+--
+
+Not because you annotated first. Because you chose them by hand, after the results,
+with no recorded probability.
 
 ---
 
@@ -1559,28 +1566,32 @@ The software will be different in three years. This will not be.
 
 # What to do, concretely
 
-**Before** you run the LLM on your full sample:
+The order, and the commit timestamps are the evidence:
 
 --
 
-1. Decide how many documents you will hand-label. Budget for 300–1,000.
+1. Freeze the prompt. Run it on the full corpus. Keep every raw response.
 
 --
 
-2. Decide the sampling scheme. Write it down. SRS is fine. Stratified is often better
-   just record the strata and the probabilities.
+2. Decide how many documents you will hand-label. Budget for 300–1,000, more if the
+   class is rare or you need the correction within subgroups.
 
 --
 
-3. Draw the sample. Save the indices. Save the seed.
+3. Decide the sampling scheme. Stratify on the model's label, crossed with treatment;
+   record the strata and the probabilities. Draw the sample. Save the indices. Save
+   the seed. Commit all of it before anyone labels.
 
 --
 
-4. Label them. Blind to model output if you can.
+4. Label, from a file with the id and the text only. No stratum, no model label in
+   front of the labeler.
 
 --
 
-5. Run the LLM on the validation sample too, and keep those predictions.
+5. The model's answers on the validation documents already exist from step 1. Keep them
+   next to the human labels; the correction needs both on the same units.
 
 --
 
@@ -2353,10 +2364,13 @@ Two failure modes I expect to see this week:
 
 &lt;br&gt;
 
-**"I already annotated everything and didn't draw a validation sample."**
+**"I ran the model on everything and then picked the documents to check by hand."**
 
-Come talk to me. Depending on your setting we can sometimes draw a valid sample now. But
-we need to do it before you look at any more results.
+Picked how? If you chose them because they looked interesting or uncertain, they are not
+a sample and the correction cannot use them. But the fix is cheap: draw a fresh sample
+now from the full corpus, stratified on the model's label with the probabilities
+recorded, and label that. The design only has to precede the human labels and any
+result you have looked at.
 
 --
 
@@ -2364,7 +2378,8 @@ we need to do it before you look at any more results.
 
 **"My construct is too rare for random sampling to work."**
 
-Stratify. Bring me your sampling frame and we will design it together.
+Stratify on the model's positives. Bring me your sampling frame and we will design it
+together.
 
 ---
 
