@@ -744,8 +744,6 @@ Moving the generated variable from the right side to the left side does not save
 
 --
 
-<br>
-
 All three assumptions fail. The first two fail for any binary label and give you the
 familiar bias toward zero. The row in bold is what turns "toward zero" into "any
 direction," and it is the one no textbook correction handles.
