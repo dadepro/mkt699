@@ -974,28 +974,38 @@ You would conclude the badge has no effect, and you would conclude it *precisely
 
 ---
 
-# Why the standard error is so small, and what an honest one looks like
+# The corrected estimate and its standard error
 
-`lm()` treats the 10,000 labels as data. Its standard error measures sampling noise in
-10,000 observed outcomes, and nothing else. It knows nothing about the 700 reviews the
-model got wrong, or about which group they sit in.
+**Where the naive 0.008 comes from.** `lm()` treats the 10,000 model labels as if they
+were the truth. Its standard error is the sampling noise in 10,000 outcomes, nothing more.
+The 700 wrong labels are invisible to it.
+
+--
+
+**Where the corrected estimate gets its uncertainty.** The correction uses the 500 gold
+labels, 250 per group, to estimate how many negatives the model misses in each group, and
+adds them back. That estimate is what carries the uncertainty. With true rates 0.30 and
+0.20:
+`$$\text{SE} \approx \sqrt{\tfrac{0.30 \times 0.70}{250} + \tfrac{0.20 \times 0.80}{250}} \approx 0.04$$`
+The 9,500 model labels sharpen this a little. The order of magnitude is set by 500.
+
+---
+
+# The two answers, side by side
+
+.small90[
+| | Estimate | SE | 95% interval | Contains `\(-0.10\)`? |
+|:--|--:|--:|:--|:--|
+| Naive, 10,000 model labels | `\(0.00\)` | `\(0.008\)` | `\(-0.016\)` to `\(+0.016\)` | no |
+| Corrected, 500 gold labels | `\(\approx -0.10\)` | `\(\approx 0.04\)` | `\(-0.18\)` to `\(-0.02\)` | yes |
+]
 
 --
 
 &lt;br&gt;
 
-The corrected estimate leans on the 500 gold labels, 250 per group. A difference in
-proportions on 250 per group has a standard error of about **0.04**, five times the naive
-0.008; the 9,500 model labels sharpen it somewhat, but this is the order of magnitude.
-
---
-
-&lt;br&gt;
-
-Two 95% intervals. Corrected, using the gold labels: about `\(-0.10 \pm 0.08\)`, that is
-`\(1.96 \times 0.04\)`; wide, and it contains the truth. Naive: `\(0.00 \pm 0.016\)`; tight, and
-wrong. That is Job 2 from last week: the gold sample carries the standard error, which is
-why its size matters.
+Five times wider, and right. That is Job 2 from last week: the gold sample carries the
+standard error, which is why its size matters.
 
 ---
 
