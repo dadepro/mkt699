@@ -1575,9 +1575,9 @@ The order, and the commit timestamps are the evidence:
 
 --
 
-3. Decide the sampling scheme. Stratify on the model's label, crossed with treatment;
-   record the strata and the probabilities. Draw the sample. Save the indices. Save
-   the seed. Commit all of it before anyone labels.
+3. Stratify on the model's label, crossed with treatment; record the strata and the
+   probabilities. Draw the sample, save the seed and the indices, commit them before
+   anyone labels.
 
 --
 
@@ -1588,13 +1588,6 @@ The order, and the commit timestamps are the evidence:
 
 5. The model's answers on the validation documents already exist from step 1. Keep them
    next to the human labels; the correction needs both on the same units.
-
---
-
-<br>
-
-Five steps. Two hours of thinking. It is the difference between a publishable design and
-an unpublishable one.
 
 ---
 
