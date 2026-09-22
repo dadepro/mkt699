@@ -928,8 +928,6 @@ verified negatives are.
 
 --
 
-<br>
-
 $$\hat\beta = 0.19 - 0.15 = +0.04$$
 
 --
