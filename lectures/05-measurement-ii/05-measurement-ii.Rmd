@@ -1515,8 +1515,9 @@ $$\hat\beta_{\text{corrected}} = \tilde p_1 - \tilde p_0 = -0.10$$
 
 --
 
-**Standard error.** $\hat p_g$ comes from 5,000 labels and is nearly exact. $\bar e_g$ is a
-proportion estimated from $m_g = 250$ draws, so it carries the uncertainty:
+**Standard error.** $\hat p_g$ is a proportion from 5,000 labels: its own standard error
+is $\sqrt{0.18 \times 0.82 / 5{,}000} = 0.005$, small next to the correction's. $\bar e_g$ is a
+proportion from $m_g = 250$ draws, and it carries the uncertainty:
 $$\text{SE} = \sqrt{\tfrac{\bar e_0(1-\bar e_0)}{250} + \tfrac{\bar e_1(1-\bar e_1)}{250}}
 = \sqrt{\tfrac{0.12 \times 0.88}{250} + \tfrac{0.02 \times 0.98}{250}} \approx 0.02$$
 
