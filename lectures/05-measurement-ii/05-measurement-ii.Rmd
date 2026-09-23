@@ -1380,6 +1380,55 @@ misclassification pattern that gets removed.
 
 ---
 
+# Battaglia et al.'s logic
+
+Regress $Y$ on the model's binary label $\hat\theta_i$ and controls. Their asymptotics let
+the classifier get better as $n$ grows, so misclassification and sampling noise stay
+comparable. That is the regime you are in: a good classifier on a large corpus.
+
+--
+
+**Result.** The naive OLS coefficient has a first-order bias, driven by the classifier's
+false-positive rate scaled by $\sqrt{n}$. But the OLS standard error is **correct**. The
+interval has the right width and the wrong center. That is not Pagan's generated-regressor
+problem, where the width is what goes wrong.
+
+--
+
+**Correction.** Estimate the false-positive rate on a subsample, then rescale:
+
+$$\hat\gamma^{\,bc} \;=\; \Big(1 + \hat\kappa\, \tfrac{\sum_i \hat\theta_i(1-\hat\theta_i)/\sqrt{n}}{\sum_i (\hat\theta_i-\bar\theta)^2}\Big)\,\hat\gamma,
+\qquad \hat\kappa = \sqrt{n}\,\widehat{\text{FPR}}$$
+
+Confidence interval: $\hat\gamma^{\,bc} \pm 1.96 \times$ the OLS standard error, with a
+finite-sample adjustment for having estimated the false-positive rate from $m$ documents.
+
+---
+
+# What Battaglia et al. need, and do not need
+
+**Do not need a full validation sample.** The false-positive rate only needs the documents
+the model labeled positive. In their remote-work application, a subsample of 1,000 postings
+contained 26 model positives; those 26 were inspected, not 1,000. And $m$ can be tiny
+relative to $n$; DSL and PPI are proved for $m$ comparable to $n$.
+
+--
+
+**Do assume the classifier's errors are unrelated to the controls.** Their baseline
+condition is $E[(\hat\theta_i - \theta_i)\, q_i] = 0$. The badge example violates it: the
+misses are sarcastic reviews, and sarcasm is correlated with the treatment. That is the
+case DSL is built for, and why DSL is the default for your projects.
+
+--
+
+**A second route with no labels at all.** Joint maximum likelihood of the regression and
+the model linking text to the latent variable, estimated by Hamiltonian Monte Carlo. Needs
+a model of how the text is generated; no human label anywhere.
+
+Python package: `ValidMLInference`.
+
+---
+
 # Which one should you use?
 
 For your project: **DSL**, unless you have a reason.
@@ -1400,15 +1449,17 @@ For your project: **DSL**, unless you have a reason.
 
 PPI if you are working in Python.
 
-Battaglia et al. if your setting is a standard econometric model and you want the
-econometrics-native treatment.
+Battaglia et al. if your setting is a standard econometric model, you can defend
+errors unrelated to the controls, and you can only afford to inspect the model's positives.
 
 ---
 
 # Back to the badge example: the corrected estimate
 
-The naive regression gave $\hat\beta = 0.00$ with a standard error of $0.008$. Now
-run DSL, or PPI, with the 500 gold labels.
+The naive regression gave $\hat\beta = 0.00$ with a standard error of $0.008$. Now run
+**DSL** with the 500 gold labels: in each group the gold labels show how many negatives
+the model missed (40% of them among unverified, 10% among verified), and the corrected
+label adds them back, weighted by $1/\pi_i$. PPI gives the same order of magnitude.
 
 **Where the corrected estimate gets its uncertainty.** The correction uses the 500 gold
 labels, 250 per group, to estimate how many negatives the model misses in each group, and
