@@ -1526,15 +1526,15 @@ real data, which is the validation sample.]
 
 --
 
-&lt;br&gt;
+Three things follow:
 
-Once you think of it this way, the design implications are obvious.
-
---
-
-&lt;br&gt;
-
-Which brings us to the part of the lecture that actually matters.
+- **The validation sample is your dataset**, so its design is your research design. Its
+  size sets the standard error; its sampling scheme is what makes the correction valid;
+  it has to come from the frame you analyze.
+- **Spend the labeling budget where the correction needs it**: on the model's positives
+  and inside the treatment cells, not spread evenly over easy negatives.
+- **A better prompt does not rescue a bad validation sample.** It only shrinks the
+  correction. A sample with unknown probabilities is unusable at any accuracy.
 
 ---
 class: inverse, center, middle
