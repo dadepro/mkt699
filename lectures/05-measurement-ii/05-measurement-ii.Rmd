@@ -1497,9 +1497,11 @@ Average it over the gold sample of each group:
 $$\bar e_g = \frac{1}{m_g}\sum_{i \in g,\ R_i = 1} e_i
 \qquad \bar e_0 = \tfrac{30}{250} = 0.12, \quad \bar e_1 = \tfrac{5}{250} = 0.02$$
 
-In expectation the 250 unverified gold reviews contain 75 negatives, 30 of them missed;
-the verified ones 50, with 5 missed. $\bar e_g$ estimates the share of group $g$ the model
-undercounts.
+Where 30 and 5 come from: the gold sample is a random 5% of each group, so in expectation
+it holds 5% of everything in it. $600 \times 0.05 = 30$ missed negatives among unverified,
+$100 \times 0.05 = 5$ among verified. A real draw gives 26 or 34 rather than 30; that
+variation is the standard error in step 3. $\bar e_g$ estimates the share of group $g$ the
+model undercounts.
 
 ---
 
