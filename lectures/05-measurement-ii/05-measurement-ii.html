@@ -1110,22 +1110,28 @@ from the same equation and carry both sources of noise: the sample, and the corr
 
 # Why "supervised"
 
-`\(\widehat{Y}_i\)` need not be the raw LLM label.
+In the formula, `\(\widehat{Y}_i\)` is any prediction of the true label. It need not be the
+LLM's 0 or 1.
 
 --
 
-&lt;br&gt;
-
-DSL first fits `\(Y\)` on the LLM label and `\(X\)` in the gold sample, and uses that fitted value
-as `\(\widehat{Y}_i\)` everywhere. A better `\(\widehat{Y}\)` makes the corrections smaller and
-the estimate more precise.
+**The supervised step.** In the gold sample, where `\(Y_i\)` is known, fit a small model of
+`\(Y_i\)` on the LLM's label and `\(X_i\)`. Use its fitted value as `\(\widehat{Y}_i\)` for every
+document.
 
 --
 
-&lt;br&gt;
+**In the badge example.** The raw label is 0 for every review the model did not flag. The
+gold sample shows those 0s are negative 12% of the time among unverified reviews and 2%
+among verified. So `\(\widehat{Y}_i\)` becomes 0.12 or 0.02 for an unflagged review, not 0:
+right on average within each group.
 
-It does not touch validity. The correction term cancels whatever bias is left, for any
-`\(\widehat{Y}\)`. Efficiency comes from the supervised step; validity comes from `\(\pi_i\)`.
+--
+
+**What it buys.** The correction is the error `\(Y_i - \widehat{Y}_i\)` summed over gold
+documents. Smaller errors, less noise in the correction, tighter standard error. Validity
+does not change: the correction cancels whatever bias is left, for any `\(\widehat{Y}\)`.
+Precision comes from the supervised step; validity comes from `\(\pi_i\)`.
 
 ---
 
