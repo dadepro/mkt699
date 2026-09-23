@@ -1458,70 +1458,69 @@ errors unrelated to the controls, and you can only afford to inspect the model's
 
 ---
 
-# The badge example, the numbers again
-
-10,000 reviews, half from verified purchasers (`\(X = 1\)`), half not. The label is whether the
-review is negative, from an LLM that misses sarcastic negatives and makes no other error.
+# The badge example: quantities
 
 .small90[
-| | Unverified, `\(X=0\)` | Verified, `\(X=1\)` |
-|:--|--:|--:|
-| Reviews | 5,000 | 5,000 |
-| Truly negative | 1,500 (30%) | 1,000 (20%) |
-| Of which sarcastic, missed by the model | 600 | 100 |
-| Labeled negative by the model | 900 (18%) | 900 (18%) |
-| Gold sample, random within group, `\(\pi_i = 0.05\)` | 250 | 250 |
-| In the gold sample: truly negative / missed | 75 / 30 | 50 / 5 |
+| Symbol | Meaning | Unverified, `\(X=0\)` | Verified, `\(X=1\)` |
+|:--|:--|--:|--:|
+| `\(n_g\)` | reviews in group `\(g\)` | 5,000 | 5,000 |
+| `\(Y_i\)` | 1 if review `\(i\)` is truly negative | 1,500 ones | 1,000 ones |
+| `\(\widehat{Y}_i\)` | the model's label, 1 if it says negative | 900 ones | 900 ones |
+| | missed negatives (`\(Y_i = 1\)`, `\(\widehat{Y}_i = 0\)`), all sarcasm | 600 | 100 |
+| | false positives (`\(Y_i = 0\)`, `\(\widehat{Y}_i = 1\)`) | 0 | 0 |
+| `\(m_g\)` | gold sample, drawn at random within group | 250 | 250 |
+| `\(\pi_i\)` | probability a review is in the gold sample, `\(m_g / n_g\)` | 0.05 | 0.05 |
+| `\(R_i\)` | 1 if review `\(i\)` is in the gold sample | | |
 ]
 
 --
 
-True effect `\(\beta = 0.20 - 0.30 = -0.10\)`. Naive estimate `\(\hat\beta = 0.18 - 0.18 = 0.00\)`,
-standard error 0.008. Accuracy 93%.
+You observe `\(\widehat{Y}_i\)` for all 10,000, and `\(Y_i\)` only where `\(R_i = 1\)`. The 600 and 100
+are the truth you do not see. True effect: `\(0.20 - 0.30 = -0.10\)`.
 
 ---
 
-# Back to the badge example: the corrected estimate
+# Steps 1 and 2: the naive rate, and the correction
 
-The naive regression gave `\(\hat\beta = 0.00\)` with a standard error of `\(0.008\)`. Now run
-**DSL** with the 500 gold labels: in each group the gold labels show how many negatives
-the model missed (40% of them among unverified, 10% among verified), and the corrected
-label adds them back, weighted by `\(1/\pi_i\)`. PPI gives the same order of magnitude.
-
-**Where the corrected estimate gets its uncertainty.** The correction uses the 500 gold
-labels, 250 per group, to estimate the share of documents the model misses in each group,
-and adds it back. That share is what carries the uncertainty. It is 0.12 among unverified
-and 0.02 among verified, so
-`$$\text{SE} \approx \sqrt{\tfrac{0.12 \times 0.88}{250} + \tfrac{0.02 \times 0.98}{250}} \approx 0.02$$`
-
-**Why 250 sets the scale.** The model's rate comes from 5,000 documents and is almost
-exact. The missed share comes from 250 and is not. Gold labels alone, without the model,
-would give about 0.04; the model's labels halve that. Neither depends on the corpus size.
-
----
-
-# The arithmetic
-
-Gold sample: 250 per group, random within group, `\(\pi_i = 0.05\)`. In expectation: 75 true
-negatives among unverified, 30 missed; 50 among verified, 5 missed. DSL's corrected label,
-averaged within a group, is the model's rate plus the gold-sample correction scaled by
-`\(1/\pi_i\)`:
-
-.small90[
-| | Unverified | Verified |
-|:--|--:|--:|
-| Model's rate, all 5,000 | 0.18 | 0.18 |
-| Missed negatives in the 250 gold documents | 30 | 5 |
-| Missed share `\(=\)` missed `\(/\,250\)` | 0.12 | 0.02 |
-| Corrected rate `\(=\)` model rate `\(+\)` missed share | **0.30** | **0.20** |
-]
+**Step 1. Naive rate per group**, from the model's labels on everyone:
+`$$\hat p_g = \frac{1}{n_g}\sum_{i \in g} \widehat{Y}_i
+\qquad \hat p_0 = \tfrac{900}{5{,}000} = 0.18, \quad \hat p_1 = \tfrac{900}{5{,}000} = 0.18,
+\quad \hat\beta_{\text{naive}} = 0.00$$`
 
 --
 
-`\(\hat\beta_{\text{corrected}} = 0.20 - 0.30 = -0.10\)`. The gold sample estimates the undercount
-in each group and the correction adds it back; false positives would be subtracted, since
-the term is `\(\sum (Y_i - \widehat{Y}_i)\)`. The 30 and the 5 are noisy counts from 250 draws;
-that noise is the 0.02 standard error.
+**Step 2. The model's error on each gold document:** `\(e_i = Y_i - \widehat{Y}_i\)`, which is
+`\(+1\)` for a missed negative, `\(-1\)` for a false positive, `\(0\)` when the model is right.
+Average it over the gold sample of each group:
+`$$\bar e_g = \frac{1}{m_g}\sum_{i \in g,\ R_i = 1} e_i
+\qquad \bar e_0 = \tfrac{30}{250} = 0.12, \quad \bar e_1 = \tfrac{5}{250} = 0.02$$`
+
+In expectation the 250 unverified gold reviews contain 75 negatives, 30 of them missed;
+the verified ones 50, with 5 missed. `\(\bar e_g\)` estimates the share of group `\(g\)` the model
+undercounts.
+
+---
+
+# Step 3: corrected rates, coefficient, standard error
+
+**Corrected rate per group:** naive rate plus the estimated undercount.
+`$$\tilde p_g = \hat p_g + \bar e_g \qquad \tilde p_0 = 0.18 + 0.12 = 0.30, \quad
+\tilde p_1 = 0.18 + 0.02 = 0.20$$`
+
+`$$\hat\beta_{\text{corrected}} = \tilde p_1 - \tilde p_0 = -0.10$$`
+
+--
+
+**Standard error.** `\(\hat p_g\)` comes from 5,000 labels and is nearly exact. `\(\bar e_g\)` is a
+proportion estimated from `\(m_g = 250\)` draws, so it carries the uncertainty:
+`$$\text{SE} = \sqrt{\tfrac{\bar e_0(1-\bar e_0)}{250} + \tfrac{\bar e_1(1-\bar e_1)}{250}}
+= \sqrt{\tfrac{0.12 \times 0.88}{250} + \tfrac{0.02 \times 0.98}{250}} \approx 0.02$$`
+
+--
+
+.small90[This is DSL. Its corrected label is `\(\tilde Y_i = \widehat{Y}_i + \tfrac{R_i}{\pi_i} e_i\)`,
+and its group mean is `\(\hat p_g + \tfrac{1}{n_g}\tfrac{1}{\pi_i}\sum_{R_i=1} e_i = \hat p_g + \bar e_g\)`,
+because `\(1/\pi_i = n_g/m_g\)`. The scale of the standard error is set by `\(m_g\)`, not `\(n_g\)`.]
 
 ---
 
