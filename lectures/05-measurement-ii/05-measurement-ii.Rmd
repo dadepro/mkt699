@@ -1462,11 +1462,14 @@ the model missed (40% of them among unverified, 10% among verified), and the cor
 label adds them back, weighted by $1/\pi_i$. PPI gives the same order of magnitude.
 
 **Where the corrected estimate gets its uncertainty.** The correction uses the 500 gold
-labels, 250 per group, to estimate how many negatives the model misses in each group, and
-adds them back. That estimate is what carries the uncertainty. With true rates 0.30 and
-0.20:
-$$\text{SE} \approx \sqrt{\tfrac{0.30 \times 0.70}{250} + \tfrac{0.20 \times 0.80}{250}} \approx 0.04$$
-The 9,500 model labels sharpen this a little. The order of magnitude is set by 500.
+labels, 250 per group, to estimate the share of documents the model misses in each group,
+and adds it back. That share is what carries the uncertainty. It is 0.12 among unverified
+and 0.02 among verified, so
+$$\text{SE} \approx \sqrt{\tfrac{0.12 \times 0.88}{250} + \tfrac{0.02 \times 0.98}{250}} \approx 0.02$$
+
+**Why 250 sets the scale.** The model's rate comes from 5,000 documents and is almost
+exact. The missed share comes from 250 and is not. Gold labels alone, without the model,
+would give about 0.04; the model's labels halve that. Neither depends on the corpus size.
 
 ---
 
@@ -1491,7 +1494,7 @@ $1/\pi_i$:
 $\hat\beta_{\text{corrected}} = 0.20 - 0.30 = -0.10$. The gold sample estimates the undercount
 in each group and the correction adds it back; false positives would be subtracted, since
 the term is $\sum (Y_i - \widehat{Y}_i)$. The 30 and the 5 are noisy counts from 250 draws;
-that noise is the 0.04 standard error.
+that noise is the 0.02 standard error.
 
 ---
 
@@ -1501,14 +1504,14 @@ that noise is the 0.04 standard error.
 | | Estimate | SE | 95% interval | Contains $-0.10$? |
 |:--|--:|--:|:--|:--|
 | Naive, 10,000 model labels | $0.00$ | $0.008$ | $-0.016$ to $+0.016$ | no |
-| Corrected, 500 gold labels | $\approx -0.10$ | $\approx 0.04$ | $-0.18$ to $-0.02$ | yes |
+| Corrected, 500 gold labels | $\approx -0.10$ | $\approx 0.02$ | $-0.14$ to $-0.06$ | yes |
 ]
 
 --
 
 <br>
 
-Five times wider, and right. That is Job 2 from last week: the gold sample carries the
+Three times wider, and right. That is Job 2 from last week: the gold sample carries the
 standard error, which is why its size matters.
 
 ---
