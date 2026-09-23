@@ -1470,6 +1470,31 @@ The 9,500 model labels sharpen this a little. The order of magnitude is set by 5
 
 ---
 
+# The arithmetic
+
+Gold sample: 250 per group, random within group, $\pi_i = 0.05$. In expectation: 75 true
+negatives among unverified, 30 missed; 50 among verified, 5 missed. DSL's corrected label,
+averaged within a group, is the model's rate plus the gold-sample correction scaled by
+$1/\pi_i$:
+
+.small90[
+| | Unverified | Verified |
+|:--|--:|--:|
+| Model's rate, all 5,000 | 0.18 | 0.18 |
+| Missed negatives in the 250 gold documents | 30 | 5 |
+| Missed share $=$ missed $/\,250$ | 0.12 | 0.02 |
+| Corrected rate $=$ model rate $+$ missed share | **0.30** | **0.20** |
+]
+
+--
+
+$\hat\beta_{\text{corrected}} = 0.20 - 0.30 = -0.10$. The gold sample estimates the undercount
+in each group and the correction adds it back; false positives would be subtracted, since
+the term is $\sum (Y_i - \widehat{Y}_i)$. The 30 and the 5 are noisy counts from 250 draws;
+that noise is the 0.04 standard error.
+
+---
+
 # The two answers, side by side
 
 .small90[
