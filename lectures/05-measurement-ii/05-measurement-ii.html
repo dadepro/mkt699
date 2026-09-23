@@ -1081,6 +1081,54 @@ consistent estimator and correct coverage.
 
 ---
 
+# DSL's logic
+
+For every document, build a corrected label. `\(R_i = 1\)` if document `\(i\)` was hand-labeled,
+`\(\pi_i\)` its probability of being chosen:
+
+`$$\tilde{Y}_i \;=\; \widehat{Y}_i \;+\; \frac{R_i}{\pi_i}\,\big(Y_i - \widehat{Y}_i\big)$$`
+
+--
+
+**Unlabeled document:** `\(R_i = 0\)`, so `\(\tilde{Y}_i = \widehat{Y}_i\)`, the model's label.
+
+**Labeled document:** the model's label plus the model's error on that document, scaled by
+`\(1/\pi_i\)` so the labeled documents stand for the ones they were sampled to represent.
+
+--
+
+Because `\(E[R_i/\pi_i] = 1\)`, the corrections cancel the model's bias on average:
+`\(E[\tilde{Y}_i] = E[Y_i]\)` for **any** `\(\widehat{Y}\)`. That is why the surrogate can be
+arbitrarily bad.
+
+--
+
+Then run your regression on `\(\tilde{Y}\)` as if it were the truth. The standard errors come
+from the same equation and carry both sources of noise: the sample, and the correction.
+
+---
+
+# Why "supervised"
+
+`\(\widehat{Y}_i\)` need not be the raw LLM label.
+
+--
+
+&lt;br&gt;
+
+DSL first fits `\(Y\)` on the LLM label and `\(X\)` in the gold sample, and uses that fitted value
+as `\(\widehat{Y}_i\)` everywhere. A better `\(\widehat{Y}\)` makes the corrections smaller and
+the estimate more precise.
+
+--
+
+&lt;br&gt;
+
+It does not touch validity. The correction term cancels whatever bias is left, for any
+`\(\widehat{Y}\)`. Efficiency comes from the supervised step; validity comes from `\(\pi_i\)`.
+
+---
+
 # What DSL requires in exchange
 
 .large2[You must **control and know** the probability that each document enters the
