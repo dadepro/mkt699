@@ -1723,6 +1723,17 @@ You can monitor continuously. You just cannot use fixed-sample $p$-values while 
 it.
 
 ---
+class: inverse, center, middle
+
+# Student presentation: Berman & Van den Bulte
+
+**Swaroop Poudel**
+
+Berman & Van den Bulte (2022), "False Discovery in A/B Testing," *Management Science* 68(9):6762–6782.
+
+False discovery from peeking and optional stopping in online experiments
+
+---
 
 # Required reading: false discovery in A/B testing
 
