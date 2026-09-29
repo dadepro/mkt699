@@ -91,8 +91,8 @@ Today is about whether your **comparison** means what you think it means.
 
 <br>
 
-This is the oldest problem in the course and the one your field has thought hardest
-about. It is also the one AI has quietly made worse.
+Economics and marketing have worked on this problem for decades. AI makes part of it
+harder, because specifications and prompts now cost almost nothing to search over.
 
 ---
 
@@ -129,77 +129,62 @@ name: credibility
 .large2[If a hundred specifications cost nothing to run, what does a reported
 specification mean?]
 
---
-
-<br>
-
-Sit with that for a second. It is not rhetorical.
-
 ---
 
 # What the credibility revolution assumed
 
-Angrist, Imbens, Card, Krueger. Design over modeling. Identification over functional
-form.
+The credibility revolution (Angrist, Imbens, Card, Krueger) moved empirical work toward
+research design and away from functional-form assumptions.
 
 --
 
 <br>
 
-That literature solved a real problem, and your econometrics sequence is downstream of
-it.
+Your econometrics sequence is built on that literature.
 
 --
 
 <br>
 
-But it carried an implicit assumption that nobody wrote down.
+It also relied on an assumption that was rarely stated: running a specification was
+expensive.
 
 ---
 
-# The implicit assumption
+# Why specifications were expensive
 
-Running a specification was **expensive**.
-
---
-
-You had to write the code. Debug the merge. Wait for it to run. Build the table by hand.
+You had to write the code, debug the merge, wait for it to run, and build the table by
+hand.
 
 --
 
 <br>
 
-So researchers ran a handful. Maybe a few dozen over a project's life.
+So researchers ran a handful of specifications, perhaps a few dozen over a project's
+life.
 
 --
 
 <br>
 
-The published specification was a draw from a small set. Not a random draw, nobody
-thought that. But a small set.
+The published specification was chosen from that small set. The choice was not random,
+but the set it was chosen from was small.
 
 ---
 
-# That assumption is gone
+# What changed
 
-I can ask a model for 500 specifications and have them in an afternoon.
-
---
-
-Every combination of controls. Every fixed-effects structure. Every sample restriction.
-Every winsorization threshold. Every clustering level.
+I can ask a model for 500 specifications and have them in an afternoon: combinations of
+controls, fixed-effects structures, sample restrictions, winsorization thresholds, and
+clustering levels, formatted as a table with significance stars.
 
 --
 
 <br>
 
-Formatted into a nice table. With stars.
-
---
-
-<br>
-
-The garden of forking paths is now a paved highway with signage.
+Gelman and Loken call the set of analysis choices made after seeing the data the "garden
+of forking paths." A model lets you try far more of those paths than was practical
+before.
 
 ---
 
@@ -221,21 +206,21 @@ essentially zero.
 
 --
 
-They are not independent, so it is not literally $4{,}096$ shots. But it is not one
-shot either.
+The specifications are correlated, so this overstates the problem. The effective number
+of tests is still far above one.
 
 --
 
 <br>
 
-And you do not have to run all of them to be in trouble. You only have to *stop* when
-you like the answer.
+You also do not need to run all of them. Stopping the search once a specification gives
+the expected answer inflates the false-positive rate in the same way.
 
 ---
 
-# The honest version
+# How it happens in practice
 
-Nobody in this room sits down and decides to p-hack.
+Specification search is rarely a deliberate decision to p-hack.
 
 --
 
@@ -246,20 +231,14 @@ wrong." You fix them. Now it works. You move on.
 
 --
 
-Every step is defensible. The sequence is not.
-
---
-
-<br>
-
-.large2[Specification search does not feel like cheating. It feels like doing your job.]
+Each step can be defended on its own. The problem is the stopping rule: the search ends
+when the result looks right, so which specification you report depends on the outcome.
 
 ---
 
-# What changed is the surface area
+# What is different now
 
-Every classical concern about specification search is now worse by roughly an order of
-magnitude.
+The classical concerns about specification search all apply, at a larger scale:
 
 --
 
@@ -272,31 +251,8 @@ magnitude.
 
 <br>
 
-The profession has not caught up. Journal norms, referee checklists, and your training
-were all built for a world where running a regression took a week.
-
---
-
-That world is over. The norms have not moved.
-
----
-
-# So this lecture is defensive
-
-Not "here are the identification strategies". You have had that course.
-
---
-
-<br>
-
-This is: **what does a referee attack, and what do you build so that it survives?**
-
---
-
-<br>
-
-You are all going to be referees in about three years. Learn the attacks from both
-sides.
+Journal norms, referee checklists, and most methods training were designed when running
+a regression took much longer than it does now.
 
 ---
 class: inverse, center, middle
@@ -321,7 +277,7 @@ made subjects **younger**.
 
 --
 
-$p < .05$. Real data. Real subjects.
+The result was significant at $p < .05$, with real data from real subjects.
 
 ---
 
@@ -340,32 +296,32 @@ Four "researcher degrees of freedom," each individually unremarkable:
 
 <br>
 
-Each is a decision an honest researcher makes. Together, the false-positive rate goes
-from 5% to over 60%.
+Each is a decision an honest researcher makes. Together, they raise the false-positive
+rate from 5% to over 60%.
 
 --
 
 <br>
 
-That is the whole paper, and it changed a field.
+The paper had a large influence on reporting norms in psychology.
 
 ---
 
 # The generalization
 
-Any single analytic choice is defensible.
+Any single analytic choice can be defended.
 
 --
 
-The **choice of which choices to report** is the entire problem.
+The problem is **choosing which results to report after seeing them**.
 
 --
 
 <br>
 
-.large2[Flexibility alone gets you to $p < .05$ on nonsense.]
-
-You do not need bad intent. You need degrees of freedom and a preference for results.
+Flexibility alone is enough to produce $p < .05$ for an effect that does not exist. No
+bad intent is required, only analytic flexibility and a preference for some results over
+others.
 
 ---
 
@@ -403,12 +359,23 @@ Missing marginal nulls. Excess marginal significance.
 
 --
 
-That shape does not arise from nature. It arises from choices, by authors, referees,
-and editors.
+Sampling variation alone would not produce that shape. It reflects choices by authors,
+referees, and editors about what to report and publish.
 
 ---
 
-# The finding that should worry you
+# What the distribution looks like
+
+<img src="figures/brodeur-cook-heyes-zstats.png" style="width:54%; display:block; margin:auto;">
+
+.small75[$z$-statistics from articles in 25 top economics journals, by method. Vertical lines
+at 1.65, 1.96, and 2.58. The bump just above 1.96 is largest for IV and DiD, smaller for
+RCT, and absent for RDD. Source: Brodeur, Cook & Heyes, IZA DP 11796 (2018), Figure 1,
+the working-paper version of the *AER* article (2015 articles only).]
+
+---
+
+# Results by method
 
 They break it out by method.
 
@@ -421,12 +388,6 @@ They break it out by method.
 **Also problematic, but less so:** difference-in-differences (**DiD**)
 
 **Better:** randomized controlled trials (**RCT**), regression discontinuity (**RDD**)
-
---
-
-<br>
-
-.small90[I will use those four abbreviations for the rest of the day.]
 
 --
 
@@ -444,8 +405,8 @@ much **latitude** each one gives you.
 # Why IV and DiD are p-hackable
 
 **IV:** which instrument, which first stage, which controls, which sample. Weak
-instruments make estimates enormously sensitive to all of it. And there is no test of
-the exclusion restriction to discipline you.
+instruments make estimates very sensitive to all of these choices, and the exclusion
+restriction cannot be tested.
 
 --
 
@@ -463,7 +424,7 @@ before you see the outcome.
 
 <br>
 
-That is the lesson: *design constrains you*, and being constrained is a feature.
+A design that fixes more of the analysis in advance leaves less room for search.
 
 ---
 
@@ -487,43 +448,75 @@ With 12 independent tests under the null: $1 - .95^{12} \approx 0.46$.
 
 <br>
 
-Coin-flip odds that something in your table is spurious.
+Close to even odds that at least one result in the table is a false positive.
 
 ---
 
-# Two things you might want to control
+# Two error rates for many tests
 
-**Family-wise error rate (FWER)**: probability of *any* false rejection.
+You run $k$ tests and reject $R$ of the nulls. $V$ of those rejections are false: the
+null was true and you rejected it anyway.
 
-Conservative. Appropriate when a single false claim is costly, one confirmatory
-outcome, a regulatory decision, a policy recommendation.
+--
+
+**Family-wise error rate (FWER)** $= \Pr(V \ge 1)$: the probability that the table
+contains **at least one** false positive.
+
+--
+
+**False discovery rate (FDR)** $= E[V/R]$, with $V/R = 0$ when $R = 0$: the expected
+**share** of your rejections that are false.
 
 --
 
 <br>
 
-**False discovery rate (FDR)**: expected *proportion* of rejections that are false.
+Suppose you run 20 tests and reject 10.
 
-Less conservative. Appropriate for screening. You are generating hypotheses, and some
-false leads are tolerable.
+- FWER at 5%: the probability that any of the 10 is false is at most 5%. You can defend
+  each one on its own.
+- FDR at 10%: on average about one of the 10 is false, and you do not know which.
+
+---
+
+# Which one to control
+
+**FWER when each rejection is a claim you defend on its own.** In the badge example from
+Week 5, suppose the abstract says verified purchasers write fewer negative reviews,
+shorter reviews, and fewer reviews that mention price. If any one of the three is a false
+positive, the paper states something false.
 
 --
 
 <br>
 
-These answer different questions. Pick the one that matches what you are claiming.
+**FDR when the rejections are a list of candidates.** You have the LLM code 50 attributes
+of each review (wait time, price, staff, cleanliness, ...) and test which ones differ
+between verified and unverified reviews, to decide what to study next. Even if none
+differs, testing each at .05 flags about 2.5 by chance. FDR control keeps the false leads
+to a known share of the list.
+
+--
+
+<br>
+
+If every null is true, the two coincide, because any rejection makes $V/R = 1$. FDR is
+less strict only when some effects are real.
 
 ---
 
 # The two procedures you need
 
 **Bonferroni.** Compare each $p$-value to $\alpha/k$. Controls FWER. Simple, valid
-always, and brutally conservative when tests are correlated.
+always, and very conservative when tests are correlated.
 
 --
 
 **Benjamini–Hochberg.** Sort $p_{(1)} \le \dots \le p_{(k)}$; find the largest $i$ with
 $p_{(i)} \le \frac{i}{k}\alpha$; reject everything up to it. Controls FDR.
+
+In the 50-attribute example at $\alpha = .05$, Bonferroni rejects when $p < .001$. BH
+compares the $i$-th smallest $p$-value to $.001 \times i$.
 
 --
 
@@ -559,19 +552,13 @@ parameter. Those are not $k$ hypotheses; they are one hypothesis probed $k$ ways
 
 <br>
 
-That distinction confuses people constantly. Robustness $\ne$ multiplicity.
+Robustness checks are not a multiplicity problem.
 
 ---
 
 # The practical version
 
-.large2[If you have 12 outcomes, you have a problem, and the referee will notice.]
-
---
-
-<br>
-
-Your options:
+With 12 outcomes, you need a plan for multiplicity. The options:
 
 1. Name **one** primary outcome in advance and treat the rest as exploratory, labeled
 2. Build a pre-specified **index** of related outcomes and test that
@@ -581,14 +568,14 @@ Your options:
 
 <br>
 
-What you cannot do is report 12 outcomes, star the three that worked, and write the
-abstract about those three. A good referee catches this in ten minutes.
+What you cannot do is report 12 outcomes and write the abstract about the three that
+are significant.
 
 ---
 
 # Specification curve analysis
 
-The partial remedy: stop picking.
+A partial remedy is to report every defensible specification instead of choosing one.
 
 --
 
@@ -601,7 +588,74 @@ distribution of estimates, sorted, with the analytic choices displayed underneat
 
 <br>
 
-Also called **multiverse analysis**. Same idea.
+The method is from Simonsohn, Simmons & Nelson (2020), *Nature Human Behaviour*. Steegen
+et al. (2016) propose the same idea under the name **multiverse analysis**.
+
+---
+
+# An example: female-named hurricanes
+
+Jung, Shavitt, Viswanathan & Hilbe (2014, *PNAS*) report that damaging hurricanes with
+more feminine names kill more people, because people take them less seriously.
+Simonsohn et al. (2020) use their data as their worked example.
+
+--
+
+The curve on the next slide is a smaller version built for this class: the same 92
+storms and 128 specifications, from seven choices a researcher could defend:
+
+.small90[
+- Femininity: a 1–11 rating of the name, or a female-name dummy
+- Model: negative binomial on deaths, or OLS on log(1 + deaths)
+- Damage control: in levels or in logs, and interacted with femininity or not
+- Minimum-pressure control: included or not
+- Sample: all storms, or drop the four with 100+ deaths; all years, or 1979 onward, when
+  names began alternating between male and female
+]
+
+--
+
+The claim is about damaging storms, so every estimate is the effect for a storm at the
+90th percentile of damage.
+
+---
+
+# The specification curve
+
+<img src="figures/spec-curve.png" style="width:67%; display:block; margin:auto;">
+
+.small75[% difference in deaths between a female- and a male-named storm at the 90th
+percentile of damage, with 95% intervals (two truncated at 600%). Data: Jung et al.
+(2014). Code: `figures/spec-curve.R` in this lecture's folder.]
+
+---
+
+# How to read it
+
+**Top panel.** Each dot is the estimate from one specification, with its 95% interval.
+The specifications are sorted from the smallest estimate to the largest. Blue dots have
+$p < .05$.
+
+--
+
+**Bottom panel.** Each column is the specification whose dot sits above it. The marks
+show the choice it made on each of the seven decisions. Read down a column to see one
+specification; read along a row to see where the estimates using that choice fall.
+
+--
+
+<br>
+
+**What this curve shows.** The median estimate is 2%, and 69 of 128 are positive. Five
+are significant, all positive. All five combine the negative binomial, damage in levels,
+and the femininity × damage interaction, the combination in the published model
+(circled: +209%, 95% CI 56% to 514%). None of the other 112 specifications is
+significant.
+
+--
+
+The paper reports the circled specification. The curve shows that the result depends on
+those three choices being made together.
 
 ---
 
@@ -614,38 +668,37 @@ claim than one table.
 
 <br>
 
-If it is there in 60 of 500, you have learned something too. And you now have an
-obligation to say so.
+If it is there in 60 of 500, that is also informative, and the paper should report it.
 
 --
 
 <br>
 
-Note that this is exactly the kind of thing that is now trivially cheap to produce. The
-same capability that makes p-hacking easy makes the honest version easy.
+Running 500 specifications is now cheap, so the tools that make specification search
+easy also make this kind of reporting easy.
 
 ---
 
 # Where it can be gamed
 
-.large2[Who decides which specifications are "defensible"?]
+The weak point is who decides which specifications are "defensible."
 
 --
 
 <br>
 
-You do. And the set is chosen after you know which ones work.
+Usually the author, and often after seeing which ones work.
 
 --
 
 <br>
 
-A specification curve computed over a set curated to include your preferred spec and
-exclude its enemies is a p-hacked specification curve with better graphics.
+A curve computed over a set chosen to include the preferred specification and leave out
+the ones that weaken it has the same search problem as a single table.
 
 --
 
-I have refereed papers where this happened. It is not obvious from the figure.
+I have seen this in papers I refereed. The figure alone does not reveal it.
 
 ---
 
@@ -660,14 +713,14 @@ I have refereed papers where this happened. It is not obvious from the figure.
 
 <br>
 
-If a skeptic would have drawn the same set you did, the curve is informative. If not, it
-is decoration.
+The curve is informative to the extent that a skeptical reader would have chosen a
+similar set.
 
 ---
 
-# Callback to Week 4
+# Prompt search
 
-Remember what we said about prompts.
+The same issue arises with prompts.
 
 --
 
@@ -680,16 +733,15 @@ examples. 84%. You changed the label taxonomy. 88%.
 
 <br>
 
-.large2[Prompt search **is** specification search.]
+Iterating on a prompt is a form of specification search.
 
 --
 
-Same problem. New surface. And unlike regression specifications, nobody has a norm for
-reporting it yet.
+Unlike regression specifications, there is no norm yet for reporting prompt iterations.
 
 ---
 
-# Why the prompt case is worse
+# Why prompt search is harder to audit
 
 With regressions, at least the specification is *visible* in the paper.
 
@@ -709,31 +761,30 @@ With prompts:
 
 <br>
 
-That last one is the bad case, and it is easy to do by accident.
+The last case is the most serious. It can happen without intending it: if the
+coefficient is on screen while you revise the prompt, it influences which version you
+keep.
 
 ---
 
 # The rule for your project
 
-Tune the prompt against **validation accuracy**, on a held-out validation sample.
-
---
-
-Never against the downstream estimate.
-
---
-
-<br>
-
-Freeze the prompt before you look at the regression. Version it in `prompts/`. Log the
-iterations in `ai-log.md`.
+Tune the prompt against **hand labels on your pilot documents**, never against the
+downstream estimate. The pilot documents stay out of the validation sample.
 
 --
 
 <br>
 
-This is why I made you keep those directories in Week 1. This is the slide where that
-pays off.
+Freeze the prompt before you run it on the corpus and draw the validation sample, and
+before you look at any regression. Version it in `prompts/` and log the iterations in
+`ai-log.md`.
+
+--
+
+<br>
+
+The `prompts/` directory and `ai-log.md` from Week 1 are the record of that search.
 
 ---
 class: inverse, center, middle
@@ -745,14 +796,15 @@ name: prereg
 
 # The idea
 
-Researcher degrees of freedom are not the problem. **Undisclosed** researcher degrees of
-freedom are the problem.
+The problem is not researcher degrees of freedom but **undisclosed** researcher degrees
+of freedom.
 
 --
 
 <br>
 
-.large2[Pre-registration converts degrees of freedom into a commitment device.]
+Pre-registration turns those choices into a commitment made before you see the
+results.
 
 --
 
@@ -792,14 +844,14 @@ hypothesis generation.
 
 --
 
-Both belong in the paper. They are just different claims.
+Both belong in the paper, labeled as different kinds of claims.
 
 ---
 
-# What it genuinely does not fix
+# What it does not fix
 
 **It does not make a bad design good.** A pre-registered study with a confounded
-comparison is a pre-registered confounded comparison.
+comparison is still confounded.
 
 --
 
@@ -813,11 +865,11 @@ treatment on engagement, controlling for relevant covariates." That constrains n
 <br>
 
 **It is awkward for observational work.** The data already exist. You have probably
-already looked at them. Pre-registering after the fact is theater.
+already looked at them. Pre-registering after you have looked at the data provides little protection.
 
 ---
 
-# The observational case, honestly
+# The observational case
 
 Most of what you will do in marketing is observational. Pre-registration in its pure
 form does not apply.
@@ -838,32 +890,32 @@ What *does* transfer:
 <br>
 
 The mechanism you want is a commitment made before you learn the answer. A registry is
-one way to get it. Not the only way.
+one way to get it; there are others.
 
 ---
 
 # For your project specifically
 
-.large2[Pre-specify the prompt and the primary specification before looking at any
-downstream result.]
+Pre-specify the prompt and the primary specification before looking at any downstream
+result.
 
 --
 
 <br>
 
-Write it in your repo. Commit it. Timestamp it with git.
+Write them in your repo and commit them. Git records the date.
 
 --
 
-That commit hash is your pre-registration. It is not public, and it is not a registry,
-but it is a real commitment and I can check it.
+That commit serves as your pre-registration. It is not public and it is not a registry,
+but it is dated, and I can check it.
 
 --
 
 <br>
 
-If your Week 6 milestone specification differs from what you present in Week 7, tell me
-why. That is a fine thing to have happen. Hiding it is not.
+If the specification you present in Week 7 differs from the one in your Week 6
+milestone, say so and explain why. Changes are fine as long as they are reported.
 
 ---
 
@@ -879,8 +931,7 @@ economics. Required by many funders and increasingly expected by editors.
 --
 
 **AsPredicted**, `aspredicted.org`. Nine questions, short, low friction. Good for lab
-and online experiments. The low friction is the point: a plan you actually write beats
-a perfect plan you don't.
+and online experiments.
 
 --
 
@@ -892,7 +943,7 @@ All are free. All take under an hour for a simple experiment.
 
 # Norms in marketing
 
-Weaker than in psychology. Weaker than in development or experimental economics.
+Weaker than in psychology, development economics, or experimental economics.
 
 --
 
@@ -905,15 +956,15 @@ Reviewers increasingly ask.
 
 <br>
 
-This is changing, and it is changing in one direction. Registered reports are appearing.
-Data availability policies have tightened.
+This is changing. Registered reports are appearing, and data availability policies have
+tightened.
 
 --
 
 <br>
 
-You are entering the field at the point where the norm shifts. Being early costs you
-almost nothing and will look prescient in five years.
+Pre-registering your own experiments takes about an hour and answers a question
+reviewers increasingly ask.
 
 ---
 class: inverse, center, middle
@@ -921,7 +972,7 @@ name: observational
 
 # Observational designs
 
-### What survives a referee
+### What a referee asks
 
 ---
 
@@ -945,8 +996,7 @@ You have seen these since Lecture 1. Here they are as a referee uses them.
 
 <br>
 
-If you cannot answer all four about your own project by Week 7, you are not ready to
-present.
+Your Week 7 presentation should answer all four for your project.
 
 ---
 
@@ -958,19 +1008,19 @@ Most papers I referee answer questions 1–3 and skip 4.
 
 <br>
 
-Question 4 is the one that decides the paper.
+It is often the question that determines the referee's recommendation.
 
 --
 
 <br>
 
-.large2[Write down the best argument against your result, in its strongest form, and
-then address it.]
+Write down the best argument against your result, in its strongest form, and then
+address it.
 
 --
 
-If you write a weak version of the objection and knock it down, every referee sees what
-you did.
+Addressing a weak version of the objection does not help, because referees will raise
+the strong version.
 
 ---
 
@@ -994,11 +1044,11 @@ arbitrarily. It is a statement about **counterfactual trends**, which are unobse
 
 <br>
 
-That is why it can never be tested. Only made more or less plausible.
+So it cannot be tested directly. Evidence can only make it more or less plausible.
 
 ---
 
-# What the referee attacks in DiD
+# What a referee asks about DiD
 
 - Why is this control group the right counterfactual?
 - What else happened at the same time to the treated group?
@@ -1010,8 +1060,7 @@ That is why it can never be tested. Only made more or less plausible.
 
 <br>
 
-And, since about 2021, one more that will get your paper rejected if you have not
-addressed it.
+Since about 2021, referees also ask about staggered adoption.
 
 ---
 
@@ -1024,13 +1073,13 @@ single treatment dummy, you need to know what you have actually estimated.
 
 <br>
 
-.large2[It is not the average treatment effect on the treated.]
+In general, it is **not** the average treatment effect on the treated.
 
 --
 
 <br>
 
-Three papers made this unavoidable. You need all three.
+Three papers established this and proposed alternatives.
 
 ---
 
@@ -1043,9 +1092,9 @@ Econometrics* 225(2):254–277.]
 
 <br>
 
-The decomposition. **TWFE**, two-way fixed effects, the unit-and-time fixed effects
-regression you have written a hundred times, with staggered timing is a **weighted
-average of all possible 2×2 DiD comparisons**.
+The decomposition. **TWFE** (two-way fixed effects, the unit-and-time fixed effects
+regression) with staggered timing is a **weighted average of all possible 2×2 DiD
+comparisons**.
 
 --
 
@@ -1063,27 +1112,19 @@ treatment effect enters with the **wrong sign**.
 # Why that matters
 
 If treatment effects are constant across units and time, the bad comparisons wash out.
-Fine.
 
 --
 
 <br>
 
-If treatment effects are **heterogeneous**, different across cohorts, or dynamic over
-time. They do not.
+If treatment effects are **heterogeneous**, across cohorts or over time, they do not.
 
 --
 
 <br>
 
-You can get a TWFE estimate with the **opposite sign** from every unit-level effect in
-your data.
-
---
-
-<br>
-
-Not a small bias. A sign flip.
+The TWFE estimate can then have the **opposite sign** from every unit-level effect in
+the data.
 
 ---
 
@@ -1109,8 +1150,8 @@ how many are negative and how much mass they carry.
 
 <br>
 
-Run it. It takes minutes. If your negative weights are large, your TWFE estimate is not
-interpretable and you need a different estimator.
+The diagnostic takes minutes to run. If the negative weights carry substantial mass, the
+TWFE estimate is hard to interpret and you need a different estimator.
 
 ---
 
@@ -1135,33 +1176,25 @@ Then aggregate deliberately: by cohort, by calendar time, or by event time.
 
 <br>
 
-The aggregation is now your choice, made explicit, rather than a weighting scheme the
-regression imposed on you without telling you.
+The aggregation is now an explicit choice, rather than a weighting the regression
+imposes implicitly.
 
 ---
 
 # What this means for you
-
-.large2[TWFE with staggered timing and heterogeneous effects is not what you think it
-is.]
-
---
-
-<br>
 
 If your design has staggered adoption:
 
 - Report the Goodman-Bacon decomposition or the negative-weight diagnostic
 - Report a robust estimator (Callaway–Sant'Anna, or one of the others in this
   literature) alongside TWFE
-- If they differ, that is a **finding**, not an inconvenience
+- If they differ, report the difference and explain it
 
 --
 
 <br>
 
-A referee who knows this literature (and by now that is most of them) will ask. Do it
-before they do.
+Most referees now ask for these diagnostics.
 
 ---
 
@@ -1182,7 +1215,7 @@ Two things it does:
 
 <br>
 
-The second is why everyone puts one in the paper.
+The second is the main reason most DiD papers include one.
 
 ---
 
@@ -1217,8 +1250,7 @@ all.
 
 # How to use event studies well
 
-- Plot the coefficients **with confidence intervals**, always. Never just point
-  estimates.
+- Plot the coefficients **with confidence intervals**, not just point estimates
 - State the normalization period explicitly. It is a choice and it matters.
 - Ask whether your pre-period is **powered** to detect a trend large enough to matter
 - Treat a flat pre-trend as one piece of evidence, not as the identification argument
@@ -1248,21 +1280,21 @@ Relevance is testable. Look at the first stage.
 
 <br>
 
-.large2[The exclusion restriction is an assumption, not a test.]
+The exclusion restriction is an assumption and cannot be tested.
 
 --
 
 <br>
 
 Overidentification tests do not test it. They test whether your instruments agree with
-each other. Instruments can be jointly invalid in the same direction and sail through.
+each other. Instruments can be jointly invalid in the same direction and still pass.
 
 ---
 
 # Weak instruments
 
-A weak first stage is not merely imprecise. It is **biased toward OLS**, and the bias is
-worst exactly when you needed IV most.
+A weak first stage is not merely imprecise. 2SLS is then **biased toward OLS**, and the
+bias grows as the first stage weakens.
 
 --
 
@@ -1276,37 +1308,33 @@ regardless of instrument strength.
 
 <br>
 
-If your first-stage $F$ is 12, do not report 2SLS standard errors as if they were
-correct. Report an AR confidence set.
+With a first-stage $F$ of 12, report an AR confidence set rather than relying on the
+conventional 2SLS standard errors.
 
 ---
 
-# The clever instrument trap
+# Surprising instruments
 
-You know the genre. Rainfall. Distance to something. A historical accident. Something
-from the 1800s.
-
---
-
-<br>
-
-The instrument is surprising, and the surprise reads as credibility.
+Common examples: rainfall, distance to some facility, a historical accident.
 
 --
 
 <br>
 
-.large2[Cleverness is not validity.]
+A surprising instrument can look credible because it is surprising. Surprise says
+nothing about the exclusion restriction.
 
 --
 
-The right question is never "is this instrument clever?" It is: **through what other
-channel could this variable affect the outcome?**
+<br>
+
+The relevant question is **through what other channels this variable could affect the
+outcome**.
 
 --
 
-If rainfall affects income and income affects your outcome directly, the instrument is
-dead no matter how novel it is.
+If rainfall affects income and income affects your outcome directly, the exclusion
+restriction fails, however novel the instrument is.
 
 ---
 
@@ -1324,7 +1352,7 @@ dead no matter how novel it is.
 
 # Regression discontinuity
 
-The most credible observational design when it is available. Assignment is determined by
+Often the most credible observational design when it is available. Assignment is determined by
 a running variable crossing a threshold, and units cannot precisely control their
 position.
 
@@ -1337,16 +1365,16 @@ else about you changes smoothly; only treatment jumps.
 
 ---
 
-# What the referee attacks in RDD
+# What a referee asks about RDD
 
-**Bandwidth.** Results that appear at one bandwidth and vanish at another are not
-results. Report a sensitivity curve. Use a data-driven bandwidth (Calonico–Cattaneo–
+**Bandwidth.** A result that appears at one bandwidth and disappears at another is
+fragile. Report a sensitivity curve. Use a data-driven bandwidth (Calonico–Cattaneo–
 Titiunik) rather than one you picked.
 
 --
 
 **Functional form.** Local linear with a sensible kernel. High-order global polynomials
-produce artifacts at boundaries, this is well documented and referees know it.
+behave poorly near the cutoff (Gelman and Imbens, 2019).
 
 --
 
@@ -1360,29 +1388,17 @@ If they do, something else changes there too.
 
 ---
 
-# And the thing people forget
+# RDD is local
 
-.large2[RDD is **local**.]
-
---
-
-<br>
-
-You have estimated an effect for units near the threshold. That is the estimand. Not the
+You have estimated an effect for units near the threshold. That is the estimand, not the
 average effect in the population.
 
 --
 
 <br>
 
-That is often fine, sometimes the threshold is exactly where policy operates. But you
-must say it, and you must not write an abstract that implies otherwise.
-
---
-
-<br>
-
-Referees are unforgiving about external-validity overreach in RDD papers.
+That is often fine, since the threshold is sometimes exactly where policy operates. But
+the paper, including the abstract, should say so.
 
 ---
 
@@ -1400,11 +1416,12 @@ You match on covariates, or control for them, and claim conditional independence
 
 <br>
 
-This assumption is enormous, untestable, and usually false.
+This is a strong assumption, it cannot be tested, and in most settings it is hard to
+defend.
 
 ---
 
-# The sentence that will not survive
+# Controls are not an identification argument
 
 > "We control for firm size, industry, and year fixed effects."
 
@@ -1412,20 +1429,9 @@ This assumption is enormous, untestable, and usually false.
 
 <br>
 
-.large2["I controlled for it" is not an identification strategy.]
-
---
-
-<br>
-
 Adding covariates addresses confounding **only** by variables you observed and measured
-correctly. The confounders you should worry about are the ones not in your data, and
-they are exactly the ones you cannot control for.
-
---
-
-Adding more controls does not converge to causality. It converges to a more precisely
-estimated correlation.
+correctly. The confounders to worry about are the ones not in your data, and you cannot
+control for those.
 
 ---
 
@@ -1453,7 +1459,7 @@ you chose is weak evidence at best.
 
 # Placebo and falsification tests
 
-The most useful robustness you can run, and the most under-used.
+Among the most useful robustness checks, and less common than they should be.
 
 --
 
@@ -1475,11 +1481,12 @@ none.
 
 <br>
 
-A placebo that fails is far more informative than another significant coefficient.
+A placebo test is informative because it could have failed. Another significant
+coefficient on the main outcome adds less.
 
 ---
 
-# What a real robustness section looks like
+# Writing a robustness section
 
 Each check gets:
 
@@ -1492,24 +1499,20 @@ Each check gets:
 
 <br>
 
-Not: a table of 14 columns with no explanation and a sentence saying results are robust.
+Not a table of 14 columns with no explanation and a sentence saying results are robust.
 
 --
 
 <br>
 
-.large2[If a robustness check cannot fail, it is not a check.]
-
---
-
-Ask yourself, before running each one: what result would make me abandon the claim? If
-the answer is "nothing," delete the table.
+Before running each check, write down what result would make you abandon the claim. If no
+result would, the check adds no information.
 
 ---
 
 # Clustering
 
-.large2[Cluster at the level of treatment assignment.]
+Cluster at the level of **treatment assignment**.
 
 --
 
@@ -1521,8 +1524,8 @@ millions of individual observations.
 --
 
 Individual-level clustering with state-level treatment gives you standard errors that
-are too small by a large factor. This is Moulton, it is thirty years old, and people
-still get it wrong.
+are too small by a large factor. Moulton (1990) documented this, and it
+remains a common error.
 
 ---
 
@@ -1549,15 +1552,16 @@ $t$-distribution critical values with $G-1$ degrees of freedom.
 
 <br>
 
-If you have 12 states and you report standard clustered SEs, a referee will ask. Have
-the bootstrap ready.
+With 12 states, report the wild cluster bootstrap alongside the conventional clustered
+standard errors.
 
 ---
 
-# Two clustering mistakes I see constantly
+# Two common clustering mistakes
 
 **1. Clustering at a level finer than assignment** because it gives smaller standard
-errors and someone told you to cluster at the "most granular" level. Wrong direction.
+errors and someone told you to cluster at the "most granular" level. The standard errors
+are then too small.
 
 --
 
@@ -1568,13 +1572,9 @@ error from a *shared* prompt is correlated across all observations.
 
 <br>
 
-That second one is new and specific to what you are doing. If one prompt annotated your
-whole sample, its errors are not independent across observations. That correlation does
-not vanish because you clustered on something else.
-
---
-
-We touched this in Week 5. It belongs in your clustering decision.
+The second is specific to LLM measurement. If one prompt annotated your whole sample, its
+errors are not independent across observations, and clustering on another unit does not
+remove that correlation.
 
 ---
 class: inverse, center, middle
@@ -1592,14 +1592,14 @@ You control assignment.
 
 <br>
 
-.large2[Identification is by design, not by assumption.]
+Identification comes from the design rather than from an assumption about the world.
 
 --
 
 <br>
 
-Randomization makes treatment independent of potential outcomes by construction. No
-parallel trends. No exclusion restriction. No conditional independence.
+Randomization makes treatment independent of potential outcomes by construction. You do
+not need parallel trends, an exclusion restriction, or conditional independence.
 
 --
 
@@ -1610,10 +1610,10 @@ design does the work that specification choices would otherwise have to do.
 
 ---
 
-# But experiments have their own failure modes
+# Failure modes of experiments
 
-They are different failure modes, and they are less discussed because the design feels
-airtight.
+They differ from the failure modes of observational designs and are discussed less
+often.
 
 --
 
@@ -1630,8 +1630,7 @@ airtight.
 
 <br>
 
-Running an experiment does not exempt you from thinking. It changes what you have to
-think about.
+Randomization does not address any of these.
 
 ---
 
@@ -1650,21 +1649,21 @@ If you work with industry data, or go to industry, this *is* the empirical envir
 
 <br>
 
-And the environment has a structural problem: enormous numbers of tests, small true
-effects, and a decision process that acts on whatever comes back significant.
+That environment combines many tests, small true effects, and a decision process that
+acts on whatever comes back significant.
 
 ---
 
 # Peeking
 
-You launch the test. You check it on day 2. Not significant. Day 4. Not significant. Day
-6. Significant! Ship it.
+You launch the test and check it on day 2: not significant. Day 4: not significant. Day
+6: significant, and the change ships.
 
 --
 
 <br>
 
-.large2[This is not a valid test.]
+The 5% false-positive rate no longer holds.
 
 --
 
@@ -1688,21 +1687,22 @@ The $p$-value path is a random walk. Under the null, it wanders.
 
 <br>
 
-If you stop the moment it crosses .05, you are not testing a hypothesis. You are waiting
-for a random walk to hit a boundary. And it will, eventually.
+If you stop the moment it crosses .05, you are waiting for a random walk to hit a
+boundary, which under continuous monitoring it eventually does.
 
 --
 
 <br>
 
-Every dashboard that shows a live $p$-value creates this problem. Most experimentation
-platforms show a live $p$-value.
+A dashboard that shows a live fixed-sample $p$-value invites this, and many
+experimentation platforms show one.
 
 ---
 
 # What to do instead
 
-**Fix the sample size in advance** and analyze once. Simplest, and correct.
+**Fix the sample size in advance** and analyze once. This is the simplest valid
+approach.
 
 --
 
@@ -1751,7 +1751,7 @@ ask: of the tests declared winners, how many are actually true effects?
 
 # The setup
 
-The key insight is that this is a **base rate** problem, not a $p$-value problem.
+The central point is that this is a **base rate** problem, not a $p$-value problem.
 
 --
 
@@ -1779,7 +1779,7 @@ Substantial false discovery among declared winners in real testing programs.
 
 Compounded by:
 
-- **Optional stopping**, practitioners peek, and platforms encourage it
+- **Optional stopping**, practitioners peek, and many platforms show live results
 - **Many variants** tested at once without multiplicity adjustment
 - **Selection**, only winners get implemented and remembered
 
@@ -1812,8 +1812,8 @@ credibility conversation.
 
 <br>
 
-Design solves confounding. It does not solve multiplicity, stopping rules, or base
-rates.
+Randomization addresses confounding. It does not address multiplicity, stopping rules,
+or base rates.
 
 ---
 
@@ -1826,7 +1826,8 @@ Measuring Online Ad Effectiveness," *Journal of Marketing Research* 54(6):867–
 
 <br>
 
-Start with the problem this solves, because the problem is bigger than advertising.
+The problem it addresses applies beyond advertising: finding the right control group
+when treatment is delivered selectively.
 
 ---
 
@@ -1845,25 +1846,20 @@ product to people who did not.
 
 <br>
 
-.large2[Observational estimates of ad effectiveness are wildly biased upward.]
+Observational estimates of ad effectiveness are therefore biased upward, often by
+multiples of the true effect.
 
 --
 
-Not by 10%. By multiples. Lewis and Rao's work on this is the canonical demonstration:
-the noise in sales relative to plausible ad effects is so large that observational
-methods routinely produce estimates orders of magnitude off.
+Lewis and Rao (2015) show why the bias is large relative to the effect: plausible ad
+effects are tiny next to the variance of sales, so a small correlation between exposure
+and purchase intent produces a bias larger than the effect itself.
 
 ---
 
 # So run an experiment. What is the control group?
 
-Here is the subtlety.
-
---
-
-<br>
-
-You want: people who **would have been shown the ad** but were not.
+You want people who **would have been shown the ad** but were not.
 
 --
 
@@ -1906,7 +1902,7 @@ Two problems:
 
 <br>
 
-Correct, and costly enough that firms did not do it.
+The design is valid but expensive, so firms rarely used it.
 
 ---
 
@@ -1926,38 +1922,35 @@ next bidder in the ordinary auction.
 
 <br>
 
-.large2[The counterfactual is **logged**, not purchased.]
-
-That is the whole cost saving. You get a valid control group without buying a single
-impression for it.
+The counterfactual exposure is **logged**, not purchased.
 
 --
 
 <br>
 
-You get the same identification of the would-have-been-exposed population, without
-paying for placebo impressions and without giving up the inventory.
+That is where the cost saving comes from. The design identifies the same
+would-have-been-exposed users as a PSA design, without paying for placebo impressions or
+giving up the inventory.
 
 ---
 
-# Why this is a great paper for you
+# What to take from Ghost Ads
 
-.large2[The contribution is a **design**, not an estimator.]
+The contribution is a **design**, not an estimator.
 
 --
 
 <br>
 
-They did not find a cleverer way to analyze existing data. They changed what data gets
+They did not find a new way to analyze existing data. They changed what data gets
 recorded so the comparison becomes valid.
 
 --
 
 <br>
 
-That is the highest-value move in empirical work, and it is available to you far more
-often than you think, especially if you are working with a firm, or building your own
-measurement pipeline.
+Changing what gets recorded is often possible, especially if you work with a firm or
+build your own measurement pipeline.
 
 --
 
@@ -1976,7 +1969,7 @@ Run the power calculation **before** the experiment.
 <br>
 
 You need: the minimum detectable effect you care about, the outcome's variance, your
-$\alpha$, your target power (80% conventionally, and 80% is not generous).
+$\alpha$, your target power (80% by convention).
 
 --
 
@@ -1986,12 +1979,12 @@ Then solve for $N$.
 
 --
 
-If the required $N$ is larger than what you can get, you have learned something valuable
-before spending any money: **do not run this experiment**.
+If the required $N$ is larger than what you can get, **do not run the experiment as
+designed**. You have learned this before spending any money.
 
 ---
 
-# Post-hoc power is not a thing
+# Post-hoc power
 
 Computing "observed power" from your realized effect size after the fact is a
 monotone transformation of your $p$-value.
@@ -2007,8 +2000,8 @@ result was underpowered.
 
 <br>
 
-.large2[If a reviewer asks for post-hoc power, they are wrong, and you should politely
-give them a confidence interval instead.]
+If a reviewer asks for post-hoc power, explain why it is uninformative and report the
+confidence interval instead.
 
 --
 
@@ -2017,16 +2010,10 @@ out?
 
 ---
 
-# The thing many of you have not internalized
+# Significance in underpowered studies
 
-.large2[An underpowered study that finds a significant effect is **more** likely to be
-wrong, not less.]
-
---
-
-<br>
-
-This is counterintuitive and it is arithmetic.
+A significant estimate from an underpowered study is **more** likely to be exaggerated or
+to have the wrong sign than one from a well-powered study.
 
 ---
 
@@ -2054,7 +2041,7 @@ So conditional on significance in an underpowered design:
 
 --
 
-Gelman and Carlin's framing. Their worked examples report exaggeration factors of
+Gelman and Carlin (2014) introduced these terms. Their worked examples report exaggeration factors of
 **9.7, 25, and 77**.
 
 --
@@ -2073,13 +2060,13 @@ study with $N = 8{,}000$.
 
 <br>
 
-Most people read it the other way around.
+It is often read the other way around.
 
 --
 
 <br>
 
-When you referee, ask about power before you ask about anything else. When you present,
+When you referee, ask about power early. When you present,
 report the minimum detectable effect. It tells the audience what your design could and
 could not have found.
 
@@ -2094,15 +2081,15 @@ unit's outcome.
 
 <br>
 
-In a marketplace, this is often just false.
+In a marketplace, it often fails.
 
 ---
 
 # Where it breaks in platform settings
 
 **Two-sided markets.** Treat some buyers with a better ranking algorithm. They book the
-good listings. Control-group buyers now face worse inventory. The control group has been
-treated, in the wrong direction.
+good listings. Control-group buyers now face worse inventory. The control group is
+affected by the treatment.
 
 --
 
@@ -2128,21 +2115,22 @@ It biases in a direction you can usually sign, and it is often **large**.
 
 <br>
 
-If treatment cannibalizes from control, the difference overstates the true effect
-possibly enormously, because you have measured redistribution and called it creation.
+If treatment takes bookings from control, the difference overstates the true effect,
+possibly by a lot, because part of what it measures is bookings moved, not bookings
+created.
 
 --
 
 <br>
 
-A ranking change that moves bookings from listing A to listing B looks like a huge
+A ranking change that moves bookings from listing A to listing B looks like a large
 treatment effect at the listing level and may be **zero** at the platform level.
 
 --
 
 <br>
 
-This is the single most common way platform experiments mislead the firms running them.
+This is a common way for platform experiments to mislead the firms running them.
 
 ---
 
@@ -2166,8 +2154,8 @@ interference terms.
 
 <br>
 
-None is free. All are better than pretending SUTVA holds because you did not want to
-think about it.
+Each costs power or complexity. The alternative is to assume SUTVA holds in a setting
+where it does not.
 
 ---
 class: inverse, center, middle
@@ -2186,7 +2174,7 @@ less likely to be accepted.
 
 <br>
 
-.large2[The published literature is a **biased sample** of the research conducted.]
+The published literature is therefore a **biased sample** of the research conducted.
 
 --
 
@@ -2197,15 +2185,15 @@ noise is what gets marginal studies over the significance line.
 
 ---
 
-# What this does to you
+# What this means for your work
 
-The effect sizes in the literature are **upper bounds**, often badly so.
+The effect sizes in the literature are **upper bounds**, often by a wide margin.
 
 --
 
 <br>
 
-Consequences you will actually experience:
+In practice:
 
 - Your power calculation, based on published effect sizes, is wrong. You will be
   underpowered.
@@ -2216,31 +2204,22 @@ Consequences you will actually experience:
 
 <br>
 
-This is the mechanism behind the replication crisis. It requires no fraud at all, only
-selective publication.
+This is one of the main mechanisms behind failed replications, and it requires no fraud,
+only selective publication.
 
 ---
 
 # When your effect is not there
 
-It will happen on this project. Seven weeks, a new measurement instrument, a hard
-question.
+This may happen on your project: the timeline is short and the measurement instrument
+is new.
 
 --
 
 <br>
 
-The first thing to determine:
-
---
-
-.large2[Is it a **precise** zero or an **imprecise** one?]
-
---
-
-<br>
-
-These are entirely different scientific situations and they get written up differently.
+The first thing to determine is whether it is a **precise** zero or an **imprecise** one.
+The two cases mean different things and are written up differently.
 
 ---
 
@@ -2258,20 +2237,20 @@ publishable.
 
 **Imprecise zero.** $\hat\beta = 0.002$, 95% CI $[-0.9, 0.9]$.
 
-You have learned nothing. Your data cannot distinguish a huge positive effect from a
-huge negative one.
+You have learned little. The data cannot distinguish a large positive effect from a
+large negative one.
 
 --
 
 <br>
 
-Both have $p > .05$. They have nothing else in common.
+Both have $p > .05$, but only the first is informative.
 
 ---
 
-# So report the interval
+# Report the interval
 
-Never write "we find no significant effect" and stop.
+Do not stop at "we find no significant effect."
 
 --
 
@@ -2292,8 +2271,7 @@ design cannot distinguish economically meaningful effects of either sign."
 
 <br>
 
-The second sentence is not a failure to write. It is the correct report of what you
-learned, and honest people write it.
+The second sentence is an accurate report of what the design can tell you.
 
 ---
 
@@ -2320,7 +2298,7 @@ result.
 
 ---
 
-# The framing that gets a null published
+# When nulls get published
 
 Nulls get published when they are **informative about something people believed**.
 
@@ -2338,30 +2316,22 @@ That requires three things:
 
 <br>
 
-A null from a weak, underpowered design is not a finding. It is an absence of evidence,
-and you should say so plainly rather than dress it up.
+A null from an underpowered design is an absence of evidence, and the paper should say
+so.
 
 ---
 
-# Callback
+# Nulls in your project
 
-.large2[A well-designed project that finds nothing gets a **higher grade** than a badly
-identified project that finds something.]
-
---
-
-<br>
-
-I said this in Lecture 1. We are in Week 6 and some of you are about to find out I
-meant it.
+As I said in Lecture 1, a well-designed project that finds nothing gets a higher grade
+than a badly identified project that finds something.
 
 --
 
 <br>
 
-If your effect is not there, come to office hours. We will figure out whether it is a
-precise zero, and if it is, how to write it. That is a good outcome and I will grade it
-as one.
+If your effect is not there, come to office hours. We will work out whether it is a
+precise zero and, if it is, how to write it up.
 
 ---
 class: inverse, center, middle
@@ -2373,14 +2343,14 @@ name: provenance
 
 # A case study
 
-I want to spend real time on one episode, factually.
+One case, described factually.
 
 --
 
 <br>
 
-Not because fraud is common (it is rare) but because this case illustrates exactly how
-the checking mechanisms in our field fail, and what would have caught it.
+Fraud is rare. This case is useful because it shows where the field's checking
+mechanisms failed and what would have caught it.
 
 ---
 
@@ -2401,8 +2371,8 @@ and product innovation.
 
 <br>
 
-Rich data. Clean staggered rollout design. Heterogeneous effects by scientist ability.
-Well written.
+It had rich data, a staggered rollout design, heterogeneous effects by scientist
+ability, and clear writing.
 
 ---
 
@@ -2446,7 +2416,7 @@ for it to be withdrawn from circulation.
 
 ---
 
-# The first teaching point
+# What the case shows: plausibility
 
 The result was **plausible**. It was **well-written**. And it confirmed what a lot of
 smart people already wanted to believe about AI and productivity.
@@ -2455,32 +2425,26 @@ smart people already wanted to believe about AI and productivity.
 
 <br>
 
-.large2[That is exactly the configuration in which scrutiny fails.]
+Results like this get the least scrutiny.
 
 --
 
 <br>
 
-We scrutinize hardest what surprises us. A finding that fits the prior gets waved
-through, by referees, by seminar audiences, by senior people whose endorsement carries
+Readers scrutinize surprising results most. A result that fits the prior gets less
+scrutiny from referees, seminar audiences, and senior people whose endorsement carries
 weight.
 
 --
 
-If the paper had reported that the AI tool did nothing, it would have been picked apart
-in the first seminar.
+A paper reporting that the tool had no effect would likely have been examined more
+closely.
 
 ---
 
-# The second teaching point
+# What the case shows: nothing to check
 
-Nobody could check it.
-
---
-
-<br>
-
-Not because anyone refused. Because there was nothing to check **with**.
+No one outside could check it, because there was nothing to check it **with**:
 
 --
 
@@ -2493,19 +2457,12 @@ Not because anyone refused. Because there was nothing to check **with**.
 
 <br>
 
-Every reader was evaluating the paper on plausibility, prose, and the author's
-institution. Those are the three things that are easiest to get right without a real
-result.
+Readers could judge only plausibility, writing, and the author's institution, and none
+of these depends on the data being real.
 
 ---
 
-# What actually surfaced it
-
-Not the referee process. Not the seminar circuit. Not the endorsements.
-
---
-
-<br>
+# How the problem surfaced
 
 A computer scientist with domain knowledge of materials science who found the described
 setting implausible on technical grounds and raised it with the university.
@@ -2514,80 +2471,56 @@ setting implausible on technical grounds and raised it with the university.
 
 <br>
 
-<br>
-
-That is a thin defense. It is essentially luck.
+The check depended on one reader with the right expertise, which is not a reliable
+safeguard.
 
 ---
 
-# The third teaching point
+# What the case shows: pipelines
 
-.large2[Reproducible pipelines and documented provenance are not bureaucratic overhead.]
-
---
-
-<br>
-
-They are the **mechanism** by which a field can check anything at all.
+Reproducible pipelines and documented provenance are how a field checks results.
 
 --
 
 <br>
 
-Every requirement in this course that felt like busywork, raw data read-only, scripted
-transformations, versioned prompts, logged model calls, a repo that runs from a clean
-clone, exists so that checking is *possible*.
-
---
-
-Not so that someone will definitely check. So that they *could*.
+The requirements in this course (read-only raw data, scripted transformations, versioned
+prompts, logged model calls, a repo that runs from a clean clone) exist so that checking
+is *possible*, whether or not anyone ends up doing it.
 
 ---
 
 # The question
 
-.large2[If someone asked for your project's raw data and pipeline tomorrow, could you
-hand it over. And would it run?]
+If someone asked for your project's raw data and pipeline tomorrow, could you hand them
+over, and would the pipeline run?
 
 --
 
 <br>
 
-Be honest with yourself about the answer.
-
---
-
-<br>
-
-"Would it run" is doing a lot of work in that sentence. Most projects fail on that half,
-not the first half.
+The second part is the one projects usually fail.
 
 ---
 
-# To be clear about scope
+# Scope
 
-The vast majority of results that do not replicate involve **no fraud whatsoever**.
-
---
-
-<br>
-
-Specification search. Underpowered designs. Publication bias. Coding errors. Silent
-merge failures. A model that dropped 40% of the sample.
+Most results that fail to replicate involve **no fraud**.
 
 --
 
 <br>
 
-Everything in the first half of this lecture, and everything in Week 2.
+The usual causes are specification search, underpowered designs, publication bias, and
+coding errors such as a silent merge failure or a model that dropped 40% of the sample.
+These are the topics of Week 2 and the first half of today.
 
 --
 
 <br>
 
-The infrastructure that catches fraud is the same infrastructure that catches your
-honest mistakes. You are building it primarily for the honest mistakes, which are yours,
-and which are certain.
+The infrastructure that would catch fraud also catches honest mistakes, and honest
+mistakes are the main reason to build it.
 
 ---
 class: inverse, center, middle
@@ -2606,7 +2539,7 @@ Norms have tightened substantially, and are still tightening.
 <br>
 
 **AEA journals:** mandatory data and code deposit, verified by a data editor before
-publication. They actually run your code.
+publication. The data editor's team runs the code.
 
 --
 
@@ -2625,7 +2558,7 @@ with equivalent data.
 
 # What this means practically
 
-.large2[Build the replication package as you go, not at acceptance.]
+Build the replication package as you go, not at acceptance.
 
 --
 
@@ -2639,8 +2572,7 @@ that has been deprecated.
 
 <br>
 
-I have watched colleagues lose weeks to this. It is entirely avoidable and entirely
-self-inflicted.
+I have seen colleagues spend weeks on this.
 
 ---
 
@@ -2659,41 +2591,33 @@ If it goes out: 2–3 referees, several months.
 
 <br>
 
-Outcomes: reject, major revision, minor revision. **Accept on first round essentially
-never happens.** If someone tells you it did, they are rounding.
+Outcomes: reject, major revision, minor revision. **First-round acceptance is very
+rare.**
 
 --
 
 <br>
 
-R&R is a good outcome. Treat it as one.
+An R&R is a good outcome.
 
 ---
 
 # Reading a referee report
 
-The first read is emotional. Everyone's is.
+The first read is usually emotional. Read it, close it, wait 48 hours, and read it again.
 
 --
 
 <br>
 
-<br>
-
-.large2[Read it, close it, wait 48 hours, read it again.]
-
---
-
-<br>
-
-The second read is a different document. What felt like hostility is usually a
-compressed, poorly-worded version of a legitimate concern.
+On the second read, what felt like hostility is usually a compressed, poorly worded
+version of a legitimate concern.
 
 ---
 
 # What referee reports actually contain
 
-Three categories, and sorting them is the whole skill:
+Three categories, and most of the work is sorting comments into them:
 
 --
 
@@ -2725,28 +2649,27 @@ do the analysis that demonstrates it rather than asserting it.
 <br>
 
 Open with brief thanks and a numbered summary of the main changes. The editor may read
-only that summary. Make it do work.
+only that summary, so make it specific.
 
 ---
 
 # The two failure modes
 
-**Defensive.** Explaining why every criticism is misguided. Reads as inability to take
-criticism, which is the single most damaging impression you can leave with an editor.
+**Defensive.** Explaining why every criticism is misguided. It reads as an inability to
+take criticism.
 
 --
 
 <br>
 
-**Obsequious.** "We are extremely grateful for the reviewer's brilliant insight." Every
-paragraph. It signals that you have no independent judgment about your own paper.
+**Obsequious.** "We are extremely grateful for the reviewer's brilliant insight," in
+every paragraph. It signals that you have no independent judgment about your own paper.
 
 --
 
 <br>
 
-The register you want is **collegial and matter-of-fact**. A competent person
-responding to competent criticism. That is all.
+The register you want is **collegial and matter-of-fact**.
 
 ---
 
@@ -2771,8 +2694,8 @@ instead did \[X\], which addresses the underlying concern by \[Y\]."
 
 <br>
 
-Editors accept this constantly when the reasoning is concrete. They reject it when it
-reads as evasion.
+Editors generally accept this when the reasoning is concrete, and not when it reads as
+evasion.
 
 ---
 
@@ -2793,7 +2716,7 @@ regardless of the result**.
 <br>
 
 This eliminates publication bias by construction, and it moves referee input to when it
-can still improve the study rather than after it is too late.
+can still improve the study, before the data are collected.
 
 --
 
@@ -2806,7 +2729,7 @@ costly experiment, it is worth asking the editor.
 
 # One piece of career advice
 
-.large2[Referee. Early, and take it seriously.]
+Referee early, and take it seriously.
 
 --
 
@@ -2819,8 +2742,8 @@ being forced to articulate exactly what is wrong.
 
 <br>
 
-You will start recognizing your own moves in other people's papers. That is unpleasant
-and extremely useful.
+You will also start recognizing your own habits in other people's papers, which helps
+you catch them in your own.
 
 ---
 class: inverse, center, middle
@@ -2842,45 +2765,32 @@ Week 6: does your comparison identify what you claim?
 
 <br>
 
-<br>
-
-.large2[All three have to hold. Any one of them failing makes the other two irrelevant.]
+A result is credible only if all three hold.
 
 ---
 
-# The one thing to take from today
+# Summary
 
-Cheap computation removed the friction that used to discipline empirical work.
-
---
-
-<br>
-
-It did not remove the need for the discipline.
+Cheap computation removed the cost that used to limit specification search.
 
 --
 
 <br>
 
-.large2[The constraint has to come from **design and commitment** now, because it no
-longer comes from cost.]
-
---
-
-<br>
-
-That is a harder problem than the one your advisors had, and you are the ones who have
-to solve it.
+The limit now has to come from the design and from commitments made before seeing
+results: a frozen prompt, a pre-specified primary specification, and a robustness plan
+written in advance.
 
 ---
 
 # Week 6 milestone
 
-Due before next class:
+Due before next class (Oct 7):
 
 --
 
-**1. Identification argument, written out.** One to two pages. It must answer the four
+**1. Revised identification memo.** Revisit your Week 3 memo in light of the validation
+study and the corrected estimates, with your changes marked. It answers the four
 questions explicitly:
 
 - What is the estimand?
@@ -2890,32 +2800,54 @@ questions explicitly:
 
 --
 
-**2. Robustness plan.** The checks you will run, each with the concern it addresses, and
-what result would make you abandon the claim.
+**2. Robustness plan.** `memo/robustness-plan.md`: the checks you will run, each with the
+concern it addresses and the result that would make you abandon the claim.
+
+--
+
+Commit both before you look at any further results, so the commit date shows the plan
+came first.
+
+---
+
+# How much to revise
+
+If classifier error is correlated with your treatment or your covariates, expect a
+rewrite: the estimand may need narrowing, and the identifying assumption may need to be
+restated conditional on the error structure.
 
 --
 
 <br>
 
-Commit both before you look at any further results. The commit timestamp is the point.
+If the error is modest and plausibly unrelated to the variation you use, and the naive
+and corrected estimates agree, a paragraph or two is enough. Report the validation
+result, show both estimates, and explain why the identifying assumption is unchanged.
+
+--
+
+<br>
+
+In both cases, report the naive and corrected estimates side by side.
 
 ---
 
 # Week 7: presentations
 
-20 minutes, plus questions. Everyone presents. Everyone attends.
+20 minutes presenting, 10 minutes of questions. Everyone presents and everyone attends.
 
 --
 
 <br>
 
-I will ask the four questions out loud. So will your classmates. That is the format.
+During questions I will ask the four questions from today, and classmates should ask
+them too.
 
 ---
 
 # What a good presentation does
 
-**Motivates the question** in two minutes. Not five. Why should anyone care, and what do
+**Motivates the question** in about two minutes. Why should anyone care, and what do
 we not currently know?
 
 --
@@ -2924,13 +2856,13 @@ we not currently know?
 
 --
 
-**Shows the validation.** Sampling scheme, confusion matrix, accuracy. This is your
-instrument, establish it.
+**Shows the validation.** Sampling scheme, confusion matrix, accuracy. This
+establishes the instrument.
 
 --
 
-**Shows naive versus corrected.** Side by side. The gap is your contribution to the
-audience's understanding of the method.
+**Shows naive versus corrected.** Side by side. The gap shows
+what the correction does.
 
 --
 
@@ -2957,14 +2889,7 @@ Presents the corrected estimate only, so nobody can see what the correction did.
 
 --
 
-Claims more than the design supports and hopes nobody asks.
-
---
-
-<br>
-
-Someone will ask. In this room it will probably be me, but in three years it will be a
-referee, and they will not be as friendly.
+Claims more than the design supports.
 
 ---
 
@@ -2986,7 +2911,7 @@ Come to office hours this week if:
 
 <br>
 
-That last one is the most common and the most fixable. Come early.
+The last one is the most common, and the easiest to fix if you come early.
 
 ---
 class: inverse, center, middle
