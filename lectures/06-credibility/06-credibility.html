@@ -459,28 +459,30 @@ Close to even odds that at least one result in the table is a false positive.
 
 # Two error rates for many tests
 
-You run `\(k\)` tests and reject `\(R\)` of the nulls. `\(V\)` of those rejections are false: the
-null was true and you rejected it anyway.
+You run `\(k\)` tests. `\(R\)` is the number of nulls you reject, the results you call
+significant (in the FDR literature, "discoveries"). `\(V\)` is the number of those rejected
+nulls that were actually true: the false positives.
 
 --
 
-**Family-wise error rate (FWER)** `\(= \Pr(V \ge 1)\)`: the probability that the table
-contains **at least one** false positive.
+**Family-wise error rate (FWER)** `\(= \Pr(V \ge 1)\)`: the probability that **at least
+one** of the rejected nulls was true.
 
 --
 
 **False discovery rate (FDR)** `\(= E[V/R]\)`, with `\(V/R = 0\)` when `\(R = 0\)`: the expected
-**share** of your rejections that are false.
+**share** of the rejected nulls that were true.
 
 --
 
 &lt;br&gt;
 
-Suppose you run 20 tests and reject 10.
+Suppose you run 20 tests and reject the null in 10 of them.
 
-- FWER at 5%: the probability that any of the 10 is false is at most 5%. You can defend
-  each one on its own.
-- FDR at 10%: on average about one of the 10 is false, and you do not know which.
+- FWER at 5%: the probability that any of the 10 is a false positive is at most 5%. You
+  can defend each one on its own.
+- FDR at 10%: on average about one of the 10 is a false positive, and you do not know
+  which.
 
 ---
 
