@@ -537,6 +537,10 @@ results stays at 5% on average. Use it when a few false positives among many fin
 acceptable. It is less strict, so you find more effects. It is common for multiple
 outcomes in economics, reported as "q-values" (Anderson 2008, *JASA*).
 
+.small75[BH assumes the tests are independent or positively correlated, as outcomes from the
+same regression on the same sample usually are. If some could be negatively correlated,
+use Benjamini–Yekutieli, which holds under any correlation at some cost in power.]
+
 ---
 
 # When do you actually need to correct?
