@@ -2845,26 +2845,6 @@ Available at a growing set of journals, still rare in marketing. If you are runn
 costly experiment, it is worth asking the editor.
 
 ---
-
-# One piece of career advice
-
-Referee early, and take it seriously.
-
---
-
-<br>
-
-Nothing improves your own writing faster than reading twenty flawed papers carefully and
-being forced to articulate exactly what is wrong.
-
---
-
-<br>
-
-You will also start recognizing your own habits in other people's papers, which helps
-you catch them in your own.
-
----
 class: inverse, center, middle
 name: close
 
