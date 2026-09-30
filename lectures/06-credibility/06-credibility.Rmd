@@ -512,29 +512,14 @@ in Stata and R.]
 
 # Which one to control
 
-It depends on what one false result costs.
+It depends on what one false positive costs.
 
-.small90[
-| | FWER | FDR |
+| | **FWER** (Bonferroni) | **FDR** (Benjamini–Hochberg) |
 |:--|:--|:--|
-| Question | Is anything in my list false? | What share of my list is false? |
-| Price | Fewer discoveries | A few false ones among them |
-| Use when | Each result is a claim on its own | The results are candidates to follow up |
-]
-
---
-
-**FWER.** The abstract says verified purchasers write fewer negative reviews, shorter
-reviews, and fewer reviews that mention price. Each claim stands alone, so one false
-claim is a false statement in the paper. With no real effects and each test at 5%, the
-chance that at least one comes out significant is $1 - 0.95^3 \approx 14\%$.
-
---
-
-**FDR.** You have the LLM code 50 attributes of each review (wait time, price, staff,
-...) and test which ones differ between verified and unverified reviews, to decide what
-to study next. A false lead costs some follow-up work; missing real attributes costs the
-study.
+| **Situation** | A few tests, each reported as a finding | Many tests, used to pick candidates |
+| **Example** | Your abstract claims verified reviews are less negative, shorter, and mention price less | You test 50 LLM-coded review attributes to choose 3 to study next |
+| **One false positive means** | A false statement in the paper | One wasted follow-up |
+| **So you want** | No false positive at all | A list that is mostly right, missing few real effects |
 
 ---
 
