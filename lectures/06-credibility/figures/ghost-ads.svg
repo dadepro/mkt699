@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 430" font-family="Helvetica, Arial, sans-serif">
+  <!-- shaded row: users the focal ad would reach -->
+  <rect x="222" y="66" width="852" height="148" rx="10" fill="#e8f0f8"/>
+
+  <!-- column headers -->
+  <text x="372" y="40" text-anchor="middle" font-size="23" font-weight="bold" fill="#222">Treatment</text>
+  <text x="652" y="40" text-anchor="middle" font-size="23" font-weight="bold" fill="#222">Control: PSA design</text>
+  <text x="932" y="40" text-anchor="middle" font-size="23" font-weight="bold" fill="#222">Control: ghost ads</text>
+
+  <!-- row labels -->
+  <text x="200" y="128" text-anchor="end" font-size="20" fill="#222">
+    <tspan x="200" dy="0">Advertiser would</tspan>
+    <tspan x="200" dy="24">win the auction</tspan>
+    <tspan x="200" dy="24">for this user</tspan>
+  </text>
+  <text x="200" y="286" text-anchor="end" font-size="20" fill="#222">
+    <tspan x="200" dy="0">Advertiser would</tspan>
+    <tspan x="200" dy="24">lose the auction</tspan>
+  </text>
+
+  <!-- row 1 -->
+  <rect x="242" y="80" width="260" height="120" rx="8" fill="#1f4e79"/>
+  <text x="372" y="134" text-anchor="middle" font-size="22" font-weight="bold" fill="#fff">Sees the focal ad</text>
+  <text x="372" y="162" text-anchor="middle" font-size="17" fill="#fff">exposed</text>
+
+  <rect x="522" y="80" width="260" height="120" rx="8" fill="#f2d7bf"/>
+  <text x="652" y="126" text-anchor="middle" font-size="22" font-weight="bold" fill="#222">Sees a charity ad</text>
+  <text x="652" y="154" text-anchor="middle" font-size="17" fill="#222">(a PSA) in the same slot;</text>
+  <text x="652" y="176" text-anchor="middle" font-size="17" fill="#222">the advertiser pays for it</text>
+
+  <rect x="802" y="80" width="260" height="120" rx="8" fill="#fff" stroke="#1f4e79" stroke-width="3" stroke-dasharray="10 7"/>
+  <text x="932" y="126" text-anchor="middle" font-size="22" font-weight="bold" fill="#222">Sees the ad that</text>
+  <text x="932" y="152" text-anchor="middle" font-size="22" font-weight="bold" fill="#222">came second</text>
+  <text x="932" y="180" text-anchor="middle" font-size="17" fill="#222">platform logs a "ghost ad," free</text>
+
+  <!-- row 2 -->
+  <rect x="242" y="236" width="260" height="96" rx="8" fill="#e3e3e3"/>
+  <rect x="522" y="236" width="260" height="96" rx="8" fill="#e3e3e3"/>
+  <rect x="802" y="236" width="260" height="96" rx="8" fill="#e3e3e3"/>
+  <text x="372" y="280" text-anchor="middle" font-size="20" fill="#333">Sees another</text>
+  <text x="372" y="304" text-anchor="middle" font-size="20" fill="#333">advertiser's ad</text>
+  <text x="652" y="280" text-anchor="middle" font-size="20" fill="#333">Sees another</text>
+  <text x="652" y="304" text-anchor="middle" font-size="20" fill="#333">advertiser's ad</text>
+  <text x="932" y="280" text-anchor="middle" font-size="20" fill="#333">Sees another</text>
+  <text x="932" y="304" text-anchor="middle" font-size="20" fill="#333">advertiser's ad</text>
+
+  <!-- note -->
+  <text x="648" y="378" text-anchor="middle" font-size="20" fill="#222">Shaded row: the users the ad would reach. The estimate compares them across columns:</text>
+  <text x="648" y="406" text-anchor="middle" font-size="20" fill="#222">same kind of user, focal ad versus no focal ad.</text>
+</svg>

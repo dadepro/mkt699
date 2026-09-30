@@ -1999,6 +1999,16 @@ giving up the inventory.
 
 ---
 
+# The three designs side by side
+
+<img src="figures/ghost-ads.svg" style="width:94%; display:block; margin:auto;">
+
+.small90[Randomization makes the shaded row comparable across columns. The PSA design
+finds those control users by paying for charity ads; ghost ads find them by logging the
+auction outcome.]
+
+---
+
 # What to take from Ghost Ads
 
 The contribution is a **design**, not an estimator.
@@ -2027,51 +2037,78 @@ Ask, on your own project: *what could I record that would make this comparison c
 
 # Power
 
-Run the power calculation **before** the experiment.
+Run the power calculation **before** the experiment. It takes four inputs:
+
+.small90[
+- **Significance level $\alpha$**: the probability of rejecting the null when it is
+  true, i.e. the false-positive rate you accept. Usually 5%.
+- **Power** $1 - \beta$: the probability of rejecting the null when the true effect equals
+  the MDE. Usually 80%, so an effect of that size is missed 20% of the time.
+- **Minimum detectable effect (MDE)**: the smallest effect worth detecting, in the
+  outcome's units. Set by what would matter, not by what you hope to find.
+- **Outcome variance** $\sigma^2$: how noisy the outcome is, from past data or a pilot.
+]
+
+---
+
+# Solving for the sample size
+
+For two equal arms and a difference in means, the sample size per arm is
+
+$$N = \frac{2\,(z_{1-\alpha/2} + z_{1-\beta})^2\,\sigma^2}{\text{MDE}^2},
+\qquad z_{0.975} = 1.96, \; z_{0.80} = 0.84.$$
+
+With an MDE of $0.1\sigma$: $N = 2 \times 2.8^2 / 0.01 \approx 1{,}570$ per arm.
 
 --
 
-<br>
-
-You need: the minimum detectable effect you care about, the outcome's variance, your
-$\alpha$, your target power (80% by convention).
-
---
-
-<br>
-
-Then solve for $N$.
-
---
-
-If the required $N$ is larger than what you can get, **do not run the experiment as
-designed**. You have learned this before spending any money.
+If the required $N$ is larger than you can get, **do not run the experiment as
+designed**. You learn this before spending any money.
 
 ---
 
 # Post-hoc power
 
-Computing "observed power" from your realized effect size after the fact is a
-monotone transformation of your $p$-value.
+**What it is.** After the study, take your estimate $\hat\beta$, treat it as if it were
+the true effect, and compute the power the study had to detect it.
+
+--
+
+**Why it adds nothing.** That power depends only on $z = \hat\beta / \text{SE}$, the same
+number that gives the $p$-value. At $\alpha = .05$, two-sided:
+
+| $p$-value | .01 | .05 | .20 | .50 |
+|:--|:--:|:--:|:--:|:--:|
+| Observed power | 73% | 50% | 25% | 10% |
+
+--
+
+Every result with $p > .05$ has observed power below 50%. So "the null is because the
+study was underpowered" follows from the $p$-value by arithmetic. It is not evidence
+about the study (Hoenig & Heisey, 2001, *The American Statistician*).
+
+---
+
+# What to report instead
+
+**The confidence interval.** It shows which effects the data rule out. An estimate of
+0.02 with 95% CI $[-0.03, 0.07]$ rules out effects above 0.07. If the effects that
+matter are around 0.2, the null is informative.
 
 --
 
 <br>
 
-It contains no information beyond the $p$-value. It cannot tell you whether a null
-result was underpowered.
+**Power at an effect that matters.** If you want a power statement, compute it at an
+effect chosen for substantive reasons (your MDE, or the effect claimed in prior work),
+not at your own noisy estimate. Gelman & Carlin (2014) call this a design analysis.
 
 --
 
 <br>
 
-If a reviewer asks for post-hoc power, explain why it is uninformative and report the
-confidence interval instead.
-
---
-
-The CI answers the question they actually meant to ask: what effect sizes can you rule
-out?
+If a reviewer asks for post-hoc power, report both, with one sentence on why observed
+power is not informative.
 
 ---
 
