@@ -2984,28 +2984,6 @@ Presents the corrected estimate only, so nobody can see what the correction did.
 Claims more than the design supports.
 
 ---
-
-# Reading for next week
-
-Nothing new. Finish your analysis and build your slides.
-
---
-
-<br>
-
-Come to office hours this week if:
-
-- your effect is not there and you are not sure whether it is a precise zero
-- your design has staggered adoption and you have not run the diagnostics
-- you are unsure what your identifying assumption actually is
-
---
-
-<br>
-
-The last one is the most common, and the easiest to fix if you come early.
-
----
 class: inverse, center, middle
 
 # Questions?
