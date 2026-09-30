@@ -1,7 +1,7 @@
 # One simulated dataset for the FWER vs FDR slides in Lecture 6.
 #
 # 50 review attributes tested for a difference between verified and unverified reviews.
-# 20 truly differ (expected z of 3), 30 do not. The seed is one where both rules flag
+# 20 truly differ (expected z of 3), 30 do not. The seed is one where both rules declare
 # about their average number (Bonferroni 8, Benjamini-Hochberg 15).
 #
 # Run from this folder: Rscript fwer-fdr.R
@@ -19,7 +19,7 @@ d$bh_cut <- alpha * d$rank / k
 
 n_bon <- sum(d$p < alpha / k)
 n_bh <- max(which(d$p <= d$bh_cut))
-cat(sprintf("Bonferroni flags %d (false: %d); BH flags %d (false: %d)\n",
+cat(sprintf("Bonferroni declares %d significant (false: %d); BH declares %d (false: %d)\n",
             n_bon, sum(d$truth[1:n_bon] == "Does not differ"),
             n_bh, sum(d$truth[1:n_bh] == "Does not differ")))
 
@@ -31,9 +31,9 @@ p <- ggplot(show, aes(rank, p)) +
            fill = "#e8f0f8") +
   annotate("rect", xmin = 0.5, xmax = n_bon + 0.5, ymin = min(show$p) / 2, ymax = 1,
            fill = "#c9dcee") +
-  annotate("text", x = n_bon / 2 + 0.5, y = 0.2, label = "Bonferroni\nflags 8",
+  annotate("text", x = n_bon / 2 + 0.5, y = 0.2, label = "Bonferroni:\n8 significant",
            size = 7.5, lineheight = 0.9) +
-  annotate("text", x = (n_bon + n_bh) / 2 + 0.5, y = 0.2, label = "BH also\nflags 7 more",
+  annotate("text", x = (n_bon + n_bh) / 2 + 0.5, y = 0.2, label = "BH:\n7 more",
            size = 7.5, lineheight = 0.9) +
   geom_hline(yintercept = alpha / k, linetype = "dashed", linewidth = 0.7) +
   geom_line(aes(y = bh_cut), linewidth = 0.7) +
