@@ -1810,17 +1810,27 @@ The central point is that this is a **base rate** problem, not a $p$-value probl
 
 --
 
-<br>
-
-If most tested ideas have effects near zero (which is what the data show) then the set
-of significant results is dominated by false positives, even with correct 5% tests.
+If most tested ideas do nothing (which is what the data show), a large share of the
+significant results are false positives, even when every test is run correctly.
 
 --
 
 <br>
 
-This is the same arithmetic as a screening test for a rare disease. Good specificity
-plus a low base rate gives you mostly false positives among the positives.
+Suppose 1,000 tested ideas: 100 have a real effect, 900 do nothing. With 80% power and a
+5% level:
+
+- $100 \times 0.80 = 80$ real effects come out significant
+- $900 \times 0.05 = 45$ null ideas come out significant
+
+So 45 of the 125 "winners," 36%, do nothing.
+
+--
+
+A screening test for a rare disease works the same way. Its **specificity** is the share
+of healthy people it correctly clears (here, the 95% of null ideas a 5% test calls not
+significant). Even with high specificity, when few people are sick most positives are
+healthy.
 
 ---
 
