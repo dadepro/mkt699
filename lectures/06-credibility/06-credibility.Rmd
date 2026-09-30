@@ -696,10 +696,6 @@ Usually the author, and often after seeing which ones work.
 A curve computed over a set chosen to include the preferred specification and leave out
 the ones that weaken it has the same search problem as a single table.
 
---
-
-I have seen this in papers I refereed. The figure alone does not reveal it.
-
 ---
 
 # So how do you make it credible?
