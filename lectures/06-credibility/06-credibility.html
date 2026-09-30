@@ -517,17 +517,25 @@ in Stata and R.]
 
 # Which one to use
 
-**Bonferroni (FWER).** You test several outcomes and report each significant one as a
-finding. It keeps the chance of *any* false positive, across all the tests, at 5%. It is
-strict, so you find fewer effects. It works whether or not the tests are correlated.
+Both can be used whenever you test many hypotheses, including many outcomes. They promise
+different things.
 
 --
 
 &lt;br&gt;
 
-**Benjamini–Hochberg (FDR).** You test many things to decide which ones deserve a closer
-look. It keeps the *share* of false positives among what you find at 5%. It is less
-strict, so you find more effects, and a few of them are false.
+**Bonferroni (FWER).** The chance of *any* false positive, across all the tests, stays at
+5%. Use it when even one false positive would be a problem. It is strict, so you find
+fewer effects. It works whether or not the tests are correlated.
+
+--
+
+&lt;br&gt;
+
+**Benjamini–Hochberg (FDR).** The *share* of false positives among your significant
+results stays at 5% on average. Use it when a few false positives among many findings are
+acceptable. It is less strict, so you find more effects. It is common for multiple
+outcomes in economics, reported as "q-values" (Anderson 2008, *JASA*).
 
 ---
 
