@@ -459,56 +459,84 @@ Close to even odds that at least one result in the table is a false positive.
 
 # Two error rates for many tests
 
-You run `\(k\)` tests. `\(R\)` is the number of nulls you reject, the results you call
-significant (in the FDR literature, "discoveries"). `\(V\)` is the number of those rejected
-nulls that were actually true: the false positives.
-
---
-
-**Family-wise error rate (FWER)** `\(= \Pr(V \ge 1)\)`: the probability that **at least
-one** of the rejected nulls was true.
-
---
-
-**False discovery rate (FDR)** `\(= E[V/R]\)`, with `\(V/R = 0\)` when `\(R = 0\)`: the expected
-**share** of the rejected nulls that were true.
+Both are about false positives among the results you call significant. They differ in
+what counts as a failure.
 
 --
 
 &lt;br&gt;
 
-Suppose you run 20 tests and reject the null in 10 of them.
+**Family-wise error rate (FWER): is anything in my list false?** One false positive and
+the whole list counts as a failure. FWER at 5% means a 95% chance that every significant
+result is real.
 
-- FWER at 5%: the probability that any of the 10 is a false positive is at most 5%. You
-  can defend each one on its own.
-- FDR at 10%: on average about one of the 10 is a false positive, and you do not know
-  which.
+--
+
+&lt;br&gt;
+
+**False discovery rate (FDR): what share of my list is false?** A list of 20 significant
+results with 1 false one is 5% wrong, and that can be acceptable. FDR at 10% means that
+on average at most 10% of the significant results are false. You expect a few, and you
+do not know which.
+
+--
+
+&lt;br&gt;
+
+.small75[Formally, with `\(R\)` the number of significant results and `\(V\)` the number of those
+that are false positives: FWER `\(= \Pr(V \ge 1)\)` and FDR `\(= E[V/R]\)`.]
+
+---
+
+# The same data under each rule
+
+You have the LLM code 50 attributes of each review (wait time, price, staff,
+cleanliness, ...) and test which ones differ between verified and unverified reviews.
+Suppose 20 truly differ and 30 do not.
+
+--
+
+&lt;br&gt;
+
+On average across simulated datasets:
+
+| | Flagged | False among them | Lists with any false one |
+|:--|:--:|:--:|:--:|
+| FWER at 5% (Bonferroni) | 8 | 0.03 | 3% |
+| FDR at 10% (Benjamini–Hochberg) | 17 | 1.1 | 65% |
+
+--
+
+FWER is stricter: it finds less, and every finding is safe. FDR finds more of the 20,
+and a known share of what it finds is wrong.
+
+.small75[20,000 simulated datasets; each real attribute has an expected `\(z\)` of 3.]
 
 ---
 
 # Which one to control
 
-**FWER when each rejection is a claim you defend on its own.** In the badge example from
-Week 5, suppose the abstract says verified purchasers write fewer negative reviews,
-shorter reviews, and fewer reviews that mention price. If any one of the three is a false
-positive, the paper states something false.
+It depends on what one false result costs.
+
+.small90[
+| | FWER | FDR |
+|:--|:--|:--|
+| Question | Is anything in my list false? | What share of my list is false? |
+| Price | Fewer discoveries | A few false ones among them |
+| Use when | Each result is a claim on its own | The results are candidates to follow up |
+]
 
 --
 
-&lt;br&gt;
-
-**FDR when the rejections are a list of candidates.** You have the LLM code 50 attributes
-of each review (wait time, price, staff, cleanliness, ...) and test which ones differ
-between verified and unverified reviews, to decide what to study next. Even if none
-differs, testing each at .05 flags about 2.5 by chance. FDR control keeps the false leads
-to a known share of the list.
+**FWER.** The abstract says verified purchasers write fewer negative reviews, shorter
+reviews, and fewer reviews that mention price. Each claim stands alone, so one false
+claim is a false statement in the paper. With no real effects and each test at 5%, the
+chance that at least one comes out significant is `\(1 - 0.95^3 \approx 14\%\)`.
 
 --
 
-&lt;br&gt;
-
-If every null is true, the two coincide, because any rejection makes `\(V/R = 1\)`. FDR is
-less strict only when some effects are real.
+**FDR.** The 50-attribute screen, run to decide what to study next. A false lead costs
+some follow-up work; missing real attributes costs the study.
 
 ---
 
@@ -522,8 +550,8 @@ always, and very conservative when tests are correlated.
 **Benjamini–Hochberg.** Sort `\(p_{(1)} \le \dots \le p_{(k)}\)`; find the largest `\(i\)` with
 `\(p_{(i)} \le \frac{i}{k}\alpha\)`; reject everything up to it. Controls FDR.
 
-In the 50-attribute example at `\(\alpha = .05\)`, Bonferroni rejects when `\(p &lt; .001\)`. BH
-compares the `\(i\)`-th smallest `\(p\)`-value to `\(.001 \times i\)`.
+In the 50-attribute example, Bonferroni at 5% rejects when `\(p &lt; .05/50 = .001\)`. BH at 10%
+compares the `\(i\)`-th smallest `\(p\)`-value to `\(.10 \times i/50 = .002 \times i\)`.
 
 --
 
