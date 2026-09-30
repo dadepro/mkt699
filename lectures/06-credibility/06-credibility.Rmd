@@ -2935,13 +2935,6 @@ In both cases, report the naive and corrected estimates side by side.
 
 20 minutes presenting, 10 minutes of questions. Everyone presents and everyone attends.
 
---
-
-<br>
-
-During questions I will ask the four questions from today, and classmates should ask
-them too.
-
 ---
 
 # What a good presentation does
