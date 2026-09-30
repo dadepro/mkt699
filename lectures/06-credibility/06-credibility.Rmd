@@ -510,69 +510,6 @@ in Stata and R.]
 
 ---
 
-# Example: 50 review attributes
-
-You have the LLM code 50 attributes of each review (wait time, price, staff,
-cleanliness, ...) and test which ones differ between verified and unverified reviews.
-
---
-
-In real data you do not know which attributes truly differ. A simulation fixes the truth
-so the errors can be counted: **20 truly differ, 30 do not.**
-
---
-
-Declaring an attribute significant is a claim that it differs. The claim is right if it
-truly differs, and a **false positive** if it does not. Each test can go wrong in two ways:
-
-| | Declared significant | Not declared significant |
-|:--|:--|:--|
-| One of the 20 that truly differ | correct | **missed effect** |
-| One of the 30 that do not | **false positive** | correct |
-
---
-
-FWER and FDR limit false positives. The price is paid in missed effects.
-
----
-
-# One simulated dataset
-
-<img src="figures/fwer-fdr.png" style="width:70%; display:block; margin:auto;">
-
-.small90[**Bonferroni** declares significant the 8 points below .001. All 8 truly differ; 12
-that truly differ are missed. **BH** declares significant everything up to the last point
-under its curve: 15 attributes, 14 that truly differ and 1 false positive (the red point
-at rank 14); 6 are missed.]
-
----
-
-# Over many simulated datasets
-
-Repeat the simulation 20,000 times, with new data and the same truth. On average:
-
-.small90[
-| | Bonferroni | BH |
-|:--|:--:|:--:|
-| Attributes declared significant | 8 | 15 |
-| ... of which truly differ | 8 | 14 |
-| ... of which are false positives | 0.03 | 0.5 |
-| Attributes that truly differ but are missed (of 20) | 12 | 6 |
-| **Repetitions with at least one false positive** | **3%** | 37% |
-| **False positives as a share of those declared significant** | 0.3% | **3%** |
-]
-
---
-
-The two bold rows are what the rules control, each at 5%. **FWER** is the share of
-repetitions with at least one false positive: Bonferroni keeps it at 3%. **FDR** is the
-share of false positives among those declared significant: BH keeps it at 3%, and misses
-6 real effects instead of 12.
-
-.small75[Each real attribute has an expected $z$ of 3. Code: `figures/fwer-fdr.R`.]
-
----
-
 # Which one to control
 
 It depends on what one false result costs.
@@ -594,8 +531,10 @@ chance that at least one comes out significant is $1 - 0.95^3 \approx 14\%$.
 
 --
 
-**FDR.** The 50-attribute screen, run to decide what to study next. A false lead costs
-some follow-up work; missing real attributes costs the study.
+**FDR.** You have the LLM code 50 attributes of each review (wait time, price, staff,
+...) and test which ones differ between verified and unverified reviews, to decide what
+to study next. A false lead costs some follow-up work; missing real attributes costs the
+study.
 
 ---
 
