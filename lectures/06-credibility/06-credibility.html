@@ -2382,26 +2382,50 @@ The second sentence is an accurate report of what the design can tell you.
 
 ---
 
-# Making a null informative
+# Making a null informative: equivalence tests
 
-**Equivalence testing (TOST).** Specify the smallest effect that would matter. Test
-whether you can reject effects larger than that in either direction. If you can, you have
-established practical equivalence, a positive claim, not an absence.
+**TOST (two one-sided tests).** Before looking at the estimate, choose `\(\Delta\)`, the
+smallest effect that would matter. Then test two nulls, each one-sided at level `\(\alpha\)`:
+
+- `\(H_0: \beta \le -\Delta\)` (the effect is meaningfully negative)
+- `\(H_0: \beta \ge \Delta\)` (the effect is meaningfully positive)
+
+--
+
+Rejecting both shows the effect lies within `\((-\Delta, \Delta)\)`: "no effect large enough
+to matter." That is a positive claim, not an absence of evidence. It is the same as the
+90% CI (for `\(\alpha = .05\)`) lying entirely inside `\([-\Delta, \Delta]\)`.
+
+--
+
+Example with `\(\Delta\)` = 2 percentage points:
+
+- Estimate 0.3 pp, 90% CI `\([-1.1, 1.7]\)`: equivalent. Effects that matter are ruled out.
+- Estimate 0.3 pp, 90% CI `\([-3.0, 3.6]\)`: not equivalent and not significant. The data
+  cannot tell.
+
+.small75[Lakens (2017), "Equivalence Tests: A Practical Primer," *Social Psychological
+and Personality Science*.]
+
+---
+
+# Making a null informative: MDE and bounds
+
+**Minimum detectable effect.** From the standard error alone, the effect the design
+could detect with 80% power at `\(\alpha = .05\)` is about $(1.96 + 0.84) \times \text{SE}
+= 2.8 \times \text{SE}$. With SE = 0.5 pp, the MDE is 1.4 pp.
+
+Report it: "the design could detect effects of 1.4 pp or larger; smaller effects cannot
+be ruled out." This uses the SE, not the estimate, so it is not post-hoc power.
 
 --
 
 &lt;br&gt;
 
-**Bounds.** Even with an imprecise point estimate you can often bound the parameter
-using partial-identification arguments (Manski). "The effect is between X and Y" is a
-result.
-
---
-
-&lt;br&gt;
-
-**Minimum detectable effect.** State what your design could have detected. It converts
-"we found nothing" into "we can rule out anything above this."
+**Bounds.** A null can be produced by attrition or selection, for example when treated
+users drop out at a different rate than control users. Instead of a point estimate,
+report bounds: Lee (2009) trims the sample to give the range of effects consistent with
+the data under weak assumptions. "The effect is between −0.4 and 1.1 pp" is a result.
 
 ---
 
@@ -2432,13 +2456,6 @@ so.
 
 As I said in Lecture 1, a well-designed project that finds nothing gets a higher grade
 than a badly identified project that finds something.
-
---
-
-&lt;br&gt;
-
-If your effect is not there, come to office hours. We will work out whether it is a
-precise zero and, if it is, how to write it up.
 
 ---
 class: inverse, center, middle
