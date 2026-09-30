@@ -515,16 +515,19 @@ in Stata and R.]
 
 ---
 
-# Which one to control
+# Which one to use
 
-It depends on what one false positive costs.
+**Bonferroni (FWER).** You test several outcomes and report each significant one as a
+finding. It keeps the chance of *any* false positive, across all the tests, at 5%. It is
+strict, so you find fewer effects. It works whether or not the tests are correlated.
 
-| | **FWER** (Bonferroni) | **FDR** (Benjamini–Hochberg) |
-|:--|:--|:--|
-| **Situation** | A few tests, each reported as a finding | Many tests, used to pick candidates |
-| **Example** | Your abstract claims verified reviews are less negative, shorter, and mention price less | You test 50 LLM-coded review attributes to choose 3 to study next |
-| **One false positive means** | A false statement in the paper | One wasted follow-up |
-| **So you want** | No false positive at all | A list that is mostly right, missing few real effects |
+--
+
+&lt;br&gt;
+
+**Benjamini–Hochberg (FDR).** You test many things to decide which ones deserve a closer
+look. It keeps the *share* of false positives among what you find at 5%. It is less
+strict, so you find more effects, and a few of them are false.
 
 ---
 
